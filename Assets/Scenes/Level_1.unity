@@ -3234,6 +3234,7 @@ GameObject:
   - component: {fileID: 2041491288}
   - component: {fileID: 2041491289}
   - component: {fileID: 2041491290}
+  - component: {fileID: 2041491291}
   m_Layer: 0
   m_Name: Furry
   m_TagString: Untagged
@@ -3419,7 +3420,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   jumpForce: 10
-  readinessTime: 0.1
+  jumpTimeWindow: 0.1
+--- !u!114 &2041491291
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2041491281}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88bdc50359505de4a9d76b5a78151432, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotationSpeed: 350
+  rotationTorque: 1000
+  jumpForce: 10
+  jumpTimeWindow: 0.1
 --- !u!1 &2070830899
 GameObject:
   m_ObjectHideFlags: 0

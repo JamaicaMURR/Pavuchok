@@ -9,7 +9,7 @@ public class RelativeJumper : MonoBehaviour
     new Collider2D collider;
     //==================================================================================================================================================================
     public float jumpForce = 10;
-    public float readinessTime = 0.1f;
+    public float jumpTimeWindow = 0.1f;
 
     //==================================================================================================================================================================
     private void Awake()
@@ -49,7 +49,7 @@ public class RelativeJumper : MonoBehaviour
     {
         _jumpAwaits = true;
 
-        yield return new WaitForSeconds(readinessTime);
+        yield return new WaitForSeconds(jumpTimeWindow);
 
         _jumpAwaits = false;
     }
