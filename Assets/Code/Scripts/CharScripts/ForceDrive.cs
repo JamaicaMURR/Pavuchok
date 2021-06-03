@@ -8,11 +8,7 @@ public class ForceDrive : MonoBehaviour
     Rigidbody2D rigidBody;
 
     //==================================================================================================================================================================
-    public float upImpulse = 5;
-    public float downImpulse = 0;
-    public float sideImpulse = 10;
-
-    public event Action OnMoved;
+    public event Action OnDashed;
 
     //==================================================================================================================================================================
     private void Awake()
@@ -23,36 +19,38 @@ public class ForceDrive : MonoBehaviour
     private void Update()  //========================   TEST ONLY!!!!
     {
         if(Input.GetKeyDown(KeyCode.D))
-            Move(Direction.Right);
+            Dash(Vector2.right);
 
         if(Input.GetKeyDown(KeyCode.A))
-            Move(Direction.Left);
+            Dash(Vector2.left);
 
         if(Input.GetKeyDown(KeyCode.W))
-            Move(Direction.Up);
+            Dash(Vector2.up * 10);
 
         if(Input.GetKeyDown(KeyCode.S))
-            Move(Direction.Down);
+            Dash(Vector2.down);
+    }
+
+    private void FixedUpdate()  //========================   TEST ONLY!!!!
+    {
+        if(Input.GetKey(KeyCode.LeftArrow))
+            Move(Vector2.left);
+
+        if(Input.GetKey(KeyCode.RightArrow))
+            Move(Vector2.right);
     }
 
     //==================================================================================================================================================================
-    public void Move(Direction direction)
+    public void Dash(Vector2 direction)
     {
-        float x = 0;
-        float y = 0;
+        rigidBody.AddForce(direction, ForceMode2D.Impulse);
 
-        if(direction == Direction.Up)
-            y = upImpulse;
-        else if(direction == Direction.Down)
-            y = -downImpulse;
-        else if(direction == Direction.Left)
-            x = -sideImpulse;
-        else
-            x = sideImpulse;
+        if(OnDashed != null)
+            OnDashed();
+    }
 
-        rigidBody.AddForce(new Vector2(x, y), ForceMode2D.Impulse);
-
-        if(OnMoved != null)
-            OnMoved();
+    public void Move(Vector2 direction)
+    {
+        rigidBody.AddForce(direction);
     }
 }
