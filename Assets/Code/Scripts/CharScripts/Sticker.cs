@@ -22,7 +22,7 @@ public class Sticker : MonoBehaviour
         {
             if(value)
             {
-                DoOnCoollisionEnter = InitialStick;
+                DoOnCoollisionEnter = InitialStickToTheSurface;
                 DoOnCollision = StickToTheSurface;
             }
             else
@@ -38,7 +38,7 @@ public class Sticker : MonoBehaviour
     {
         collider = GetComponent<Collider2D>();
 
-        IsSticky = false;
+        IsSticky = true;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -51,12 +51,6 @@ public class Sticker : MonoBehaviour
         DoOnCollision(collision);
     }
 
-    private void Update() //====================== TEST ONLY !!!!!
-    {
-        if(Input.GetKeyDown(KeyCode.Space))
-            IsSticky = !IsSticky;
-    }
-
     //==================================================================================================================================================================
     void StickToTheSurface(Collision2D collision)
     {
@@ -65,7 +59,7 @@ public class Sticker : MonoBehaviour
         collider.attachedRigidbody.AddForce(force);
     }
 
-    void InitialStick(Collision2D collision)
+    void InitialStickToTheSurface(Collision2D collision)
     {
         Vector2 force = (collision.contacts[0].point - (Vector2)transform.position).normalized * initialStickingForce;
 

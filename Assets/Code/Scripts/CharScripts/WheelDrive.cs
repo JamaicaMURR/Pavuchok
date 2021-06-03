@@ -15,10 +15,10 @@ public class WheelDrive : MonoBehaviour
     private void Update()  //========================   TEST ONLY!!!!
     {
         if(Input.GetKeyDown(KeyCode.RightArrow))
-            BeginRotate(250, 10000);
+            BeginRotate(350, 500);
 
         if(Input.GetKeyDown(KeyCode.LeftArrow))
-            BeginRotate(-250, 10000);
+            BeginRotate(-350, 500);
 
         if(Input.GetKeyUp(KeyCode.RightArrow) || Input.GetKeyUp(KeyCode.LeftArrow))
             SetNeutral();
