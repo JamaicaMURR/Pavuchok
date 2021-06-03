@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class ForceDrive : MonoBehaviour
 {
-    Rigidbody2D rigidBody;
+    new Rigidbody2D rigidbody;
 
     //==================================================================================================================================================================
     public event Action OnDashed;
@@ -13,7 +13,7 @@ public class ForceDrive : MonoBehaviour
     //==================================================================================================================================================================
     private void Awake()
     {
-        rigidBody = GetComponent<Rigidbody2D>();
+        rigidbody = GetComponent<Rigidbody2D>();
     }
 
     private void Update()  //========================   TEST ONLY!!!!
@@ -31,19 +31,10 @@ public class ForceDrive : MonoBehaviour
             Dash(Vector2.down);
     }
 
-    private void FixedUpdate()  //========================   TEST ONLY!!!!
-    {
-        if(Input.GetKey(KeyCode.LeftArrow))
-            Move(Vector2.left);
-
-        if(Input.GetKey(KeyCode.RightArrow))
-            Move(Vector2.right);
-    }
-
     //==================================================================================================================================================================
     public void Dash(Vector2 direction)
     {
-        rigidBody.AddForce(direction, ForceMode2D.Impulse);
+        rigidbody.AddForce(direction, ForceMode2D.Impulse);
 
         if(OnDashed != null)
             OnDashed();
@@ -51,6 +42,6 @@ public class ForceDrive : MonoBehaviour
 
     public void Move(Vector2 direction)
     {
-        rigidBody.AddForce(direction);
+        rigidbody.AddForce(direction);
     }
 }
