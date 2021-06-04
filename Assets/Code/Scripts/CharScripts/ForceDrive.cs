@@ -19,10 +19,10 @@ public class ForceDrive : MonoBehaviour
     private void Update()  //========================   TEST ONLY!!!!
     {
         if(Input.GetKeyDown(KeyCode.D))
-            Dash(Vector2.right);
+            Dash(Vector2.right*7);
 
         if(Input.GetKeyDown(KeyCode.A))
-            Dash(Vector2.left);
+            Dash(Vector2.left*7);
 
         if(Input.GetKeyDown(KeyCode.W))
             Dash(Vector2.up * 10);
