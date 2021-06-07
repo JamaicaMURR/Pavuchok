@@ -62,8 +62,6 @@ public class WebProducer : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.S))
             Release();
-
-        Debug.Log(knotsCount);
     }
 
     private void OnDrawGizmos()
@@ -105,7 +103,7 @@ public class WebProducer : MonoBehaviour
                 knotComponentOfNewbie.OnSelfDestroy += delegate () { knotsCount--; };
             }
 
-            spawnedKnot.BecomeAnchor();
+            spawnedKnot.BecomeAnchor(rayHit.collider);
 
             rootLink.enabled = true;
             rootLink.connectedBody = root.GetComponent<Rigidbody2D>();

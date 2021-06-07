@@ -10,6 +10,7 @@ public class CharController : MonoBehaviour
     //==================================================================================================================================================================
     public float rotationSpeed = 350;
     public float rotationTorque = 1000;
+    public float brakesTorque = 5;
 
     public float jumpForce = 10;
     public float jumpTimeWindow = 0.1f;
@@ -45,6 +46,6 @@ public class CharController : MonoBehaviour
 
     public void StopRun()
     {
-        wheelDrive.SetNeutral();
+        wheelDrive.BeginRotate(0, brakesTorque);
     }
 }

@@ -15,16 +15,13 @@ public class WheelDrive : MonoBehaviour
     private void Update()  //========================   TEST ONLY!!!!
     {
         if(Input.GetKeyDown(KeyCode.D))
-            BeginRotate(350, 500);
+            BeginRotate(350, 1000);
 
         if(Input.GetKeyDown(KeyCode.A))
-            BeginRotate(-350, 500);
+            BeginRotate(-350, 1000);
 
         if(Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.D))
-            SetNeutral();
-
-        if(Input.GetKeyDown(KeyCode.DownArrow))
-            BrakesOn();
+            BeginRotate(0, 5);
     }
 
     //==================================================================================================================================================================
@@ -32,18 +29,5 @@ public class WheelDrive : MonoBehaviour
     {
         hingeJoint.motor = new JointMotor2D() { motorSpeed = speed, maxMotorTorque = torque };
     }
-
-    public void SetNeutral()
-    {
-        BeginRotate(0, 0);
-    }
-
-    public void BrakesOn(float force = float.MaxValue)
-    {
-        BeginRotate(0, force);
-    }
-
-    //==================================================================================================================================================================
-
 }
 

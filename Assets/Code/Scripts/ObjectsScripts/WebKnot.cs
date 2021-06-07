@@ -25,7 +25,7 @@ public class WebKnot : MonoBehaviour
     //==================================================================================================================================================================
     private void OnCollisionEnter2D(Collision2D collision) //Problem with web in webproducer!!!!!!!
     {
-        BecomeAnchor();
+        BecomeAnchor(collision.collider);
 
         if(NextKnot != null)
             NextKnot.ChainDestroy();
@@ -51,9 +51,18 @@ public class WebKnot : MonoBehaviour
         DestroySelf();
     }
 
-    public void BecomeAnchor()
+    public void BecomeAnchor(Collider2D collider)
     {
-        GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
+        if(collider.attachedRigidbody == null)
+            GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
+        else
+        {
+            DistanceJoint2D joint = GetComponent<DistanceJoint2D>();
+
+            joint.autoConfigureConnectedAnchor = true;
+            joint.distance = 0;
+            joint.connectedBody = collider.attachedRigidbody;
+        }
     }
 
     public void Pull() // NextKnot must not be null
