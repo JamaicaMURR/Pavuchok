@@ -18,17 +18,17 @@ public class ForceDrive : MonoBehaviour
 
     private void Update()  //========================   TEST ONLY!!!!
     {
-        if(Input.GetKeyDown(KeyCode.D))
+        if(Input.GetKeyDown(KeyCode.RightArrow))
             Dash(Vector2.right*7);
 
-        if(Input.GetKeyDown(KeyCode.A))
+        if(Input.GetKeyDown(KeyCode.LeftArrow))
             Dash(Vector2.left*7);
 
-        if(Input.GetKeyDown(KeyCode.W))
-            Dash(Vector2.up * 10);
+        //if(Input.GetKeyDown(KeyCode.W))
+        //    Dash(Vector2.up * 10);
 
-        if(Input.GetKeyDown(KeyCode.S))
-            Dash(Vector2.down);
+        //if(Input.GetKeyDown(KeyCode.S))
+        //    Dash(Vector2.down);
     }
 
     //==================================================================================================================================================================

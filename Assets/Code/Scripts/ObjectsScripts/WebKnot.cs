@@ -5,13 +5,11 @@ using UnityEngine;
 
 public class WebKnot : MonoBehaviour
 {
-    new Rigidbody2D rigidbody;
-    new CircleCollider2D collider;
-
-    DistanceJoint2D joint;
-
     WebKnot _nextKnot;
     //==================================================================================================================================================================
+
+    public Action OnSelfDestroy;
+
     public WebKnot NextKnot
     {
         get { return _nextKnot; }
@@ -24,38 +22,10 @@ public class WebKnot : MonoBehaviour
         }
     }
 
-    // TEST ONLY!!!!<><><><><><><><><><><><><><><><><><><
-    public GameObject knotPrefab;
-    public bool isControlable;
-
-    public WebKnot next;
-
-    private void Awake()
-    {
-
-
-        joint = GetComponent<DistanceJoint2D>();
-
-
-        NextKnot = next;
-    }
-
-    private void Update()
-    {
-        if(isControlable)
-        {
-            if(Input.GetKeyDown(KeyCode.T))
-                Pull();
-
-            if(Input.GetKeyDown(KeyCode.Y))
-                Release(Instantiate(knotPrefab));
-        }
-    }
-
     //==================================================================================================================================================================
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnCollisionEnter2D(Collision2D collision) //Problem with web in webproducer!!!!!!!
     {
-        GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
+        BecomeAnchor();
 
         if(NextKnot != null)
             NextKnot.ChainDestroy();
@@ -64,6 +34,9 @@ public class WebKnot : MonoBehaviour
     //==================================================================================================================================================================
     public void DestroySelf()
     {
+        if(OnSelfDestroy != null)
+            OnSelfDestroy();
+
         Destroy(gameObject);
     }
 
@@ -75,15 +48,17 @@ public class WebKnot : MonoBehaviour
         DestroySelf();
     }
 
-    public void Pull()
+    public void BecomeAnchor()
     {
-        if(NextKnot != null)
-        {
-            WebKnot last = NextKnot;
-            NextKnot = NextKnot.NextKnot;
+        GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
+    }
 
-            last.DestroySelf();
-        }
+    public void Pull() // NextKnot must not be null
+    {
+        WebKnot last = NextKnot;
+        NextKnot = NextKnot.NextKnot;
+
+        last.DestroySelf();
     }
 
     public void Release(GameObject obj)
