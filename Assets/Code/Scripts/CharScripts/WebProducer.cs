@@ -17,12 +17,15 @@ public class WebProducer : MonoBehaviour
 
     Action DoOnPull;
     Action DoOnRelease;
+    Action DoOnCut;
 
     //==================================================================================================================================================================
     public GameObject webKnotPrefab;
 
     public int maximumKnots = 20;
 
+    public Action OnWebDone;
+    public Action OnWebCut;
     //==================================================================================================================================================================
     private void Awake()
     {
@@ -34,39 +37,7 @@ public class WebProducer : MonoBehaviour
 
         DoOnPull = delegate () { };
         DoOnRelease = delegate () { };
-    }
-
-    //<><><><><> TEST!!!
-    public Camera cam;
-
-    private void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.Mouse0))
-        {
-            if(root != null)
-                CutWeb();
-
-            Vector2 curpos = cam.ScreenToWorldPoint(Input.mousePosition);
-
-            ProduceWeb(curpos);
-        }
-
-        if(Input.GetKeyDown(KeyCode.Mouse1))
-        {
-            if(root != null)
-                CutWeb();
-        }
-
-        if(Input.GetKeyDown(KeyCode.W))
-            Pull();
-
-        if(Input.GetKeyDown(KeyCode.S))
-            Release();
-    }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.DrawLine(transform.position, cam.ScreenToWorldPoint(Input.mousePosition));
+        DoOnCut = delegate () { };
     }
 
     //==================================================================================================================================================================
@@ -110,6 +81,10 @@ public class WebProducer : MonoBehaviour
 
             DoOnPull = ActualPull;
             DoOnRelease = ActualRelease;
+            DoOnCut = ActualCut;
+
+            if(OnWebDone != null)
+                OnWebDone();
         }
     }
 
@@ -125,12 +100,7 @@ public class WebProducer : MonoBehaviour
 
     public void CutWeb()
     {
-        rootLink.enabled = false;
-
-        root.ChainDestroy();
-
-        DoOnPull = delegate () { };
-        DoOnRelease = delegate () { };
+        DoOnCut();
     }
 
     //==================================================================================================================================================================
@@ -154,5 +124,19 @@ public class WebProducer : MonoBehaviour
             knotsCount++;
             newKnot.GetComponent<WebKnot>().OnSelfDestroy += delegate () { knotsCount--; };
         }
+    }
+
+    void ActualCut()
+    {
+        rootLink.enabled = false;
+
+        root.ChainDestroy();
+
+        DoOnPull = delegate () { };
+        DoOnRelease = delegate () { };
+        DoOnCut = delegate () { };
+
+        if(OnWebCut != null)
+            OnWebCut();
     }
 }

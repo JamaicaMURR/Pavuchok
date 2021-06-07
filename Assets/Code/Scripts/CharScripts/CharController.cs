@@ -1,51 +1,302 @@
 using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class CharController : MonoBehaviour
 {
+    Collider2D collider;
+
+    Sticker sticker;
     RelativeJumper jumper;
     WheelDrive wheelDrive;
+    WebProducer webProducer;
+
+    float startRollingSpeed;
+    float targetRollingSpeed;
+
+    Action DoOnLeftRoll;
+    Action DoOnRightRoll;
+    Action DoOnStop;
+
+    Coroutine roll;
+
+    Action DoOnPull;
+    Action DoOnRelease;
+    Action DoOnStopWeb;
+
+    bool pull;
+    bool release;
 
     //==================================================================================================================================================================
-    public float rotationSpeed = 350;
-    public float rotationTorque = 1000;
-    public float brakesTorque = 5;
+    public float initialStickingForce = 100;
+    public float usualStickForce = 17.5f;
+    public float unstickableDelay = 0.05f;
 
     public float jumpForce = 10;
     public float jumpTimeWindow = 0.1f;
 
+    public float initialRollingSpeed = 50;
+    public float maximalRollingSpeed = 350;
+    public float accelerationTime = 1;
+    public float rotationTorque = 1000;
+    public float brakesTorque = 5;
+
+    public int maximumKnots = 40;
+    public float webPullSpeed = 1;
+    public float webReleaseSpeed = 1;
+
+    public RollingState rollingState;
+
     //==================================================================================================================================================================
     private void Awake()
     {
+        collider = GetComponent<CircleCollider2D>();
+
+        sticker = GetComponent<Sticker>();
         jumper = GetComponent<RelativeJumper>();
         wheelDrive = GetComponent<WheelDrive>();
+        webProducer = GetComponent<WebProducer>();
+
+        DoOnLeftRoll = ActualLeftRoll;
+        DoOnRightRoll = ActualRightRoll;
+        DoOnStop = delegate () { };
+
+        DoOnPull = delegate () { };
+        DoOnRelease = delegate () { };
+        DoOnStopWeb = delegate () { };
+
+        webProducer.OnWebDone += delegate ()
+        {
+            DoOnPull = ActualPull;
+            DoOnRelease = ActualRelease;
+            DoOnStopWeb = ActualStopWeb;
+        };
+
+        webProducer.OnWebCut += delegate ()
+        {
+            DoOnPull = delegate () { };
+            DoOnRelease = delegate () { };
+            DoOnStopWeb = delegate () { };
+        };
     }
 
     private void Start()
     {
+        sticker.initialStickingForce = initialStickingForce;
+        sticker.stickingForce = usualStickForce;
+
         jumper.jumpForce = jumpForce;
         jumper.jumpTimeWindow = jumpTimeWindow;
+
+        webProducer.maximumKnots = maximumKnots;
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        CutWeb();
+    }
+
+    //<><><><><><> TO THE INPUT HANDLER!!!!<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+    public Camera cam;
+
+    private void Update()
+    {
+        if(Input.GetButtonDown("Jump"))
+        {
+            CutWeb();
+            Jump();
+        }
+
+        float horizontal = Input.GetAxis("Horizontal");
+
+        if(horizontal < 0)
+            RunLeft();
+        else if(horizontal > 0)
+            RunRight();
+        else
+            StopRun();
+
+        if(Input.GetButtonDown("Fire1"))
+        {
+            CutWeb();
+
+            if(!collider.IsTouching(new ContactFilter2D() { layerMask = LayerMask.GetMask("Default") })) //Collider must not touch any surface from map
+                ProduceWeb(cam.ScreenToWorldPoint(Input.mousePosition));
+        }
+
+        float vertical = Input.GetAxis("Vertical");
+
+        if(vertical > 0)
+            PullWeb();
+        else if(vertical < 0)
+            ReleaseWeb();
+        else
+            StopWeb();
     }
 
     //==================================================================================================================================================================
     public void Jump()
     {
+        StartCoroutine(WaitUnstickableDelay());
         jumper.Jump();
     }
 
     public void RunLeft()
     {
-        wheelDrive.BeginRotate(-rotationSpeed, rotationTorque);
+        DoOnLeftRoll();
     }
 
     public void RunRight()
     {
-        wheelDrive.BeginRotate(rotationSpeed, rotationTorque);
+        DoOnRightRoll();
     }
 
     public void StopRun()
     {
+        DoOnStop();
+    }
+
+    public void ProduceWeb(Vector2 targetPoint)
+    {
+        webProducer.ProduceWeb(targetPoint);
+    }
+
+    public void PullWeb()
+    {
+        DoOnPull();
+    }
+
+    public void ReleaseWeb()
+    {
+        DoOnRelease();
+    }
+
+    public void StopWeb()
+    {
+        DoOnStopWeb();
+    }
+
+    public void CutWeb()
+    {
+        webProducer.CutWeb();
+    }
+
+    //Actuals===========================================================================================================================================================
+    void ActualLeftRoll()
+    {
+        startRollingSpeed = -initialRollingSpeed;
+        targetRollingSpeed = -maximalRollingSpeed;
+
+        rollingState = RollingState.Left;
+
+        roll = StartCoroutine(Roll());
+
+        DoOnLeftRoll = delegate () { };
+        DoOnRightRoll = delegate () { };
+        DoOnStop = ActualStopRoll;
+    }
+
+    void ActualRightRoll()
+    {
+        startRollingSpeed = initialRollingSpeed;
+        targetRollingSpeed = maximalRollingSpeed;
+
+        rollingState = RollingState.Right;
+
+        roll = StartCoroutine(Roll());
+
+        DoOnLeftRoll = delegate () { };
+        DoOnRightRoll = delegate () { };
+        DoOnStop = ActualStopRoll;
+    }
+
+    void ActualStopRoll()
+    {
+        StopCoroutine(roll);
+
         wheelDrive.BeginRotate(0, brakesTorque);
+
+        rollingState = RollingState.Stop;
+
+        DoOnLeftRoll = ActualLeftRoll;
+        DoOnRightRoll = ActualRightRoll;
+    }
+
+    void ActualPull()
+    {
+        StartCoroutine(Pull());
+        DoOnPull = delegate () { };
+    }
+
+    void ActualRelease()
+    {
+        StartCoroutine(Release());
+        DoOnRelease = delegate () { };
+    }
+
+    void ActualStopWeb()
+    {
+        pull = false;
+        release = false; //Stopping coroutines via their cycles exit
+
+        DoOnPull = ActualPull;
+        DoOnRelease = ActualRelease;
+    }
+
+    //Coroutines========================================================================================================================================================
+    IEnumerator WaitUnstickableDelay()
+    {
+        sticker.IsSticky = false;
+        yield return new WaitForSeconds(unstickableDelay);
+        sticker.IsSticky = true;
+    }
+
+    IEnumerator Roll()
+    {
+        yield return new WaitForFixedUpdate();
+
+        float speed = startRollingSpeed;
+        float neededDelta = targetRollingSpeed - startRollingSpeed;
+        float deltaPerFixedUpdate = neededDelta / accelerationTime * Time.fixedDeltaTime;
+
+        float timeSpended = 0;
+
+        while(timeSpended < accelerationTime)
+        {
+            wheelDrive.BeginRotate(speed, rotationTorque);
+            speed += deltaPerFixedUpdate;
+            timeSpended += Time.fixedDeltaTime;
+
+            yield return new WaitForFixedUpdate();
+        }
+
+        wheelDrive.BeginRotate(targetRollingSpeed, rotationTorque);
+    }
+
+    IEnumerator Pull()
+    {
+        pull = true;
+
+        float pullDelay = 1 / webPullSpeed;
+
+        while(pull) //Exit from cycle when for "pull" will be setted "false" on StopWeb method
+        {
+            webProducer.Pull();
+            yield return new WaitForSeconds(pullDelay);
+        }
+    }
+
+    IEnumerator Release()
+    {
+        release = true;
+
+        float releaseDelay = 1 / webReleaseSpeed;
+
+        while(release)//Exit from cycle when for "release" will be setted "false" on StopWeb method
+        {
+            webProducer.Release();
+            yield return new WaitForSeconds(releaseDelay);
+        }
     }
 }

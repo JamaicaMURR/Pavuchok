@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class WheelDrive : MonoBehaviour
@@ -10,18 +8,6 @@ public class WheelDrive : MonoBehaviour
     private void Awake()
     {
         hingeJoint = GetComponent<HingeJoint2D>();
-    }
-
-    private void Update()  //========================   TEST ONLY!!!!
-    {
-        if(Input.GetKeyDown(KeyCode.D))
-            BeginRotate(350, 1000);
-
-        if(Input.GetKeyDown(KeyCode.A))
-            BeginRotate(-350, 1000);
-
-        if(Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.D))
-            BeginRotate(0, 5);
     }
 
     //==================================================================================================================================================================

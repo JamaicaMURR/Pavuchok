@@ -34,12 +34,6 @@ public class RelativeJumper : MonoBehaviour
         _jumpAwaits = false;
     }
 
-    private void Update()  //========================   TEST ONLY!!!!
-    {
-        if(Input.GetKeyDown(KeyCode.Space))
-            Jump();
-    }
-
     //==================================================================================================================================================================
     public void Jump()
     {
