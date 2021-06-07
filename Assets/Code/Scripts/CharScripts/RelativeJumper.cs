@@ -26,6 +26,9 @@ public class RelativeJumper : MonoBehaviour
             Vector2 force = -(collision.contacts[0].point - (Vector2)transform.position).normalized * jumpForce;
 
             collider.attachedRigidbody.AddForce(force, ForceMode2D.Impulse);
+
+            if(collision.collider.attachedRigidbody != null)
+                collision.collider.attachedRigidbody.AddForce(-force, ForceMode2D.Impulse); // second Newton's law
         }
 
         _jumpAwaits = false;

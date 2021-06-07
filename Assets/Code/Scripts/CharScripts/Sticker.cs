@@ -57,6 +57,9 @@ public class Sticker : MonoBehaviour
         Vector2 force = (collision.contacts[0].point - (Vector2)transform.position).normalized * stickingForce;
 
         collider.attachedRigidbody.AddForce(force);
+
+        if(collision.collider.attachedRigidbody != null)
+            collision.collider.attachedRigidbody.AddForce(-force); // second Newton's law
     }
 
     void InitialStickToTheSurface(Collision2D collision)
@@ -64,5 +67,8 @@ public class Sticker : MonoBehaviour
         Vector2 force = (collision.contacts[0].point - (Vector2)transform.position).normalized * initialStickingForce;
 
         collider.attachedRigidbody.AddForce(force);
+
+        if(collision.collider.attachedRigidbody != null)
+            collision.collider.attachedRigidbody.AddForce(-force); // second Newton's law
     }
 }
