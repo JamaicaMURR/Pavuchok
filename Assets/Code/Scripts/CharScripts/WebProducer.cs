@@ -31,6 +31,9 @@ public class WebProducer : MonoBehaviour
 
         maximalLength = maximumKnots * knotDistance;
         minimalLength = knotDistance;
+
+        DoOnPull = delegate () { };
+        DoOnRelease = delegate () { };
     }
 
     //<><><><><> TEST!!!
@@ -59,12 +62,15 @@ public class WebProducer : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.S))
             Release();
+
+        Debug.Log(knotsCount);
     }
 
     private void OnDrawGizmos()
     {
         Gizmos.DrawLine(transform.position, cam.ScreenToWorldPoint(Input.mousePosition));
     }
+
     //==================================================================================================================================================================
     public void ProduceWeb(Vector2 targetPoint)
     {
@@ -107,9 +113,6 @@ public class WebProducer : MonoBehaviour
             DoOnPull = ActualPull;
             DoOnRelease = ActualRelease;
         }
-
-        //FIXME
-
     }
 
     public void Pull()
@@ -130,18 +133,13 @@ public class WebProducer : MonoBehaviour
 
         DoOnPull = delegate () { };
         DoOnRelease = delegate () { };
-
-        knotsCount = 0;
     }
 
     //==================================================================================================================================================================
     void ActualPull()
     {
         if(root.NextKnot != null)
-        {
             root.Pull();
-            DoOnRelease = ActualRelease;
-        }
 
         if(knotsCount == 0)
             CutWeb();
