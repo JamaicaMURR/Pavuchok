@@ -70,7 +70,7 @@ public class WebKnot : MonoBehaviour
         }
     }
 
-    public void StartChute(GameObject obj)
+    public void ReleaseChute(GameObject obj)
     {
         Release(obj);
         NextKnot.TransformAtChute(transform);

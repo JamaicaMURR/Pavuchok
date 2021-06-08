@@ -74,7 +74,14 @@ public class WebProducer : MonoBehaviour
             Vector2 chutePoint = direction.normalized * distance + (Vector2)transform.position;
 
             lastKnot = MakeWeb(chutePoint);
-            lastKnot.StartChute(Instantiate(webKnotPrefab));
+
+            GameObject chute = Instantiate(webKnotPrefab);
+
+            lastKnot.ReleaseChute(chute);
+
+            knotsCount++;
+            chute.GetComponent<WebKnot>().OnCollapse += delegate () { knotsCount--; };
+
             lastKnot = lastKnot.NextKnot;
         }
 
