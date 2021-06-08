@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class CharController : MonoBehaviour
 {
-    Collider2D collider;
+    new Collider2D collider;
 
     Sticker sticker;
     RelativeJumper jumper;
@@ -19,13 +19,15 @@ public class CharController : MonoBehaviour
     Action DoOnRightRoll;
     Action DoOnStop;
 
-    Coroutine roll;
+    Coroutine rollCoroutine;
 
     Action DoOnPull;
     Action DoOnRelease;
     Action DoOnStopWeb;
 
-    bool pull;
+    Coroutine pullCoroutine;
+    Coroutine releaseCoroutine;
+
     bool release;
 
     //==================================================================================================================================================================
@@ -70,7 +72,7 @@ public class CharController : MonoBehaviour
         {
             DoOnPull = ActualPull;
             DoOnRelease = ActualRelease;
-            DoOnStopWeb = ActualStopWeb;
+            DoOnStopWeb = delegate () { };
         };
 
         webProducer.OnWebCut += delegate ()
@@ -85,6 +87,8 @@ public class CharController : MonoBehaviour
     {
         sticker.initialStickingForce = initialStickingForce;
         sticker.stickingForce = usualStickForce;
+
+        wheelDrive.BeginRotate(0, brakesTorque);
 
         jumper.jumpForce = jumpForce;
         jumper.jumpTimeWindow = jumpTimeWindow;
@@ -123,6 +127,12 @@ public class CharController : MonoBehaviour
 
             if(!collider.IsTouching(new ContactFilter2D() { layerMask = LayerMask.GetMask("Default") })) //Collider must not touch any surface from map
                 ProduceWeb(cam.ScreenToWorldPoint(Input.mousePosition));
+        }
+
+        if(Input.GetButtonDown("Fire2"))
+        {
+            CutWeb();
+            StartCoroutine(WaitUnstickableDelay());
         }
 
         float vertical = Input.GetAxis("Vertical");
@@ -179,6 +189,7 @@ public class CharController : MonoBehaviour
 
     public void CutWeb()
     {
+        StopWeb();
         webProducer.CutWeb();
     }
 
@@ -190,7 +201,7 @@ public class CharController : MonoBehaviour
 
         rollingState = RollingState.Left;
 
-        roll = StartCoroutine(Roll());
+        rollCoroutine = StartCoroutine(Roll());
 
         DoOnLeftRoll = delegate () { };
         DoOnRightRoll = delegate () { };
@@ -204,7 +215,7 @@ public class CharController : MonoBehaviour
 
         rollingState = RollingState.Right;
 
-        roll = StartCoroutine(Roll());
+        rollCoroutine = StartCoroutine(Roll());
 
         DoOnLeftRoll = delegate () { };
         DoOnRightRoll = delegate () { };
@@ -213,7 +224,7 @@ public class CharController : MonoBehaviour
 
     void ActualStopRoll()
     {
-        StopCoroutine(roll);
+        StopCoroutine(rollCoroutine);
 
         wheelDrive.BeginRotate(0, brakesTorque);
 
@@ -225,23 +236,36 @@ public class CharController : MonoBehaviour
 
     void ActualPull()
     {
-        StartCoroutine(Pull());
+        pullCoroutine = StartCoroutine(Pull());
         DoOnPull = delegate () { };
+        DoOnRelease = delegate () { };
+        DoOnStopWeb = PullWebStop;
     }
 
     void ActualRelease()
     {
-        StartCoroutine(Release());
+        releaseCoroutine = StartCoroutine(Release());
+        DoOnPull = delegate () { };
         DoOnRelease = delegate () { };
+        DoOnStopWeb = ReleaseWebStop;
     }
 
-    void ActualStopWeb()
+    void PullWebStop()
     {
-        pull = false;
-        release = false; //Stopping coroutines via their cycles exit
+        StopCoroutine(pullCoroutine);
 
         DoOnPull = ActualPull;
         DoOnRelease = ActualRelease;
+        DoOnStopWeb = delegate () { };
+    }
+
+    void ReleaseWebStop()
+    {
+        StopCoroutine(releaseCoroutine);
+
+        DoOnPull = ActualPull;
+        DoOnRelease = ActualRelease;
+        DoOnStopWeb = delegate () { };
     }
 
     //Coroutines========================================================================================================================================================
@@ -276,11 +300,9 @@ public class CharController : MonoBehaviour
 
     IEnumerator Pull()
     {
-        pull = true;
-
         float pullDelay = 1 / webPullSpeed;
 
-        while(pull) //Exit from cycle when for "pull" will be setted "false" on StopWeb method
+        while(true)
         {
             webProducer.Pull();
             yield return new WaitForSeconds(pullDelay);
@@ -289,11 +311,9 @@ public class CharController : MonoBehaviour
 
     IEnumerator Release()
     {
-        release = true;
-
         float releaseDelay = 1 / webReleaseSpeed;
 
-        while(release)//Exit from cycle when for "release" will be setted "false" on StopWeb method
+        while(true)
         {
             webProducer.Release();
             yield return new WaitForSeconds(releaseDelay);
