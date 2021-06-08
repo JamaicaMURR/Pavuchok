@@ -70,16 +70,16 @@ public class WebKnot : MonoBehaviour
         }
     }
 
-    public void BecomeChute()
+    public void StartChute(GameObject obj)
     {
-        //fixme
+        Release(obj);
+        NextKnot.TransformAtChute(transform);
+    }
 
-        //TEST!!!
+    public void TransformAtChute(Transform t)
+    {
         GetComponent<DistanceJoint2D>().enabled = false;
-        GetComponent<SpriteRenderer>().color = Color.red;
-        GetComponent<Rigidbody2D>().drag = 10;
-        //
-
+        GetComponent<Chute>().StartDeploy(t);
         DoOnCollision = Collapse;
     }
 

@@ -50,7 +50,7 @@ public class WebProducer : MonoBehaviour
     }
 
     //==================================================================================================================================================================
-    public void ProduceWeb(Vector2 targetPoint)
+    public WebKnot ProduceWeb(Vector2 targetPoint)
     {
         Vector2 direction = targetPoint - (Vector2)transform.position;
         float distance = Vector2.Distance(transform.position, targetPoint);
@@ -62,22 +62,23 @@ public class WebProducer : MonoBehaviour
 
         RaycastHit2D rayHit = Physics2D.Raycast(transform.position, direction, distance, layerMask: LayerMask.GetMask("Default"));
 
+        WebKnot lastKnot;
+
         if(rayHit.transform != null)
         {
-            if(rayHit.distance > minimalLength)
-            {
-                WebKnot lastKnot = MakeWeb(rayHit.point);
-                lastKnot.BecomeAnchor(rayHit.collider);
-            }
+            lastKnot = MakeWeb(rayHit.point);
+            lastKnot.BecomeAnchor(rayHit.collider);
         }
         else
         {
             Vector2 chutePoint = direction.normalized * distance + (Vector2)transform.position;
 
-            WebKnot lastKnot = MakeWeb(chutePoint);
-            lastKnot.BecomeChute();
-            lastKnot.OnCollapse += delegate () { CutWeb(); };
+            lastKnot = MakeWeb(chutePoint);
+            lastKnot.StartChute(Instantiate(webKnotPrefab));
+            lastKnot = lastKnot.NextKnot;
         }
+
+        return lastKnot;
     }
 
     public void Pull()

@@ -126,7 +126,10 @@ public class CharController : MonoBehaviour
             CutWeb();
 
             if(!collider.IsTouching(new ContactFilter2D() { layerMask = LayerMask.GetMask("Default") })) //Collider must not touch any surface from map
-                ProduceWeb(cam.ScreenToWorldPoint(Input.mousePosition));
+            {
+                WebKnot lastKnot = ProduceWeb(cam.ScreenToWorldPoint(Input.mousePosition));
+                lastKnot.OnCollapse += CutWeb;
+            }
         }
 
         if(Input.GetButtonDown("Fire2"))
@@ -167,9 +170,9 @@ public class CharController : MonoBehaviour
         DoOnStop();
     }
 
-    public void ProduceWeb(Vector2 targetPoint)
+    public WebKnot ProduceWeb(Vector2 targetPoint)
     {
-        webProducer.ProduceWeb(targetPoint);
+        return webProducer.ProduceWeb(targetPoint);
     }
 
     public void PullWeb()
