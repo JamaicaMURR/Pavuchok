@@ -47,6 +47,7 @@ public class CharController : MonoBehaviour
     public int maximumKnots = 40;
     public float webPullSpeed = 1;
     public float webReleaseSpeed = 1;
+    public float webProducingDelay = 0.5f;
 
     public RollingState rollingState;
 
@@ -124,12 +125,7 @@ public class CharController : MonoBehaviour
         if(Input.GetButtonDown("Fire1"))
         {
             CutWeb();
-
-            if(!collider.IsTouching(new ContactFilter2D() { layerMask = LayerMask.GetMask("Default") })) //Collider must not touch any surface from map
-            {
-                WebKnot lastKnot = ProduceWeb(cam.ScreenToWorldPoint(Input.mousePosition));
-                lastKnot.OnCollapse += CutWeb;
-            }
+            ProduceWeb(cam.ScreenToWorldPoint(Input.mousePosition));
         }
 
         if(Input.GetButtonDown("Fire2"))
@@ -170,9 +166,16 @@ public class CharController : MonoBehaviour
         DoOnStop();
     }
 
-    public WebKnot ProduceWeb(Vector2 targetPoint)
+    public void ProduceWeb(Vector2 targetPoint)
     {
-        return webProducer.ProduceWeb(targetPoint);
+        CutWeb();
+
+        if(!collider.IsTouching(new ContactFilter2D() { layerMask = LayerMask.GetMask("Default") })) //Collider must not touch any surface from map
+        {
+            WebKnot lastKnot = webProducer.ProduceWeb(targetPoint);
+            lastKnot.OnCollapse += CutWeb;
+        }
+
     }
 
     public void PullWeb()
