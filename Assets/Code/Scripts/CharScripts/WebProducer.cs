@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class WebProducer : MonoBehaviour
 {
+    int _knotsLimit;
+
     float maximalLength;
     float minimalLength;
     float knotDistance;
@@ -22,18 +24,25 @@ public class WebProducer : MonoBehaviour
     //==================================================================================================================================================================
     public GameObject webKnotPrefab;
 
-    public int maximumKnots = 20;
-
     public Action OnWebDone;
     public Action OnWebCut;
+
+    public int KnotsLimit
+    {
+        get { return _knotsLimit; }
+        set
+        {
+            _knotsLimit = value;
+            maximalLength = _knotsLimit * knotDistance;
+        }
+    }
     //==================================================================================================================================================================
     private void Awake()
     {
         rootLink = GetComponent<DistanceJoint2D>();
         knotDistance = webKnotPrefab.GetComponent<DistanceJoint2D>().distance;
 
-        maximalLength = maximumKnots * knotDistance;
-        minimalLength = knotDistance;
+        minimalLength = GetComponent<CircleCollider2D>().radius;
 
         DoOnPull = delegate () { };
         DoOnRelease = delegate () { };
@@ -44,47 +53,30 @@ public class WebProducer : MonoBehaviour
     public void ProduceWeb(Vector2 targetPoint)
     {
         Vector2 direction = targetPoint - (Vector2)transform.position;
+        float distance = Vector2.Distance(transform.position, targetPoint);
 
-        RaycastHit2D rayHit = Physics2D.Raycast(transform.position, direction, maximalLength, layerMask: LayerMask.GetMask("Default"));
+        if(distance > maximalLength)
+            distance = maximalLength;
+        else if(distance < minimalLength)
+            distance = minimalLength;
+
+        RaycastHit2D rayHit = Physics2D.Raycast(transform.position, direction, distance, layerMask: LayerMask.GetMask("Default"));
 
         if(rayHit.transform != null)
         {
-            int knotsToSpawn = (int)(rayHit.distance / knotDistance);
-            float step = rayHit.distance / knotsToSpawn / rayHit.distance;
-
-            GameObject rootKnot = Instantiate(webKnotPrefab);
-
-            rootKnot.transform.position = transform.position;
-            root = rootKnot.GetComponent<WebKnot>();
-
-            WebKnot spawnedKnot = root;
-
-            for(int i = 0; i < knotsToSpawn; i++)
+            if(rayHit.distance > minimalLength)
             {
-                GameObject newbie = Instantiate(webKnotPrefab);
-
-                newbie.transform.position = Vector2.Lerp(transform.position, rayHit.point, step * (i + 1));
-
-                WebKnot knotComponentOfNewbie = newbie.GetComponent<WebKnot>();
-
-                spawnedKnot.NextKnot = knotComponentOfNewbie;
-                spawnedKnot = knotComponentOfNewbie;
-
-                knotsCount++;
-                knotComponentOfNewbie.OnSelfDestroy += delegate () { knotsCount--; };
+                WebKnot lastKnot = MakeWeb(rayHit.point);
+                lastKnot.BecomeAnchor(rayHit.collider);
             }
+        }
+        else
+        {
+            Vector2 chutePoint = direction.normalized * distance + (Vector2)transform.position;
 
-            spawnedKnot.BecomeAnchor(rayHit.collider);
-
-            rootLink.enabled = true;
-            rootLink.connectedBody = root.GetComponent<Rigidbody2D>();
-
-            DoOnPull = ActualPull;
-            DoOnRelease = ActualRelease;
-            DoOnCut = ActualCut;
-
-            if(OnWebDone != null)
-                OnWebDone();
+            WebKnot lastKnot = MakeWeb(chutePoint);
+            lastKnot.BecomeChute();
+            lastKnot.OnCollapse += delegate () { CutWeb(); };
         }
     }
 
@@ -115,7 +107,7 @@ public class WebProducer : MonoBehaviour
 
     void ActualRelease()
     {
-        if(knotsCount < maximumKnots)
+        if(knotsCount < KnotsLimit)
         {
             GameObject newKnot = Instantiate(webKnotPrefab);
 
@@ -138,5 +130,47 @@ public class WebProducer : MonoBehaviour
 
         if(OnWebCut != null)
             OnWebCut();
+    }
+
+    //==================================================================================================================================================================
+    WebKnot MakeWeb(Vector2 calculatedPoint)
+    {
+        float distance = Vector2.Distance(transform.position, calculatedPoint);
+        int knotsToSpawn = (int)(distance / knotDistance);
+        float step = distance / knotsToSpawn / distance;
+
+        GameObject rootKnot = Instantiate(webKnotPrefab);
+
+        rootKnot.transform.position = transform.position;
+        root = rootKnot.GetComponent<WebKnot>();
+
+        WebKnot spawnedKnot = root;
+
+        for(int i = 0; i < knotsToSpawn; i++)
+        {
+            GameObject newbie = Instantiate(webKnotPrefab);
+
+            newbie.transform.position = Vector2.Lerp(transform.position, calculatedPoint, step * (i + 1));
+
+            WebKnot knotComponentOfNewbie = newbie.GetComponent<WebKnot>();
+
+            spawnedKnot.NextKnot = knotComponentOfNewbie;
+            spawnedKnot = knotComponentOfNewbie;
+
+            knotsCount++;
+            knotComponentOfNewbie.OnSelfDestroy += delegate () { knotsCount--; };
+        }
+
+        rootLink.enabled = true;
+        rootLink.connectedBody = root.GetComponent<Rigidbody2D>();
+
+        DoOnPull = ActualPull;
+        DoOnRelease = ActualRelease;
+        DoOnCut = ActualCut;
+
+        if(OnWebDone != null)
+            OnWebDone();
+
+        return spawnedKnot; //Last knot returns
     }
 }

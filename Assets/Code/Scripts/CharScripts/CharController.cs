@@ -93,7 +93,7 @@ public class CharController : MonoBehaviour
         jumper.jumpForce = jumpForce;
         jumper.jumpTimeWindow = jumpTimeWindow;
 
-        webProducer.maximumKnots = maximumKnots;
+        webProducer.KnotsLimit = maximumKnots;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

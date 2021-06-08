@@ -5414,7 +5414,7 @@ MonoBehaviour:
   accelerationTime: 0.5
   rotationTorque: 1000
   brakesTorque: 10
-  maximumKnots: 40
+  maximumKnots: 10
   webPullSpeed: 4
   webReleaseSpeed: 4
   rollingState: 0
@@ -5432,7 +5432,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   webKnotPrefab: {fileID: 7257277854871318116, guid: d71ad284efe44b64eb4b2fce82136f44, type: 3}
-  maximumKnots: 40
 --- !u!232 &2041491293
 DistanceJoint2D:
   m_ObjectHideFlags: 0

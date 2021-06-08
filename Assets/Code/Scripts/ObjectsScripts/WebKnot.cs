@@ -6,9 +6,12 @@ using UnityEngine;
 public class WebKnot : MonoBehaviour
 {
     WebKnot _nextKnot;
-    //==================================================================================================================================================================
 
+    Collision2DHandler DoOnCollision;
+
+    //==================================================================================================================================================================
     public Action OnSelfDestroy;
+    public Action OnCollapse;
 
     public WebKnot NextKnot
     {
@@ -23,12 +26,14 @@ public class WebKnot : MonoBehaviour
     }
 
     //==================================================================================================================================================================
-    private void OnCollisionEnter2D(Collision2D collision) //Problem with web in webproducer!!!!!!!
+    private void Awake()
     {
-        BecomeAnchor(collision.collider);
+        DoOnCollision = Stick;
+    }
 
-        if(NextKnot != null)
-            NextKnot.ChainDestroy();
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        DoOnCollision(collision);
     }
 
     private void OnDestroy()
@@ -65,6 +70,19 @@ public class WebKnot : MonoBehaviour
         }
     }
 
+    public void BecomeChute()
+    {
+        //fixme
+
+        //TEST!!!
+        GetComponent<DistanceJoint2D>().enabled = false;
+        GetComponent<SpriteRenderer>().color = Color.red;
+        GetComponent<Rigidbody2D>().drag = 10;
+        //
+
+        DoOnCollision = Collapse;
+    }
+
     public void Pull() // NextKnot must not be null
     {
         WebKnot last = NextKnot;
@@ -80,5 +98,20 @@ public class WebKnot : MonoBehaviour
         knot.transform.position = transform.position;
         knot.NextKnot = NextKnot;
         NextKnot = knot;
+    }
+
+    //==================================================================================================================================================================
+    void Stick(Collision2D collision)
+    {
+        BecomeAnchor(collision.collider);
+
+        if(NextKnot != null)
+            NextKnot.ChainDestroy();
+    }
+
+    void Collapse(Collision2D collision)
+    {
+        if(OnCollapse != null)
+            OnCollapse();
     }
 }
