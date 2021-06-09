@@ -11,7 +11,7 @@ public class WebProducer : MonoBehaviour
     float minimalLength;
     float knotDistance;
 
-    int knotsCount;
+    //int knotsCount;
 
     WebKnot root;
 
@@ -23,6 +23,8 @@ public class WebProducer : MonoBehaviour
 
     //==================================================================================================================================================================
     public GameObject webKnotPrefab;
+
+    public List<GameObject> knots;
 
     public Action OnWebDone;
     public Action OnWebCut;
@@ -47,6 +49,8 @@ public class WebProducer : MonoBehaviour
         DoOnPull = delegate () { };
         DoOnRelease = delegate () { };
         DoOnCut = delegate () { };
+
+        knots = new List<GameObject>();
     }
 
     //==================================================================================================================================================================
@@ -98,13 +102,13 @@ public class WebProducer : MonoBehaviour
     {
         root.Pull();
 
-        if(knotsCount == 0)
+        if(knots.Count == 0)
             CutWeb();
     }
 
     void ActualRelease()
     {
-        if(knotsCount < KnotsLimit)
+        if(knots.Count < KnotsLimit)
             root.Release(GetNewKnot());
     }
 
@@ -164,8 +168,8 @@ public class WebProducer : MonoBehaviour
     GameObject GetNewKnot()
     {
         GameObject newbie = Instantiate(webKnotPrefab);
-        knotsCount++;
-        newbie.GetComponent<WebKnot>().OnSelfDestroy += delegate () { knotsCount--; };
+        knots.Add(newbie);
+        newbie.GetComponent<WebKnot>().OnSelfDestroy += delegate () { knots.Remove(newbie); };
 
         return newbie;
     }
