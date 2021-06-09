@@ -105,11 +105,7 @@ public class WebProducer : MonoBehaviour
     void ActualRelease()
     {
         if(knotsCount < KnotsLimit)
-        {
-            GameObject newKnot = Instantiate(webKnotPrefab);
-
             root.Release(GetNewKnot());
-        }
     }
 
     void ActualCut()
