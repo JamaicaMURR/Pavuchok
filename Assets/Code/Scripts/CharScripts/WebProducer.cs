@@ -50,7 +50,7 @@ public class WebProducer : MonoBehaviour
     }
 
     //==================================================================================================================================================================
-    public WebKnot ProduceWeb(Vector2 targetPoint)
+    public void ProduceWeb(Vector2 targetPoint)
     {
         Vector2 direction = targetPoint - (Vector2)transform.position;
         float distance = Vector2.Distance(transform.position, targetPoint);
@@ -74,11 +74,8 @@ public class WebProducer : MonoBehaviour
             Vector2 chutePoint = direction.normalized * distance + (Vector2)transform.position;
 
             lastKnot = MakeWeb(chutePoint);
-            lastKnot.ReleaseChute(GetNewKnot());
-            lastKnot = lastKnot.NextKnot;
+            lastKnot.TransformAtChute();
         }
-
-        return lastKnot;
     }
 
     public void Pull()
@@ -99,8 +96,7 @@ public class WebProducer : MonoBehaviour
     //==================================================================================================================================================================
     void ActualPull()
     {
-        if(root.NextKnot != null)
-            root.Pull();
+        root.Pull();
 
         if(knotsCount == 0)
             CutWeb();

@@ -6,12 +6,14 @@ using UnityEngine;
 public class WebKnot : MonoBehaviour
 {
     WebKnot _nextKnot;
+    WebKnot _previousKnot;
 
     Collision2DHandler DoOnCollision;
 
     //==================================================================================================================================================================
+    public bool isChuteRoot;
+
     public Action OnSelfDestroy;
-    public Action OnCollapse;
 
     public WebKnot NextKnot
     {
@@ -21,8 +23,17 @@ public class WebKnot : MonoBehaviour
             _nextKnot = value;
 
             if(_nextKnot != null)
+            {
                 GetComponent<DistanceJoint2D>().connectedBody = _nextKnot.GetComponent<Rigidbody2D>();
+                _nextKnot.PreviousKnot = this;
+            }
         }
+    }
+
+    public WebKnot PreviousKnot
+    {
+        get { return _previousKnot; }
+        set { _previousKnot = value; }
     }
 
     //==================================================================================================================================================================
@@ -70,25 +81,25 @@ public class WebKnot : MonoBehaviour
         }
     }
 
-    public void ReleaseChute(GameObject obj)
+    public void TransformAtChute()
     {
-        Release(obj);
-        NextKnot.TransformAtChute(transform);
+        if(PreviousKnot != null)
+        {
+            GetComponent<DistanceJoint2D>().enabled = false;
+            GetComponent<Chute>().StartDeploy(PreviousKnot);
+            PreviousKnot.isChuteRoot = true;
+            DoOnCollision = Collapse;
+        }
     }
 
-    public void TransformAtChute(Transform t)
+    public void Pull()
     {
-        GetComponent<DistanceJoint2D>().enabled = false;
-        GetComponent<Chute>().StartDeploy(t);
-        DoOnCollision = Collapse;
-    }
-
-    public void Pull() // NextKnot must not be null
-    {
-        WebKnot last = NextKnot;
-        NextKnot = NextKnot.NextKnot;
-
-        last.DestroySelf();
+        if(NextKnot != null && !NextKnot.isChuteRoot)
+        {
+            WebKnot last = NextKnot;
+            NextKnot = NextKnot.NextKnot;
+            last.DestroySelf();
+        }
     }
 
     public void Release(GameObject obj)
@@ -111,7 +122,7 @@ public class WebKnot : MonoBehaviour
 
     void Collapse(Collision2D collision)
     {
-        if(OnCollapse != null)
-            OnCollapse();
+        PreviousKnot.TransformAtChute();
+        DestroySelf();
     }
 }

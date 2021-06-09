@@ -8,7 +8,7 @@ public class Chute : MonoBehaviour
     new CircleCollider2D collider;
     new Rigidbody2D rigidbody;
     SpriteRenderer spriteRenderer;
-    Transform rootTransform;
+    WebKnot rootKnot;
 
     int frameNumber;
 
@@ -42,10 +42,13 @@ public class Chute : MonoBehaviour
         DoOnFixedUpdate();
     }
     //==================================================================================================================================================================
-    public void StartDeploy(Transform t)
+    public void StartDeploy(WebKnot root)
     {
-        rootTransform = t;
-        DoOnUpdate = MonitorDeploying;
+        if(root != null)
+        {
+            rootKnot = root;
+            DoOnUpdate = MonitorDeploying;
+        }
     }
 
     //==================================================================================================================================================================
@@ -74,10 +77,9 @@ public class Chute : MonoBehaviour
 
     void OrientateAcrossVelocity()
     {
-        if(transform.position.x >= rootTransform.position.x)
-            transform.rotation = Quaternion.Euler(0, 0, -Vector2.Angle((Vector2)transform.position - (Vector2)rootTransform.position, Vector2.up));
+        if(transform.position.x >= rootKnot.transform.position.x)
+            transform.rotation = Quaternion.Euler(0, 0, -Vector2.Angle((Vector2)transform.position - (Vector2)rootKnot.transform.position, Vector2.up));
         else
-            transform.rotation = Quaternion.Euler(0, 0, Vector2.Angle((Vector2)transform.position - (Vector2)rootTransform.position, Vector2.up));
-
+            transform.rotation = Quaternion.Euler(0, 0, Vector2.Angle((Vector2)transform.position - (Vector2)rootKnot.transform.position, Vector2.up));
     }
 }

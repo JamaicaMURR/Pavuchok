@@ -50,7 +50,6 @@ public class CharController : MonoBehaviour
     public float webProducingDelay = 0.5f;
 
     public RollingState rollingState;
-
     //==================================================================================================================================================================
     private void Awake()
     {
@@ -173,10 +172,7 @@ public class CharController : MonoBehaviour
         CutWeb();
 
         if(!collider.IsTouching(new ContactFilter2D() { layerMask = LayerMask.GetMask("Default") })) //Collider must not touch any surface from map
-        {
-            WebKnot lastKnot = webProducer.ProduceWeb(targetPoint);
-            lastKnot.OnCollapse += CutWeb;
-        }
+            webProducer.ProduceWeb(targetPoint);
 
     }
 
