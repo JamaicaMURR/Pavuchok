@@ -5,15 +5,21 @@ using UnityEngine;
 
 public class WebKnot : MonoBehaviour
 {
+    float breakingGapSize;
+
     WebKnot _nextKnot;
     WebKnot _previousKnot;
 
     Collision2DHandler DoOnCollision;
 
     //==================================================================================================================================================================
+    [HideInInspector]
     public bool isChuteRoot;
 
-    public Action OnSelfDestroy;
+    public float breakingGapSizeModifier = 1.5f;
+
+    public event Action OnSelfDestroy;
+    public event Action OnRip;
 
     public WebKnot NextKnot
     {
@@ -27,6 +33,7 @@ public class WebKnot : MonoBehaviour
                 GetComponent<DistanceJoint2D>().connectedBody = _nextKnot.GetComponent<Rigidbody2D>();
                 _nextKnot.PreviousKnot = this;
             }
+
         }
     }
 
@@ -39,7 +46,21 @@ public class WebKnot : MonoBehaviour
     //==================================================================================================================================================================
     private void Awake()
     {
+        breakingGapSize = GetComponent<DistanceJoint2D>().distance * breakingGapSizeModifier;
+
         DoOnCollision = Stick;
+    }
+
+    private void FixedUpdate()
+    {
+        if(NextKnot != null && Vector2.Distance(transform.position, NextKnot.transform.position) > breakingGapSize)
+        {
+            NextKnot.ChainDestroy();
+            TransformAtChute();
+
+            if(OnRip != null)
+                OnRip();
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
