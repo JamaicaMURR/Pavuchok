@@ -11,8 +11,6 @@ public class WebProducer : MonoBehaviour
     float minimalLength;
     float knotDistance;
 
-    //int knotsCount;
-
     WebKnot root;
 
     DistanceJoint2D rootLink;
@@ -24,7 +22,7 @@ public class WebProducer : MonoBehaviour
     //==================================================================================================================================================================
     public GameObject webKnotPrefab;
 
-    public List<GameObject> knots;
+    public LinkedList<GameObject> knots;
 
     public Action OnWebDone;
     public Action OnWebCut;
@@ -50,7 +48,7 @@ public class WebProducer : MonoBehaviour
         DoOnRelease = delegate () { };
         DoOnCut = delegate () { };
 
-        knots = new List<GameObject>();
+        knots = new LinkedList<GameObject>();
     }
 
     //==================================================================================================================================================================
@@ -142,7 +140,7 @@ public class WebProducer : MonoBehaviour
 
         for(int i = 0; i < knotsToSpawn; i++)
         {
-            GameObject newbie = GetNewKnot();
+            GameObject newbie = GetNewKnot(addToKnotsListAsFirst: true);
 
             newbie.transform.position = Vector2.Lerp(transform.position, calculatedPoint, step * (i + 1));
 
@@ -165,10 +163,15 @@ public class WebProducer : MonoBehaviour
         return spawnedKnot; //Last knot returns
     }
 
-    GameObject GetNewKnot()
+    GameObject GetNewKnot(bool addToKnotsListAsFirst = false)
     {
         GameObject newbie = Instantiate(webKnotPrefab);
-        knots.Add(newbie);
+
+        if(addToKnotsListAsFirst)
+            knots.AddFirst(newbie);
+        else
+            knots.AddLast(newbie);
+
         newbie.GetComponent<WebKnot>().OnSelfDestroy += delegate () { knots.Remove(newbie); };
 
         return newbie;
