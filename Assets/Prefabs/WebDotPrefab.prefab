@@ -13,8 +13,8 @@ GameObject:
   - component: {fileID: 7257277854871318112}
   - component: {fileID: 7257277854871318115}
   - component: {fileID: 7257277854871318114}
-  - component: {fileID: 7257277854871318117}
   - component: {fileID: 4141912192497195863}
+  - component: {fileID: 7257277854871318117}
   m_Layer: 3
   m_Name: WebDotPrefab
   m_TagString: Untagged
@@ -143,18 +143,6 @@ DistanceJoint2D:
   m_AutoConfigureDistance: 0
   m_Distance: 0.5
   m_MaxDistanceOnly: 1
---- !u!114 &7257277854871318117
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7257277854871318116}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 797aa058df6de8c4497a17c57c3a7496, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &4141912192497195863
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -182,3 +170,15 @@ MonoBehaviour:
   - {fileID: -4054738713738027466, guid: 0d323ae6d1a9a6c4c9c1a951b7de0e35, type: 3}
   - {fileID: 3813641679083841722, guid: 0d323ae6d1a9a6c4c9c1a951b7de0e35, type: 3}
   - {fileID: -1996363815526848486, guid: 0d323ae6d1a9a6c4c9c1a951b7de0e35, type: 3}
+--- !u!114 &7257277854871318117
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7257277854871318116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 797aa058df6de8c4497a17c57c3a7496, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

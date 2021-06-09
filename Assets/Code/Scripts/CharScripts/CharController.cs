@@ -78,6 +78,8 @@ public class CharController : MonoBehaviour
 
         webProducer.OnWebCut += delegate ()
         {
+            StopWeb();
+
             DoOnPull = delegate () { };
             DoOnRelease = delegate () { };
             DoOnStopWeb = delegate () { };
@@ -195,7 +197,6 @@ public class CharController : MonoBehaviour
 
     public void CutWeb()
     {
-        StopWeb();
         webProducer.CutWeb();
     }
 

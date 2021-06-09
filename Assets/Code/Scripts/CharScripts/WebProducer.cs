@@ -74,14 +74,7 @@ public class WebProducer : MonoBehaviour
             Vector2 chutePoint = direction.normalized * distance + (Vector2)transform.position;
 
             lastKnot = MakeWeb(chutePoint);
-
-            GameObject chute = Instantiate(webKnotPrefab);
-
-            lastKnot.ReleaseChute(chute);
-
-            knotsCount++;
-            chute.GetComponent<WebKnot>().OnCollapse += delegate () { knotsCount--; };
-
+            lastKnot.ReleaseChute(GetNewKnot());
             lastKnot = lastKnot.NextKnot;
         }
 
@@ -119,10 +112,7 @@ public class WebProducer : MonoBehaviour
         {
             GameObject newKnot = Instantiate(webKnotPrefab);
 
-            root.Release(newKnot);
-
-            knotsCount++;
-            newKnot.GetComponent<WebKnot>().OnSelfDestroy += delegate () { knotsCount--; };
+            root.Release(GetNewKnot());
         }
     }
 
@@ -156,7 +146,7 @@ public class WebProducer : MonoBehaviour
 
         for(int i = 0; i < knotsToSpawn; i++)
         {
-            GameObject newbie = Instantiate(webKnotPrefab);
+            GameObject newbie = GetNewKnot();
 
             newbie.transform.position = Vector2.Lerp(transform.position, calculatedPoint, step * (i + 1));
 
@@ -164,9 +154,6 @@ public class WebProducer : MonoBehaviour
 
             spawnedKnot.NextKnot = knotComponentOfNewbie;
             spawnedKnot = knotComponentOfNewbie;
-
-            knotsCount++;
-            knotComponentOfNewbie.OnSelfDestroy += delegate () { knotsCount--; };
         }
 
         rootLink.enabled = true;
@@ -180,5 +167,14 @@ public class WebProducer : MonoBehaviour
             OnWebDone();
 
         return spawnedKnot; //Last knot returns
+    }
+
+    GameObject GetNewKnot()
+    {
+        GameObject newbie = Instantiate(webKnotPrefab);
+        knotsCount++;
+        newbie.GetComponent<WebKnot>().OnSelfDestroy += delegate () { knotsCount--; };
+
+        return newbie;
     }
 }
