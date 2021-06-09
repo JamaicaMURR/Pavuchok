@@ -9,24 +9,27 @@ public class WebDrawer : MonoBehaviour
     //==================================================================================================================================================================
     public WebProducer webProducer;
 
+    public float webWidth = 0.1f;
+    public float zShift = 0.5f;
     //==================================================================================================================================================================
     private void Awake()
     {
         lineRenderer = GetComponent<LineRenderer>();
 
-        lineRenderer.startWidth = 0.1f;
-        lineRenderer.endWidth = 0.1f;
+        lineRenderer.startWidth = webWidth;
+        lineRenderer.endWidth = webWidth;
     }
 
     private void Update()
     {
         Vector3[] positions = new Vector3[webProducer.knots.Count];
+        Vector3 shift = new Vector3(0, 0, zShift);
 
         int i = 0;
 
         foreach(GameObject knot in webProducer.knots)
         {
-            positions[i] = knot.transform.position;
+            positions[i] = knot.transform.position + shift;
             i++;
         }
 
