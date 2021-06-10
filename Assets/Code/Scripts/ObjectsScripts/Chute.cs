@@ -16,6 +16,7 @@ public class Chute : MonoBehaviour
     Action DoOnFixedUpdate;
     //==================================================================================================================================================================
     public float deployingSpeed;
+    public float deployingDelay;
     public float initialDeployedDrag;
     public float fullDeployedDrag;
     public float colliderRelativeConstant;
@@ -42,12 +43,12 @@ public class Chute : MonoBehaviour
         DoOnFixedUpdate();
     }
     //==================================================================================================================================================================
-    public void StartDeploy(WebKnot root)
+    public void Activate(WebKnot root)
     {
         if(root != null)
         {
             rootKnot = root;
-            DoOnUpdate = MonitorDeploying;
+            StartCoroutine(ChuteActivation());
         }
     }
 
@@ -77,9 +78,23 @@ public class Chute : MonoBehaviour
 
     void OrientateAcrossVelocity()
     {
-        if(transform.position.x >= rootKnot.transform.position.x)
-            transform.rotation = Quaternion.Euler(0, 0, -Vector2.Angle((Vector2)transform.position - (Vector2)rootKnot.transform.position, Vector2.up));
-        else
-            transform.rotation = Quaternion.Euler(0, 0, Vector2.Angle((Vector2)transform.position - (Vector2)rootKnot.transform.position, Vector2.up));
+        if(rootKnot != null)
+        {
+            if(transform.position.x >= rootKnot.transform.position.x)
+                transform.rotation = Quaternion.Euler(0, 0, -Vector2.Angle((Vector2)transform.position - (Vector2)rootKnot.transform.position, Vector2.up));
+            else
+                transform.rotation = Quaternion.Euler(0, 0, Vector2.Angle((Vector2)transform.position - (Vector2)rootKnot.transform.position, Vector2.up));
+        }
+    }
+
+    //==================================================================================================================================================================
+    IEnumerator ChuteActivation()
+    {
+        spriteRenderer.sprite = frames[0];
+        rigidbody.drag = initialDeployedDrag;
+
+        yield return new WaitForSeconds(deployingDelay);
+
+        DoOnUpdate = MonitorDeploying;
     }
 }

@@ -13,9 +13,6 @@ public class WebKnot : MonoBehaviour
     Collision2DHandler DoOnCollision;
 
     //==================================================================================================================================================================
-    [HideInInspector]
-    public bool isChuteRoot;
-
     public float breakingGapSizeModifier = 1.5f;
 
     public event Action OnSelfDestroy;
@@ -107,15 +104,14 @@ public class WebKnot : MonoBehaviour
         if(PreviousKnot != null)
         {
             GetComponent<DistanceJoint2D>().enabled = false;
-            GetComponent<Chute>().StartDeploy(PreviousKnot);
-            PreviousKnot.isChuteRoot = true;
+            GetComponent<Chute>().Activate(PreviousKnot);
             DoOnCollision = Collapse;
         }
     }
 
     public void Pull()
     {
-        if(NextKnot != null && !NextKnot.isChuteRoot)
+        if(NextKnot != null)
         {
             WebKnot last = NextKnot;
             NextKnot = NextKnot.NextKnot;
