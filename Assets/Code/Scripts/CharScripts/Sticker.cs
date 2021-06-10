@@ -53,7 +53,7 @@ public class Sticker : MonoBehaviour
     //==================================================================================================================================================================
     void InitialStickToTheSurface(Collision2D collision)
     {
-        if(collision.gameObject.tag == "Stickable")
+        if(collision.gameObject.tag != "Unstickable")
         {
             Vector2 force = (collision.contacts[0].point - (Vector2)transform.position).normalized * initialStickingForce;
 
@@ -66,7 +66,7 @@ public class Sticker : MonoBehaviour
 
     void StickToTheSurface(Collision2D collision)
     {
-        if(collision.gameObject.tag == "Stickable")
+        if(collision.gameObject.tag != "Unstickable")
         {
             Vector2 force = (collision.contacts[0].point - (Vector2)transform.position).normalized * stickingForce;
 

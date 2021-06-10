@@ -90,19 +90,24 @@ public class WebKnot : MonoBehaviour
 
     public void BecomeAnchor(Collider2D collider)
     {
-        StopAllCoroutines();
-        GetComponent<SpriteRenderer>().sprite = null;
-
-        if(collider.attachedRigidbody == null)
-            GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
-        else
+        if(collider.gameObject.tag != "WebUnstickable")
         {
-            DistanceJoint2D joint = GetComponent<DistanceJoint2D>();
+            StopAllCoroutines();
+            GetComponent<SpriteRenderer>().sprite = null;
 
-            joint.autoConfigureConnectedAnchor = true;
-            joint.distance = 0;
-            joint.connectedBody = collider.attachedRigidbody;
+            if(collider.attachedRigidbody == null)
+                GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
+            else
+            {
+                DistanceJoint2D joint = GetComponent<DistanceJoint2D>();
+
+                joint.autoConfigureConnectedAnchor = true;
+                joint.distance = 0;
+                joint.connectedBody = collider.attachedRigidbody;
+            }
         }
+        else
+            TransformAtChute();
     }
 
     public void TransformAtChute(float delay = 0)
