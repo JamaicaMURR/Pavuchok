@@ -157,7 +157,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   deployingSpeed: 1
   initialDeployedDrag: 1
-  fullDeployedDrag: 25
+  fullDeployedDrag: 22.5
   colliderRelativeConstant: 0.01
   frames:
   - {fileID: 4647791638569643293, guid: 4ba3397d28be91c498ac81cc46d3af47, type: 3}

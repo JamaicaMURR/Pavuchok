@@ -37,7 +37,6 @@ public class Sticker : MonoBehaviour
     private void Awake()
     {
         collider = GetComponent<Collider2D>();
-
         IsSticky = true;
     }
 
@@ -52,23 +51,29 @@ public class Sticker : MonoBehaviour
     }
 
     //==================================================================================================================================================================
-    void StickToTheSurface(Collision2D collision)
-    {
-        Vector2 force = (collision.contacts[0].point - (Vector2)transform.position).normalized * stickingForce;
-
-        collider.attachedRigidbody.AddForce(force);
-
-        if(collision.collider.attachedRigidbody != null)
-            collision.collider.attachedRigidbody.AddForce(-force); // second Newton's law
-    }
-
     void InitialStickToTheSurface(Collision2D collision)
     {
-        Vector2 force = (collision.contacts[0].point - (Vector2)transform.position).normalized * initialStickingForce;
+        if(collision.gameObject.tag == "Stickable")
+        {
+            Vector2 force = (collision.contacts[0].point - (Vector2)transform.position).normalized * initialStickingForce;
 
-        collider.attachedRigidbody.AddForce(force);
+            collider.attachedRigidbody.AddForce(force);
 
-        if(collision.collider.attachedRigidbody != null)
-            collision.collider.attachedRigidbody.AddForce(-force); // second Newton's law
+            if(collision.collider.attachedRigidbody != null)
+                collision.collider.attachedRigidbody.AddForce(-force); // second Newton's law
+        }
+    }
+
+    void StickToTheSurface(Collision2D collision)
+    {
+        if(collision.gameObject.tag == "Stickable")
+        {
+            Vector2 force = (collision.contacts[0].point - (Vector2)transform.position).normalized * stickingForce;
+
+            collider.attachedRigidbody.AddForce(force);
+
+            if(collision.collider.attachedRigidbody != null)
+                collision.collider.attachedRigidbody.AddForce(-force); // second Newton's law
+        }
     }
 }
