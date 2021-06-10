@@ -25,8 +25,8 @@ public class WebProducer : MonoBehaviour
 
     public int knotsLimit = 80;
 
-    public float maximalShootDistance = 7.5f;
-    public float minimalShootDistance = 0.5f;
+    public float maximalShootDistance = 10;
+    public float minimalWebLength = 1;
 
     //==================================================================================================================================================================
     private void Awake()
@@ -49,8 +49,8 @@ public class WebProducer : MonoBehaviour
 
         if(distance > maximalShootDistance)
             distance = maximalShootDistance;
-        else if(distance < minimalShootDistance)
-            distance = minimalShootDistance;
+        else if(distance < minimalWebLength)
+            distance = minimalWebLength;
 
         RaycastHit2D rayHit = Physics2D.Raycast(transform.position, direction, distance, layerMask: LayerMask.GetMask("Default"));
 
@@ -88,10 +88,8 @@ public class WebProducer : MonoBehaviour
     //==================================================================================================================================================================
     void ActualPull()
     {
-        root.Pull();
-
-        if(knots.Count == 0)
-            CutWeb();
+        if(knots.Count * knotDistance >= minimalWebLength)
+            root.Pull();
     }
 
     void ActualRelease()
