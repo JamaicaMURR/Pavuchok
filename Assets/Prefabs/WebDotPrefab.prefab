@@ -155,21 +155,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8d3855e63dcb464a9c9ec2f5acbb047, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deployingSpeed: 2.5
+  deployingSpeed: 1
   initialDeployedDrag: 1
   fullDeployedDrag: 25
   colliderRelativeConstant: 0.01
   frames:
-  - {fileID: 9061255220495640755, guid: 0d323ae6d1a9a6c4c9c1a951b7de0e35, type: 3}
-  - {fileID: -2246245109053866931, guid: 0d323ae6d1a9a6c4c9c1a951b7de0e35, type: 3}
-  - {fileID: 6776475937899394204, guid: 0d323ae6d1a9a6c4c9c1a951b7de0e35, type: 3}
-  - {fileID: -5032985245242976721, guid: 0d323ae6d1a9a6c4c9c1a951b7de0e35, type: 3}
-  - {fileID: 8335363568313585971, guid: 0d323ae6d1a9a6c4c9c1a951b7de0e35, type: 3}
-  - {fileID: -2319886415840158257, guid: 0d323ae6d1a9a6c4c9c1a951b7de0e35, type: 3}
-  - {fileID: -4525461707589469181, guid: 0d323ae6d1a9a6c4c9c1a951b7de0e35, type: 3}
-  - {fileID: -4054738713738027466, guid: 0d323ae6d1a9a6c4c9c1a951b7de0e35, type: 3}
-  - {fileID: 3813641679083841722, guid: 0d323ae6d1a9a6c4c9c1a951b7de0e35, type: 3}
-  - {fileID: -1996363815526848486, guid: 0d323ae6d1a9a6c4c9c1a951b7de0e35, type: 3}
+  - {fileID: 4647791638569643293, guid: 4ba3397d28be91c498ac81cc46d3af47, type: 3}
+  - {fileID: -6359115368525821085, guid: 4ba3397d28be91c498ac81cc46d3af47, type: 3}
+  - {fileID: 7229244207512901014, guid: 4ba3397d28be91c498ac81cc46d3af47, type: 3}
+  - {fileID: 1256889372004905668, guid: 4ba3397d28be91c498ac81cc46d3af47, type: 3}
+  - {fileID: 5698169367426061179, guid: 4ba3397d28be91c498ac81cc46d3af47, type: 3}
+  - {fileID: -7657045669885182835, guid: 4ba3397d28be91c498ac81cc46d3af47, type: 3}
+  - {fileID: 6297115872844930221, guid: 4ba3397d28be91c498ac81cc46d3af47, type: 3}
 --- !u!114 &7257277854871318117
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -183,5 +180,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   breakingGapSizeModifier: 5
-  chteTransformingDelay: 1
-  chuteSprite: {fileID: 9061255220495640755, guid: 0d323ae6d1a9a6c4c9c1a951b7de0e35, type: 3}
+  chuteTransformingDelay: 0.5
+  chuteSprite: {fileID: 4647791638569643293, guid: 4ba3397d28be91c498ac81cc46d3af47, type: 3}

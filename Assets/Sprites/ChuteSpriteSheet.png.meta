@@ -1,37 +1,28 @@
 fileFormatVersion: 2
-guid: 0d323ae6d1a9a6c4c9c1a951b7de0e35
+guid: 4ba3397d28be91c498ac81cc46d3af47
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 9061255220495640755
-    second: ChuteSheet_0
+      213: 4647791638569643293
+    second: ChuteSpriteSheet_0
   - first:
-      213: -2246245109053866931
-    second: ChuteSheet_1
+      213: -6359115368525821085
+    second: ChuteSpriteSheet_1
   - first:
-      213: 6776475937899394204
-    second: ChuteSheet_2
+      213: 7229244207512901014
+    second: ChuteSpriteSheet_2
   - first:
-      213: -5032985245242976721
-    second: ChuteSheet_3
+      213: 1256889372004905668
+    second: ChuteSpriteSheet_3
   - first:
-      213: 8335363568313585971
-    second: ChuteSheet_4
+      213: 5698169367426061179
+    second: ChuteSpriteSheet_4
   - first:
-      213: -2319886415840158257
-    second: ChuteSheet_5
+      213: -7657045669885182835
+    second: ChuteSpriteSheet_5
   - first:
-      213: -4525461707589469181
-    second: ChuteSheet_6
-  - first:
-      213: -4054738713738027466
-    second: ChuteSheet_7
-  - first:
-      213: 3813641679083841722
-    second: ChuteSheet_8
-  - first:
-      213: -1996363815526848486
-    second: ChuteSheet_9
+      213: 6297115872844930221
+    second: ChuteSpriteSheet_6
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -145,202 +136,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: ChuteSheet_0
+      name: ChuteSpriteSheet_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 179
-        width: 31
-        height: 30
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 3b8ebcc4d9b00cd70800000000000000
-      internalID: 9061255220495640755
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ChuteSheet_1
-      rect:
-        serializedVersion: 2
-        x: 33
-        y: 174
-        width: 41
-        height: 35
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: d4cb26479fbb3d0e0800000000000000
-      internalID: -2246245109053866931
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ChuteSheet_2
-      rect:
-        serializedVersion: 2
-        x: 76
-        y: 157
-        width: 61
-        height: 52
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: c94b97356f0ea0e50800000000000000
-      internalID: 6776475937899394204
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ChuteSheet_3
-      rect:
-        serializedVersion: 2
-        x: 140
-        y: 143
-        width: 77
-        height: 66
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: f269289d59e372ab0800000000000000
-      internalID: -5032985245242976721
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ChuteSheet_4
-      rect:
-        serializedVersion: 2
-        x: 219
-        y: 135
-        width: 87
-        height: 74
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 3315013b0092da370800000000000000
-      internalID: 8335363568313585971
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ChuteSheet_5
-      rect:
-        serializedVersion: 2
-        x: 309
-        y: 131
-        width: 91
-        height: 78
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: fcdd798989b1ecfd0800000000000000
-      internalID: -2319886415840158257
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ChuteSheet_6
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 42
-        width: 98
-        height: 85
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 30c3f7acd845231c0800000000000000
-      internalID: -4525461707589469181
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ChuteSheet_7
-      rect:
-        serializedVersion: 2
-        x: 100
-        y: 27
-        width: 117
-        height: 100
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 63ede9e6f9caab7c0800000000000000
-      internalID: -4054738713738027466
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ChuteSheet_8
-      rect:
-        serializedVersion: 2
-        x: 220
-        y: 17
-        width: 128
-        height: 110
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: ab8aa6ec6e6cce430800000000000000
-      internalID: 3813641679083841722
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ChuteSheet_9
-      rect:
-        serializedVersion: 2
-        x: 350
         y: 0
-        width: 148
-        height: 127
+        width: 31
+        height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -348,8 +150,134 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a18241ddfad7b44e0800000000000000
-      internalID: -1996363815526848486
+      spriteID: d1d69f6ced5408040800000000000000
+      internalID: 4647791638569643293
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ChuteSpriteSheet_1
+      rect:
+        serializedVersion: 2
+        x: 42
+        y: 0
+        width: 37
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 36b8a4da342efb7a0800000000000000
+      internalID: -6359115368525821085
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ChuteSpriteSheet_2
+      rect:
+        serializedVersion: 2
+        x: 90
+        y: 0
+        width: 53
+        height: 53
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6955b57fd4f635460800000000000000
+      internalID: 7229244207512901014
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ChuteSpriteSheet_3
+      rect:
+        serializedVersion: 2
+        x: 154
+        y: 0
+        width: 77
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4c2f05c793e517110800000000000000
+      internalID: 1256889372004905668
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ChuteSpriteSheet_4
+      rect:
+        serializedVersion: 2
+        x: 242
+        y: 0
+        width: 109
+        height: 109
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b73517779d6f31f40800000000000000
+      internalID: 5698169367426061179
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ChuteSpriteSheet_5
+      rect:
+        serializedVersion: 2
+        x: 362
+        y: 0
+        width: 157
+        height: 157
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d8cfc813885bcb590800000000000000
+      internalID: -7657045669885182835
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ChuteSpriteSheet_6
+      rect:
+        serializedVersion: 2
+        x: 530
+        y: 0
+        width: 226
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dac5566d589d36750800000000000000
+      internalID: 6297115872844930221
       vertices: []
       indices: 
       edges: []
