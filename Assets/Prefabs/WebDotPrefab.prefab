@@ -155,10 +155,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8d3855e63dcb464a9c9ec2f5acbb047, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deployingSpeed: 1
-  deployingDelay: 1
-  initialDeployedDrag: 5
-  fullDeployedDrag: 50
+  deployingSpeed: 2.5
+  initialDeployedDrag: 1
+  fullDeployedDrag: 25
   colliderRelativeConstant: 0.01
   frames:
   - {fileID: 9061255220495640755, guid: 0d323ae6d1a9a6c4c9c1a951b7de0e35, type: 3}
@@ -184,3 +183,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   breakingGapSizeModifier: 5
+  chteTransformingDelay: 1
+  chuteSprite: {fileID: 9061255220495640755, guid: 0d323ae6d1a9a6c4c9c1a951b7de0e35, type: 3}

@@ -16,7 +16,6 @@ public class Chute : MonoBehaviour
     Action DoOnFixedUpdate;
     //==================================================================================================================================================================
     public float deployingSpeed;
-    public float deployingDelay;
     public float initialDeployedDrag;
     public float fullDeployedDrag;
     public float colliderRelativeConstant;
@@ -48,7 +47,7 @@ public class Chute : MonoBehaviour
         if(root != null)
         {
             rootKnot = root;
-            StartCoroutine(ChuteActivation());
+            DoOnUpdate = MonitorDeploying;
         }
     }
 
@@ -85,16 +84,5 @@ public class Chute : MonoBehaviour
             else
                 transform.rotation = Quaternion.Euler(0, 0, Vector2.Angle((Vector2)transform.position - (Vector2)rootKnot.transform.position, Vector2.up));
         }
-    }
-
-    //==================================================================================================================================================================
-    IEnumerator ChuteActivation()
-    {
-        spriteRenderer.sprite = frames[0];
-        rigidbody.drag = initialDeployedDrag;
-
-        yield return new WaitForSeconds(deployingDelay);
-
-        DoOnUpdate = MonitorDeploying;
     }
 }

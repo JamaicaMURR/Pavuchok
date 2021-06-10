@@ -14,6 +14,9 @@ public class WebKnot : MonoBehaviour
 
     //==================================================================================================================================================================
     public float breakingGapSizeModifier = 1.5f;
+    public float chuteTransformingDelay = 0.5f;
+
+    public Sprite chuteSprite;
 
     public event Action OnSelfDestroy;
     public event Action OnRip;
@@ -87,6 +90,9 @@ public class WebKnot : MonoBehaviour
 
     public void BecomeAnchor(Collider2D collider)
     {
+        StopAllCoroutines();
+        GetComponent<SpriteRenderer>().sprite = null;
+
         if(collider.attachedRigidbody == null)
             GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
         else
@@ -99,13 +105,11 @@ public class WebKnot : MonoBehaviour
         }
     }
 
-    public void TransformAtChute()
+    public void TransformAtChute(float delay = 0)
     {
         if(PreviousKnot != null)
         {
-            GetComponent<DistanceJoint2D>().enabled = false;
-            GetComponent<Chute>().Activate(PreviousKnot);
-            DoOnCollision = Collapse;
+            StartCoroutine(ChuteActivation(delay));
         }
     }
 
@@ -139,7 +143,19 @@ public class WebKnot : MonoBehaviour
 
     void Collapse(Collision2D collision)
     {
-        PreviousKnot.TransformAtChute();
+        PreviousKnot.TransformAtChute(chuteTransformingDelay);
         DestroySelf();
+    }
+
+    //==================================================================================================================================================================
+    IEnumerator ChuteActivation(float delay)
+    {
+        GetComponent<SpriteRenderer>().sprite = chuteSprite;
+
+        yield return new WaitForSeconds(delay);
+
+        GetComponent<DistanceJoint2D>().enabled = false;
+        GetComponent<Chute>().Activate(PreviousKnot);
+        DoOnCollision = Collapse;
     }
 }
