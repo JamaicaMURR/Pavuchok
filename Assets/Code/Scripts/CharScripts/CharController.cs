@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CharController : MonoBehaviour
+public class CharController : MonoBehaviour // TODO: Increase maximal PullSpeed & ReleaseSpeed & decrease weight of webknots by adding additional joints
 {
     new Collider2D collider;
 
@@ -47,7 +47,7 @@ public class CharController : MonoBehaviour
     public int maximumKnots = 40;
     public float webPullSpeed = 1;
     public float webReleaseSpeed = 1;
-    public float webProducingDelay = 0.5f;
+    public float webProducingDelay = 0.5f; // TODO: All webproducer settings
 
     public RollingState rollingState;
     //==================================================================================================================================================================
@@ -109,10 +109,7 @@ public class CharController : MonoBehaviour
     private void Update()
     {
         if(Input.GetButtonDown("Jump"))
-        {
-            CutWeb();
             Jump();
-        }
 
         float horizontal = Input.GetAxis("Horizontal");
 
@@ -124,16 +121,10 @@ public class CharController : MonoBehaviour
             StopRun();
 
         if(Input.GetButtonDown("Fire1"))
-        {
-            CutWeb();
             ProduceWeb(cam.ScreenToWorldPoint(Input.mousePosition));
-        }
 
         if(Input.GetButtonDown("Fire2"))
-        {
-            CutWeb();
-            StartCoroutine(WaitUnstickableDelay());
-        }
+            UnStick();
 
         float vertical = Input.GetAxis("Vertical");
 
@@ -148,8 +139,14 @@ public class CharController : MonoBehaviour
     //==================================================================================================================================================================
     public void Jump()
     {
-        StartCoroutine(WaitUnstickableDelay());
+        CutWeb();
         jumper.Jump();
+    }
+
+    public void UnStick()
+    {
+        CutWeb();
+        StartCoroutine(WaitUnstickableDelay());
     }
 
     public void RunLeft()
@@ -173,7 +170,6 @@ public class CharController : MonoBehaviour
 
         if(!collider.IsTouching(new ContactFilter2D() { layerMask = LayerMask.GetMask("Default") })) //Collider must not touch any surface from map
             webProducer.ProduceWeb(targetPoint);
-
     }
 
     public void PullWeb()
