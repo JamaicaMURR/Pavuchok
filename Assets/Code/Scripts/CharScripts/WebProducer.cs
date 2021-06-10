@@ -9,7 +9,6 @@ public class WebProducer : MonoBehaviour
 
     WebKnot root;
 
-    DistanceJoint2D rootLink;
 
     Action DoOnPull;
     Action DoOnRelease;
@@ -23,6 +22,9 @@ public class WebProducer : MonoBehaviour
     public Action OnWebDone;
     public Action OnWebCut;
 
+    public DistanceJoint2D rootJoint;
+    public DistanceJoint2D rootJoint2; // EXP:
+
     public int knotsLimit = 80;
 
     public float maximalShootDistance = 10;
@@ -31,7 +33,6 @@ public class WebProducer : MonoBehaviour
     //==================================================================================================================================================================
     private void Awake()
     {
-        rootLink = GetComponent<DistanceJoint2D>();
         knotDistance = webKnotPrefab.GetComponent<DistanceJoint2D>().distance;
 
         DoOnPull = delegate () { };
@@ -42,7 +43,7 @@ public class WebProducer : MonoBehaviour
     }
 
     //==================================================================================================================================================================
-    public void ProduceWeb(Vector2 targetPoint)
+    public void ProduceWeb(Vector2 targetPoint) // TODO: Fix bug with uncorrect position of last knot
     {
         Vector2 direction = targetPoint - (Vector2)transform.position;
         float distance = Vector2.Distance(transform.position, targetPoint);
@@ -100,7 +101,7 @@ public class WebProducer : MonoBehaviour
 
     void ActualCut()
     {
-        rootLink.enabled = false;
+        rootJoint.enabled = false;
 
         root.ChainDestroy();
 
@@ -138,8 +139,11 @@ public class WebProducer : MonoBehaviour
             spawnedKnot = knotComponentOfNewbie;
         }
 
-        rootLink.enabled = true;
-        rootLink.connectedBody = root.GetComponent<Rigidbody2D>();
+        rootJoint.enabled = true;
+        rootJoint.connectedBody = root.GetComponent<Rigidbody2D>();
+
+        rootJoint2.enabled = true;
+        rootJoint2.connectedBody = root.GetComponent<Rigidbody2D>(); // EXP:
 
         DoOnPull = ActualPull;
         DoOnRelease = ActualRelease;

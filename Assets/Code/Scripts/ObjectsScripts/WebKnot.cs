@@ -13,6 +13,9 @@ public class WebKnot : MonoBehaviour
     Collision2DHandler DoOnCollision;
 
     //==================================================================================================================================================================
+    public DistanceJoint2D joint;
+    public DistanceJoint2D joint2;  // EXP: 1
+
     public float breakingGapSizeModifier = 1.5f;
     public float chuteTransformingDelay = 0.5f;
 
@@ -30,8 +33,10 @@ public class WebKnot : MonoBehaviour
 
             if(_nextKnot != null)
             {
-                GetComponent<DistanceJoint2D>().connectedBody = _nextKnot.GetComponent<Rigidbody2D>();
+                joint.connectedBody = _nextKnot.GetComponent<Rigidbody2D>();
                 _nextKnot.PreviousKnot = this;
+
+                joint2.connectedBody = _nextKnot.GetComponent<Rigidbody2D>(); // EXP:2
             }
 
         }
@@ -46,7 +51,7 @@ public class WebKnot : MonoBehaviour
     //==================================================================================================================================================================
     private void Awake()
     {
-        breakingGapSize = GetComponent<DistanceJoint2D>().distance * breakingGapSizeModifier;
+        breakingGapSize = joint.distance * breakingGapSizeModifier;
 
         DoOnCollision = Stick;
     }
@@ -99,7 +104,7 @@ public class WebKnot : MonoBehaviour
                 GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
             else
             {
-                DistanceJoint2D joint = GetComponent<DistanceJoint2D>();
+                joint2.enabled = false; // EXP: 3
 
                 joint.autoConfigureConnectedAnchor = true;
                 joint.distance = 0;
@@ -159,7 +164,8 @@ public class WebKnot : MonoBehaviour
 
         yield return new WaitForSeconds(delay);
 
-        GetComponent<DistanceJoint2D>().enabled = false;
+        joint.enabled = false;
+        joint2.enabled = false; // EXP: 4
         GetComponent<Chute>().Activate(PreviousKnot);
         DoOnCollision = Collapse;
     }

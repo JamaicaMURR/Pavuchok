@@ -20,7 +20,7 @@ public class Chute : MonoBehaviour
     public float fullDeployedDrag;
     public float colliderRelativeConstant;
 
-    public Sprite[] frames;
+    public Sprite[] frames; // TODO: Animation separately 
     //==================================================================================================================================================================
     private void Awake()
     {

@@ -12,9 +12,10 @@ GameObject:
   - component: {fileID: 7257277854871318113}
   - component: {fileID: 7257277854871318112}
   - component: {fileID: 7257277854871318115}
-  - component: {fileID: 7257277854871318114}
   - component: {fileID: 4141912192497195863}
+  - component: {fileID: 7257277854871318114}
   - component: {fileID: 7257277854871318117}
+  - component: {fileID: -5108226011961700377}
   m_Layer: 3
   m_Name: WebDotPrefab
   m_TagString: Untagged
@@ -76,15 +77,15 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 79d6931b0f4646c40b0c80252a4359f1, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.3, y: 0.3}
+  m_Size: {x: 0.31, y: 0.31}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!50 &7257277854871318112
@@ -99,8 +100,8 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 0.1
-  m_LinearDrag: 0.0125
+  m_Mass: 0.02
+  m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 0
   m_Material: {fileID: 0}
@@ -124,25 +125,6 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.05
---- !u!232 &7257277854871318114
-DistanceJoint2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7257277854871318116}
-  m_Enabled: 1
-  serializedVersion: 4
-  m_EnableCollision: 0
-  m_ConnectedRigidBody: {fileID: 0}
-  m_BreakForce: Infinity
-  m_BreakTorque: Infinity
-  m_AutoConfigureConnectedAnchor: 0
-  m_Anchor: {x: 0, y: 0}
-  m_ConnectedAnchor: {x: 0, y: 0}
-  m_AutoConfigureDistance: 0
-  m_Distance: 0.25
-  m_MaxDistanceOnly: 1
 --- !u!114 &4141912192497195863
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -167,6 +149,25 @@ MonoBehaviour:
   - {fileID: 5698169367426061179, guid: 4ba3397d28be91c498ac81cc46d3af47, type: 3}
   - {fileID: -7657045669885182835, guid: 4ba3397d28be91c498ac81cc46d3af47, type: 3}
   - {fileID: 6297115872844930221, guid: 4ba3397d28be91c498ac81cc46d3af47, type: 3}
+--- !u!232 &7257277854871318114
+DistanceJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7257277854871318116}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_AutoConfigureConnectedAnchor: 0
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0, y: 0}
+  m_AutoConfigureDistance: 0
+  m_Distance: 0.25
+  m_MaxDistanceOnly: 1
 --- !u!114 &7257277854871318117
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -179,6 +180,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 797aa058df6de8c4497a17c57c3a7496, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  joint: {fileID: 7257277854871318114}
+  joint2: {fileID: -5108226011961700377}
   breakingGapSizeModifier: 5
   chuteTransformingDelay: 0.5
   chuteSprite: {fileID: 4647791638569643293, guid: 4ba3397d28be91c498ac81cc46d3af47, type: 3}
+--- !u!232 &-5108226011961700377
+DistanceJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7257277854871318116}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_AutoConfigureConnectedAnchor: 0
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0, y: 0}
+  m_AutoConfigureDistance: 0
+  m_Distance: 0.25
+  m_MaxDistanceOnly: 1
