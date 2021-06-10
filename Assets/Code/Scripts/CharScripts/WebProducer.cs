@@ -5,10 +5,6 @@ using UnityEngine;
 
 public class WebProducer : MonoBehaviour
 {
-    int _knotsLimit;
-
-    float maximalLength;
-    float minimalLength;
     float knotDistance;
 
     WebKnot root;
@@ -27,22 +23,16 @@ public class WebProducer : MonoBehaviour
     public Action OnWebDone;
     public Action OnWebCut;
 
-    public int KnotsLimit
-    {
-        get { return _knotsLimit; }
-        set
-        {
-            _knotsLimit = value;
-            maximalLength = _knotsLimit * knotDistance;
-        }
-    }
+    public int knotsLimit = 80;
+
+    public float maximalShootDistance = 7.5f;
+    public float minimalShootDistance = 0.5f;
+
     //==================================================================================================================================================================
     private void Awake()
     {
         rootLink = GetComponent<DistanceJoint2D>();
         knotDistance = webKnotPrefab.GetComponent<DistanceJoint2D>().distance;
-
-        minimalLength = GetComponent<CircleCollider2D>().radius;
 
         DoOnPull = delegate () { };
         DoOnRelease = delegate () { };
@@ -57,10 +47,10 @@ public class WebProducer : MonoBehaviour
         Vector2 direction = targetPoint - (Vector2)transform.position;
         float distance = Vector2.Distance(transform.position, targetPoint);
 
-        if(distance > maximalLength)
-            distance = maximalLength;
-        else if(distance < minimalLength)
-            distance = minimalLength;
+        if(distance > maximalShootDistance)
+            distance = maximalShootDistance;
+        else if(distance < minimalShootDistance)
+            distance = minimalShootDistance;
 
         RaycastHit2D rayHit = Physics2D.Raycast(transform.position, direction, distance, layerMask: LayerMask.GetMask("Default"));
 
@@ -106,7 +96,7 @@ public class WebProducer : MonoBehaviour
 
     void ActualRelease()
     {
-        if(knots.Count < KnotsLimit)
+        if(knots.Count < knotsLimit)
             root.Release(GetNewKnot());
     }
 
