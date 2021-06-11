@@ -43,7 +43,7 @@ public class WebProducer : MonoBehaviour
     }
 
     //==================================================================================================================================================================
-    public void ProduceWeb(Vector2 targetPoint) // TODO: Fix bug with uncorrect position of last knot
+    public void ProduceWeb(Vector2 targetPoint)
     {
         Vector2 direction = targetPoint - (Vector2)transform.position;
         float distance = Vector2.Distance(transform.position, targetPoint);
@@ -133,15 +133,21 @@ public class WebProducer : MonoBehaviour
     WebKnot MakeWeb(Vector2 calculatedPoint)
     {
         float distance = Vector2.Distance(transform.position, calculatedPoint);
+
         int knotsToSpawn = (int)(distance / knotDistance);
-        float step = distance / knotsToSpawn / distance;
+
+        float firstGap = distance - (knotsToSpawn - 1) * knotDistance;
+
+        float firstStep = firstGap / distance;
+        float step = knotDistance/distance;
+
 
         rootKnot = GetNewKnot(addToKnotsListAsFirst: true);
 
-        rootKnot.transform.position = Vector2.Lerp(transform.position, calculatedPoint, step);
+        rootKnot.transform.position = Vector2.Lerp(transform.position, calculatedPoint, firstStep);
 
         rootJoint.enabled = true;
-        rootJoint.distance = distance - (knotsToSpawn - 1) * knotDistance;
+        rootJoint.distance = firstGap;
         rootJoint.connectedBody = rootKnot.GetComponent<Rigidbody2D>();
 
         WebKnot spawnedKnot = rootKnot;
@@ -150,7 +156,7 @@ public class WebProducer : MonoBehaviour
         {
             WebKnot newbie = GetNewKnot(addToKnotsListAsFirst: true);
 
-            newbie.transform.position = Vector2.Lerp(transform.position, calculatedPoint, step * (i + 1));
+            newbie.transform.position = Vector2.Lerp(transform.position, calculatedPoint, firstStep + step * (i + 1));
 
             spawnedKnot.NextKnot = newbie;
             spawnedKnot = newbie;

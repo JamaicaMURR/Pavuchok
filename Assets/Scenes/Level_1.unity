@@ -6465,7 +6465,7 @@ GameObject:
   - component: {fileID: 2041491289}
   - component: {fileID: 2041491291}
   m_Layer: 6
-  m_Name: Furry
+  m_Name: Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6693,7 +6693,7 @@ MonoBehaviour:
   webKnotPrefab: {fileID: 7257277854871318116, guid: d71ad284efe44b64eb4b2fce82136f44, type: 3}
   rootJoint: {fileID: 2041491293}
   knotsLimit: 80
-  maximalShootDistance: 20
+  maximalShootDistance: 10
   minimalWebLength: 0.5
   pullCompensationImpulse: 0
 --- !u!232 &2041491293

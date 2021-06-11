@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CharController : MonoBehaviour // TODO: Increase maximal PullSpeed & ReleaseSpeed & decrease weight of webknots by adding additional joints
+public class CharController : MonoBehaviour
 {
     new Collider2D collider;
 

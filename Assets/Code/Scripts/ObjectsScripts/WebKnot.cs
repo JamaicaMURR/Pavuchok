@@ -5,8 +5,6 @@ using UnityEngine;
 
 public class WebKnot : MonoBehaviour
 {
-    float breakingGapSize;
-
     WebKnot _nextKnot;
     WebKnot _previousKnot;
 
@@ -15,13 +13,11 @@ public class WebKnot : MonoBehaviour
     //==================================================================================================================================================================
     public DistanceJoint2D joint;
 
-    public float breakingGapSizeModifier = 1.5f;
     public float chuteTransformingDelay = 0.5f;
 
     public Sprite chuteSprite;
 
     public event Action OnSelfDestroy;
-    public event Action OnRip;
 
     public WebKnot NextKnot
     {
@@ -32,6 +28,7 @@ public class WebKnot : MonoBehaviour
 
             if(_nextKnot != null)
             {
+                joint.enabled = true;
                 joint.connectedBody = _nextKnot.GetComponent<Rigidbody2D>();
                 _nextKnot.PreviousKnot = this;
             }
@@ -48,20 +45,7 @@ public class WebKnot : MonoBehaviour
     //==================================================================================================================================================================
     private void Awake()
     {
-        breakingGapSize = joint.distance * breakingGapSizeModifier;
         DoOnCollision = Stick;
-    }
-
-    private void FixedUpdate() // EXP:
-    {
-        //if(NextKnot != null && Vector2.Distance(transform.position, NextKnot.transform.position) > breakingGapSize)
-        //{
-        //    NextKnot.ChainDestroy();
-        //    TransformAtChute();
-
-        //    if(OnRip != null)
-        //        OnRip();
-        //}
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -100,6 +84,7 @@ public class WebKnot : MonoBehaviour
                 GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
             else
             {
+                joint.enabled = true;
                 joint.autoConfigureConnectedAnchor = true;
                 joint.distance = 0;
                 joint.connectedBody = collider.attachedRigidbody;
@@ -116,11 +101,6 @@ public class WebKnot : MonoBehaviour
             StartCoroutine(ChuteActivation(delay));
         }
     }
-
-    //public void Release(GameObject obj)
-    //{
-    
-    //}
 
     //==================================================================================================================================================================
     void Stick(Collision2D collision)

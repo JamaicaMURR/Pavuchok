@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 7257277854871318113}
   - component: {fileID: 7257277854871318112}
   - component: {fileID: 7257277854871318115}
-  - component: {fileID: 4141912192497195863}
   - component: {fileID: 7257277854871318114}
+  - component: {fileID: 4141912192497195863}
   - component: {fileID: 7257277854871318117}
   m_Layer: 3
   m_Name: WebDotPrefab
@@ -124,6 +124,25 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.05
+--- !u!232 &7257277854871318114
+DistanceJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7257277854871318116}
+  m_Enabled: 0
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_AutoConfigureConnectedAnchor: 0
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0, y: 0}
+  m_AutoConfigureDistance: 0
+  m_Distance: 0.25
+  m_MaxDistanceOnly: 1
 --- !u!114 &4141912192497195863
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -137,7 +156,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   deployingSpeed: 1
-  initialDeployedDrag: 1
+  initialDeployedDrag: 0
   fullDeployedDrag: 22.5
   colliderRelativeConstant: 0.01
   frames:
@@ -148,25 +167,6 @@ MonoBehaviour:
   - {fileID: 5698169367426061179, guid: 4ba3397d28be91c498ac81cc46d3af47, type: 3}
   - {fileID: -7657045669885182835, guid: 4ba3397d28be91c498ac81cc46d3af47, type: 3}
   - {fileID: 6297115872844930221, guid: 4ba3397d28be91c498ac81cc46d3af47, type: 3}
---- !u!232 &7257277854871318114
-DistanceJoint2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7257277854871318116}
-  m_Enabled: 1
-  serializedVersion: 4
-  m_EnableCollision: 0
-  m_ConnectedRigidBody: {fileID: 0}
-  m_BreakForce: Infinity
-  m_BreakTorque: Infinity
-  m_AutoConfigureConnectedAnchor: 0
-  m_Anchor: {x: 0, y: 0}
-  m_ConnectedAnchor: {x: 0, y: 0}
-  m_AutoConfigureDistance: 0
-  m_Distance: 0.25
-  m_MaxDistanceOnly: 1
 --- !u!114 &7257277854871318117
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -180,6 +180,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   joint: {fileID: 7257277854871318114}
-  breakingGapSizeModifier: 5
   chuteTransformingDelay: 0.5
   chuteSprite: {fileID: 4647791638569643293, guid: 4ba3397d28be91c498ac81cc46d3af47, type: 3}
