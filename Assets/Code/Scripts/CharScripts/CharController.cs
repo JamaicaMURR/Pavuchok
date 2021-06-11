@@ -47,7 +47,8 @@ public class CharController : MonoBehaviour
     public int maximumKnots = 40;
     public float webPullSpeed = 1;
     public float webReleaseSpeed = 1;
-    public float webProducingDelay = 0.5f; // TODO: All webproducer settings
+    public float maximalShootDistance = 10;
+    public float minimalWebLength = 1;
 
     public RollingState rollingState;
     //==================================================================================================================================================================
@@ -96,6 +97,8 @@ public class CharController : MonoBehaviour
         jumper.jumpTimeWindow = jumpTimeWindow;
 
         webProducer.knotsLimit = maximumKnots;
+        webProducer.maximalShootDistance = maximalShootDistance;
+        webProducer.minimalWebLength = minimalWebLength;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

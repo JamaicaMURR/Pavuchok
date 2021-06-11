@@ -25,8 +25,6 @@ public class WebProducer : MonoBehaviour
     public float maximalShootDistance = 10;
     public float minimalWebLength = 1;
 
-    public float pullCompensationImpulse = 1;
-
     public event Action OnWebDone;
     public event Action OnWebCut;
 
