@@ -125,7 +125,12 @@ public class WebKnot : MonoBehaviour
         yield return new WaitForSeconds(delay);
 
         joint.enabled = false;
-        GetComponent<Chute>().Activate(PreviousKnot);
+
+        Chute chute = GetComponent<Chute>();
+
+        chute.enabled = true;
+        chute.Activate(PreviousKnot);
+
         DoOnCollision = Collapse;
     }
 }

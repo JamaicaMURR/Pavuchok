@@ -7,26 +7,29 @@ public class Chute : MonoBehaviour
 {
     new CircleCollider2D collider;
     new Rigidbody2D rigidbody;
+
     SpriteRenderer spriteRenderer;
     WebKnot rootKnot;
+    Animator animator;
 
     int frameNumber;
 
     Action DoOnUpdate;
     Action DoOnFixedUpdate;
-    //==================================================================================================================================================================
-    public float deployingSpeed;
-    public float initialDeployedDrag;
-    public float fullDeployedDrag;
-    public float colliderRelativeConstant;
 
-    public Sprite[] frames; // TODO: Animation separately 
+    //==================================================================================================================================================================
+    public float deployingAtSpeed = 1;
+    public float relativeDrag = 2;
+    public float colliderRelativeConstant = 0.01f;
+    public float deployingTime = 0.5f;
+
     //==================================================================================================================================================================
     private void Awake()
     {
         collider = GetComponent<CircleCollider2D>();
         rigidbody = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        animator = GetComponent<Animator>();
 
         DoOnUpdate = delegate () { };
         DoOnFixedUpdate = delegate () { };
@@ -51,28 +54,28 @@ public class Chute : MonoBehaviour
         }
     }
 
+    public void StartDeploying() // Must be called from deploying animation
+    {
+        DoOnFixedUpdate = ChangePhysicsAcrossAnimation;
+        DoOnUpdate = OrientateAcrossVelocity;
+    }
+
+    public void EndDeploying() // Must be called from deploying animation
+    {
+        DoOnFixedUpdate();
+        DoOnFixedUpdate = delegate () { };
+    }
     //==================================================================================================================================================================
     void MonitorDeploying()
     {
-        if(rigidbody.velocity.magnitude >= deployingSpeed)
-        {
-            DoOnFixedUpdate = Deploying;
-            DoOnUpdate = OrientateAcrossVelocity;
-        }
+        if(rigidbody.velocity.magnitude >= deployingAtSpeed)
+            animator.SetTrigger("DeployChute");
     }
 
-    void Deploying()
+    void ChangePhysicsAcrossAnimation()
     {
-        if(frameNumber != frames.Length)
-        {
-            spriteRenderer.sprite = frames[frameNumber];
-            collider.radius = frames[frameNumber].rect.width / 2 * colliderRelativeConstant;
-            rigidbody.drag = initialDeployedDrag + (fullDeployedDrag - initialDeployedDrag) / (frames.Length - 1) * frameNumber;
-            frameNumber++;
-        }
-        else
-            DoOnFixedUpdate = delegate () { };
-
+        collider.radius = spriteRenderer.sprite.rect.width / 2 * colliderRelativeConstant;
+        rigidbody.drag = relativeDrag * collider.radius * transform.lossyScale.x;
     }
 
     void OrientateAcrossVelocity()
