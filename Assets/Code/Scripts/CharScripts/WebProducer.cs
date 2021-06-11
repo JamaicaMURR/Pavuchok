@@ -13,6 +13,8 @@ public class WebProducer : MonoBehaviour
 
     WebKnot rootKnot;
 
+    new Rigidbody2D rigidbody;
+
     //==================================================================================================================================================================
     public GameObject webKnotPrefab;
 
@@ -25,12 +27,16 @@ public class WebProducer : MonoBehaviour
     public float maximalShootDistance = 10;
     public float minimalWebLength = 1;
 
+    public float reactionImpulsePerShotedKnot = 0.1f;
+
     public event Action OnWebDone;
     public event Action OnWebCut;
 
     //==================================================================================================================================================================
     private void Awake()
     {
+        rigidbody = GetComponent<Rigidbody2D>();
+
         knotDistance = webKnotPrefab.GetComponent<DistanceJoint2D>().distance;
 
         DoOnPull = delegate () { };
@@ -166,6 +172,8 @@ public class WebProducer : MonoBehaviour
 
         if(OnWebDone != null)
             OnWebDone();
+
+        rigidbody.AddForce(-(calculatedPoint - (Vector2)transform.position).normalized * reactionImpulsePerShotedKnot * knots.Count, ForceMode2D.Impulse);
 
         return spawnedKnot; //Last knot returns
     }
