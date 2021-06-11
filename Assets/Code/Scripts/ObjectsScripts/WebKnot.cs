@@ -14,7 +14,6 @@ public class WebKnot : MonoBehaviour
 
     //==================================================================================================================================================================
     public DistanceJoint2D joint;
-    public DistanceJoint2D joint2;  // EXP: 1
 
     public float breakingGapSizeModifier = 1.5f;
     public float chuteTransformingDelay = 0.5f;
@@ -35,8 +34,6 @@ public class WebKnot : MonoBehaviour
             {
                 joint.connectedBody = _nextKnot.GetComponent<Rigidbody2D>();
                 _nextKnot.PreviousKnot = this;
-
-                joint2.connectedBody = _nextKnot.GetComponent<Rigidbody2D>(); // EXP:2
             }
 
         }
@@ -52,20 +49,19 @@ public class WebKnot : MonoBehaviour
     private void Awake()
     {
         breakingGapSize = joint.distance * breakingGapSizeModifier;
-
         DoOnCollision = Stick;
     }
 
-    private void FixedUpdate()
+    private void FixedUpdate() // EXP:
     {
-        if(NextKnot != null && Vector2.Distance(transform.position, NextKnot.transform.position) > breakingGapSize)
-        {
-            NextKnot.ChainDestroy();
-            TransformAtChute();
+        //if(NextKnot != null && Vector2.Distance(transform.position, NextKnot.transform.position) > breakingGapSize)
+        //{
+        //    NextKnot.ChainDestroy();
+        //    TransformAtChute();
 
-            if(OnRip != null)
-                OnRip();
-        }
+        //    if(OnRip != null)
+        //        OnRip();
+        //}
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -104,8 +100,6 @@ public class WebKnot : MonoBehaviour
                 GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
             else
             {
-                joint2.enabled = false; // EXP: 3
-
                 joint.autoConfigureConnectedAnchor = true;
                 joint.distance = 0;
                 joint.connectedBody = collider.attachedRigidbody;
@@ -123,24 +117,10 @@ public class WebKnot : MonoBehaviour
         }
     }
 
-    public void Pull()
-    {
-        if(NextKnot != null)
-        {
-            WebKnot last = NextKnot;
-            NextKnot = NextKnot.NextKnot;
-            last.DestroySelf();
-        }
-    }
-
-    public void Release(GameObject obj)
-    {
-        WebKnot knot = obj.GetComponent<WebKnot>();
-
-        knot.transform.position = transform.position;
-        knot.NextKnot = NextKnot;
-        NextKnot = knot;
-    }
+    //public void Release(GameObject obj)
+    //{
+    
+    //}
 
     //==================================================================================================================================================================
     void Stick(Collision2D collision)
@@ -165,7 +145,6 @@ public class WebKnot : MonoBehaviour
         yield return new WaitForSeconds(delay);
 
         joint.enabled = false;
-        joint2.enabled = false; // EXP: 4
         GetComponent<Chute>().Activate(PreviousKnot);
         DoOnCollision = Collapse;
     }
