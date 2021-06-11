@@ -5572,7 +5572,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1832038535}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: efd236e65d2369f4c838605d9bc9cd64, type: 3}
   m_Name: 
@@ -6457,11 +6457,12 @@ GameObject:
   - component: {fileID: 2041491283}
   - component: {fileID: 2041491282}
   - component: {fileID: 2041491293}
+  - component: {fileID: 2041491292}
+  - component: {fileID: 2041491294}
+  - component: {fileID: 2041491290}
   - component: {fileID: 2041491287}
   - component: {fileID: 2041491288}
   - component: {fileID: 2041491289}
-  - component: {fileID: 2041491290}
-  - component: {fileID: 2041491292}
   - component: {fileID: 2041491291}
   m_Layer: 6
   m_Name: Furry
@@ -6672,8 +6673,8 @@ MonoBehaviour:
   rotationTorque: 1000
   brakesTorque: 10
   maximumKnots: 80
-  webPullSpeed: 4
-  webReleaseSpeed: 4
+  webPullSpeed: 8
+  webReleaseSpeed: 8
   webProducingDelay: 0.5
   rollingState: 0
   cam: {fileID: 519420031}
@@ -6690,10 +6691,31 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   webKnotPrefab: {fileID: 7257277854871318116, guid: d71ad284efe44b64eb4b2fce82136f44, type: 3}
+  rootJoint: {fileID: 2041491293}
   knotsLimit: 80
-  maximalShootDistance: 10
-  minimalWebLength: 0.75
+  maximalShootDistance: 20
+  minimalWebLength: 0.5
+  pullCompensationImpulse: 0
 --- !u!232 &2041491293
+DistanceJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2041491281}
+  m_Enabled: 0
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_AutoConfigureConnectedAnchor: 0
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0, y: 0}
+  m_AutoConfigureDistance: 0
+  m_Distance: 0.005
+  m_MaxDistanceOnly: 1
+--- !u!232 &2041491294
 DistanceJoint2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
