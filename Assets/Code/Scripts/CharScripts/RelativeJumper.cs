@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RelativeJumper : MonoBehaviour
+public class RelativeJumper : MonoBehaviour // TODO: Charge jump
 {
     bool _jumpAwaits;
 

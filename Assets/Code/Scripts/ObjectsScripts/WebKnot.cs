@@ -15,8 +15,6 @@ public class WebKnot : MonoBehaviour
 
     public float chuteTransformingDelay = 0.5f;
 
-    public Sprite chuteSprite;
-
     public event Action OnSelfDestroy;
 
     public WebKnot NextKnot
@@ -98,6 +96,7 @@ public class WebKnot : MonoBehaviour
     {
         if(PreviousKnot != null)
         {
+            joint.enabled = false;
             StartCoroutine(ChuteActivation(delay));
         }
     }
@@ -120,13 +119,13 @@ public class WebKnot : MonoBehaviour
     //==================================================================================================================================================================
     IEnumerator ChuteActivation(float delay)
     {
-        GetComponent<SpriteRenderer>().sprite = chuteSprite;
+        Chute chute = GetComponent<Chute>();
+
+        chute.Prepare();
 
         yield return new WaitForSeconds(delay);
 
         joint.enabled = false;
-
-        Chute chute = GetComponent<Chute>();
 
         chute.enabled = true;
         chute.Activate(PreviousKnot);

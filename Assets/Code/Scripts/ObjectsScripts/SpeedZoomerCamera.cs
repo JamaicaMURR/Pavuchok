@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpeedZoomerCamera : MonoBehaviour
+public class SpeedZoomerCamera : MonoBehaviour // TODO: Free view mode
 {
     new Camera camera;
 

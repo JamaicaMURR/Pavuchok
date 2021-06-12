@@ -157,6 +157,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   deployingAtSpeed: 1
+  preparedDrag: 5
   relativeDrag: 20
   colliderRelativeConstant: 0.01
   deployingTime: 1
@@ -174,7 +175,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   joint: {fileID: 7257277854871318114}
   chuteTransformingDelay: 1
-  chuteSprite: {fileID: 4647791638569643293, guid: 4ba3397d28be91c498ac81cc46d3af47, type: 3}
 --- !u!95 &995853121150396629
 Animator:
   serializedVersion: 3

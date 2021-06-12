@@ -19,6 +19,7 @@ public class Chute : MonoBehaviour
 
     //==================================================================================================================================================================
     public float deployingAtSpeed = 1;
+    public float preparedDrag = 5;
     public float relativeDrag = 2;
     public float colliderRelativeConstant = 0.01f;
     public float deployingTime = 0.5f;
@@ -54,6 +55,13 @@ public class Chute : MonoBehaviour
         }
     }
 
+    //==================================================================================================================================================================
+    public void Prepare()
+    {
+        rigidbody.drag = preparedDrag;
+        animator.SetTrigger("ChuteReady");
+    }
+
     public void StartDeploying() // Must be called from deploying animation
     {
         DoOnFixedUpdate = ChangePhysicsAcrossAnimation;
@@ -65,6 +73,7 @@ public class Chute : MonoBehaviour
         DoOnFixedUpdate();
         DoOnFixedUpdate = delegate () { };
     }
+
     //==================================================================================================================================================================
     void MonitorDeploying()
     {
