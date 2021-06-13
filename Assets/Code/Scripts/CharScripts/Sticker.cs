@@ -11,8 +11,8 @@ public class Sticker : MonoBehaviour
     Collision2DHandler DoOnCollision;
 
     //==================================================================================================================================================================
-    public float initialStickingForce = 100;
-    public float stickingForce = 10;
+    [HideInInspector]
+    public float initialStickingForce, stickingForce;
 
     //==================================================================================================================================================================
     public bool IsSticky

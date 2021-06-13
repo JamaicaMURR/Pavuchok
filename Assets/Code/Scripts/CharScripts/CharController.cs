@@ -15,6 +15,7 @@ public class CharController : MonoBehaviour
     float startRollingSpeed;
     float targetRollingSpeed;
 
+    Action DoOnChargeControl;
     Action DoOnLeftRoll;
     Action DoOnRightRoll;
     Action DoOnStop;
@@ -31,25 +32,36 @@ public class CharController : MonoBehaviour
     bool release;
 
     //==================================================================================================================================================================
+    [Header("Sticking Settings")]
     public float initialStickingForce = 100;
-    public float usualStickForce = 17.5f;
+    public float usualStickingForce = 17.5f;
     public float unstickableDelay = 0.05f;
 
-    public float jumpForce = 10;
+    [Header("Jumping Settings")]
+    public float jumpChargeModeVelocityThreshold = 0.01f;
+    public float jumpForceInitial = 10;
+    public float jumpForcePeak = 15;
+    public float jumpChargeTime = 0.25f;
     public float jumpTimeWindow = 0.1f;
 
+    public int chargingSteps = 1;
+
+    [Header("Rolling Settings")]
     public float initialRollingSpeed = 50;
     public float maximalRollingSpeed = 350;
     public float accelerationTime = 1;
     public float rotationTorque = 1000;
     public float brakesTorque = 5;
 
-    public int maximumKnots = 40;
+    [Header("Web Settings")]
     public float webPullSpeed = 1;
     public float webReleaseSpeed = 1;
+    public int maximumKnots = 40;
     public float maximalShootDistance = 10;
     public float minimalWebLength = 1;
+    public float reactionImpulsePerShotedKnot = 0.1f;
 
+    [HideInInspector]
     public RollingState rollingState;
     //==================================================================================================================================================================
     private void Awake()
@@ -60,6 +72,8 @@ public class CharController : MonoBehaviour
         jumper = GetComponent<RelativeJumper>();
         wheelDrive = GetComponent<WheelDrive>();
         webProducer = GetComponent<WebProducer>();
+
+        DoOnChargeControl = delegate () { };
 
         DoOnLeftRoll = ActualLeftRoll;
         DoOnRightRoll = ActualRightRoll;
@@ -89,16 +103,21 @@ public class CharController : MonoBehaviour
     private void Start()
     {
         sticker.initialStickingForce = initialStickingForce;
-        sticker.stickingForce = usualStickForce;
+        sticker.stickingForce = usualStickingForce;
+
+        jumper.jumpForceInitial = jumpForceInitial;
+        jumper.jumpForcePeak = jumpForcePeak;
+        jumper.jumpChargeTime = jumpChargeTime;
+        jumper.jumpTimeWindow = jumpTimeWindow;
+
+        jumper.chargingSteps = chargingSteps;
 
         wheelDrive.BeginRotate(0, brakesTorque);
-
-        jumper.jumpForce = jumpForce;
-        jumper.jumpTimeWindow = jumpTimeWindow;
 
         webProducer.knotsLimit = maximumKnots;
         webProducer.maximalShootDistance = maximalShootDistance;
         webProducer.minimalWebLength = minimalWebLength;
+        webProducer.reactionImpulsePerShotedKnot = reactionImpulsePerShotedKnot;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -112,7 +131,13 @@ public class CharController : MonoBehaviour
     private void Update()
     {
         if(Input.GetButtonDown("Jump"))
-            Jump();
+            ChargeJumpBegin();
+
+        if(Input.GetButton("Jump"))
+            ChargeJumpControl();
+
+        if(Input.GetButtonUp("Jump"))
+            ReleaseJump();
 
         float horizontal = Input.GetAxis("Horizontal");
 
@@ -140,10 +165,26 @@ public class CharController : MonoBehaviour
     }
 
     //==================================================================================================================================================================
-    public void Jump()
+    public void ChargeJumpBegin()
+    {
+        if(collider.attachedRigidbody.velocity.magnitude <= jumpChargeModeVelocityThreshold)
+        {
+            jumper.BeginCharge();
+            DoOnChargeControl = ActualChargeControl;
+        }
+    }
+
+    public void ChargeJumpControl()
+    {
+        DoOnChargeControl();
+    }
+
+    public void ReleaseJump()
     {
         CutWeb();
         jumper.Jump();
+
+        DoOnChargeControl = delegate () { };
     }
 
     public void UnStick()
@@ -196,6 +237,15 @@ public class CharController : MonoBehaviour
     }
 
     //Actuals===========================================================================================================================================================
+    void ActualChargeControl()
+    {
+        if(collider.attachedRigidbody.velocity.magnitude > jumpChargeModeVelocityThreshold)
+        {
+            jumper.CancelCharge();
+            DoOnChargeControl = delegate () { };
+        }
+    }
+
     void ActualLeftRoll()
     {
         startRollingSpeed = -initialRollingSpeed;

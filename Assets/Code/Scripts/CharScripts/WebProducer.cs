@@ -17,17 +17,14 @@ public class WebProducer : MonoBehaviour
 
     //==================================================================================================================================================================
     public GameObject webKnotPrefab;
-
     public LinkedList<WebKnot> knots;
-
     public DistanceJoint2D rootJoint;
 
-    public int knotsLimit = 80;
+    [HideInInspector]
+    public int knotsLimit;
 
-    public float maximalShootDistance = 10;
-    public float minimalWebLength = 1;
-
-    public float reactionImpulsePerShotedKnot = 0.1f;
+    [HideInInspector]
+    public float maximalShootDistance, minimalWebLength, reactionImpulsePerShotedKnot;
 
     public event Action OnWebDone;
     public event Action OnWebCut;
