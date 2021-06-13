@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CharController : MonoBehaviour
+public class CharController : MonoBehaviour // TODO: Web strikes limit
 {
     new Collider2D collider;
 
@@ -125,43 +125,9 @@ public class CharController : MonoBehaviour
         CutWeb();
     }
 
-    //<><><><><><> TO THE INPUT HANDLER!!!!<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
-    public Camera cam;
-
     private void Update()
     {
-        if(Input.GetButtonDown("Jump"))
-            ChargeJumpBegin();
-
-        if(Input.GetButton("Jump"))
-            ChargeJumpControl();
-
-        if(Input.GetButtonUp("Jump"))
-            ReleaseJump();
-
-        float horizontal = Input.GetAxis("Horizontal");
-
-        if(horizontal < 0)
-            RunLeft();
-        else if(horizontal > 0)
-            RunRight();
-        else
-            StopRun();
-
-        if(Input.GetButtonDown("Fire1"))
-            ProduceWeb(cam.ScreenToWorldPoint(Input.mousePosition));
-
-        if(Input.GetButtonDown("Fire2"))
-            UnStick();
-
-        float vertical = Input.GetAxis("Vertical");
-
-        if(vertical > 0)
-            PullWeb();
-        else if(vertical < 0)
-            ReleaseWeb();
-        else
-            StopWeb();
+        
     }
 
     //==================================================================================================================================================================
