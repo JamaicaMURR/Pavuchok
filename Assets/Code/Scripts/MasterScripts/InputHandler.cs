@@ -26,9 +26,6 @@ public class InputHandler : MonoBehaviour
             DoOnJumpRelaease = ActualReleaseJump;
         }
 
-        if(Input.GetButton("Jump"))
-            charController.ChargeJumpControl();
-
         if(Input.GetButtonUp("Jump"))
             DoOnJumpRelaease();
 

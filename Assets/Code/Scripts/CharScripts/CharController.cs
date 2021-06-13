@@ -29,7 +29,12 @@ public class CharController : MonoBehaviour // TODO: Web strikes limit
     Coroutine pullCoroutine;
     Coroutine releaseCoroutine;
 
-    bool release;
+    bool isChargeAvailable;
+
+    bool IsTouchingSurface
+    {
+        get { return collider.IsTouching(new ContactFilter2D() { layerMask = LayerMask.GetMask("Default") }); }
+    }
 
     //==================================================================================================================================================================
     [Header("Sticking Settings")]
@@ -63,6 +68,10 @@ public class CharController : MonoBehaviour // TODO: Web strikes limit
 
     [HideInInspector]
     public RollingState rollingState;
+
+    public event Action ChargeBecomeAvailable;
+    public event Action ChargeBecomeUnavailable;
+
     //==================================================================================================================================================================
     private void Awake()
     {
@@ -127,22 +136,38 @@ public class CharController : MonoBehaviour // TODO: Web strikes limit
 
     private void Update()
     {
-        
+        if(IsTouchingSurface && collider.attachedRigidbody.velocity.magnitude <= jumpChargeModeVelocityThreshold)
+        {
+            if(!isChargeAvailable)
+            {
+                isChargeAvailable = true;
+
+                if(ChargeBecomeAvailable != null)
+                    ChargeBecomeAvailable();
+            }
+        }
+        else
+        {
+            if(isChargeAvailable)
+            {
+                isChargeAvailable = false;
+
+                DoOnChargeControl();
+
+                if(ChargeBecomeUnavailable != null)
+                    ChargeBecomeUnavailable();
+            }
+        }
     }
 
     //==================================================================================================================================================================
     public void ChargeJumpBegin()
     {
-        if(collider.attachedRigidbody.velocity.magnitude <= jumpChargeModeVelocityThreshold)
+        if(isChargeAvailable)
         {
             jumper.BeginCharge();
-            DoOnChargeControl = ActualChargeControl;
+            DoOnChargeControl = CancelCharge;
         }
-    }
-
-    public void ChargeJumpControl()
-    {
-        DoOnChargeControl();
     }
 
     public void ReleaseJump()
@@ -203,13 +228,10 @@ public class CharController : MonoBehaviour // TODO: Web strikes limit
     }
 
     //Actuals===========================================================================================================================================================
-    void ActualChargeControl()
+    void CancelCharge()
     {
-        if(collider.attachedRigidbody.velocity.magnitude > jumpChargeModeVelocityThreshold)
-        {
-            jumper.CancelCharge();
-            DoOnChargeControl = delegate () { };
-        }
+        jumper.CancelCharge();
+        DoOnChargeControl = delegate () { };
     }
 
     void ActualLeftRoll()
