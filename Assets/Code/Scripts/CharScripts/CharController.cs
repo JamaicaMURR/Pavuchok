@@ -15,7 +15,8 @@ public class CharController : MonoBehaviour // TODO: Web strikes limit
     float startRollingSpeed;
     float targetRollingSpeed;
 
-    Action DoOnChargeControl;
+    Action DoOnChargeAvailableControl;
+    Action DoOnChargeUnavailableControl;
     Action DoOnLeftRoll;
     Action DoOnRightRoll;
     Action DoOnStop;
@@ -82,7 +83,8 @@ public class CharController : MonoBehaviour // TODO: Web strikes limit
         wheelDrive = GetComponent<WheelDrive>();
         webProducer = GetComponent<WebProducer>();
 
-        DoOnChargeControl = delegate () { };
+        DoOnChargeAvailableControl = delegate () { };
+        DoOnChargeUnavailableControl = delegate () { };
 
         DoOnLeftRoll = ActualLeftRoll;
         DoOnRightRoll = ActualRightRoll;
@@ -145,6 +147,8 @@ public class CharController : MonoBehaviour // TODO: Web strikes limit
                 if(ChargeBecomeAvailable != null)
                     ChargeBecomeAvailable();
             }
+
+            DoOnChargeAvailableControl();
         }
         else
         {
@@ -152,22 +156,18 @@ public class CharController : MonoBehaviour // TODO: Web strikes limit
             {
                 isChargeAvailable = false;
 
-                DoOnChargeControl();
-
                 if(ChargeBecomeUnavailable != null)
                     ChargeBecomeUnavailable();
             }
+
+            DoOnChargeUnavailableControl(); // If charging become unavailable in process of charging, it will be cancelled
         }
     }
 
     //==================================================================================================================================================================
     public void ChargeJumpBegin()
     {
-        if(isChargeAvailable)
-        {
-            jumper.BeginCharge();
-            DoOnChargeControl = CancelCharge;
-        }
+        DoOnChargeAvailableControl = StartCharging;
     }
 
     public void ReleaseJump()
@@ -175,7 +175,8 @@ public class CharController : MonoBehaviour // TODO: Web strikes limit
         CutWeb();
         jumper.Jump();
 
-        DoOnChargeControl = delegate () { };
+        DoOnChargeAvailableControl = delegate () { };
+        DoOnChargeUnavailableControl = delegate () { };
     }
 
     public void UnStick()
@@ -228,10 +229,20 @@ public class CharController : MonoBehaviour // TODO: Web strikes limit
     }
 
     //Actuals===========================================================================================================================================================
+    void StartCharging()
+    {
+        jumper.BeginCharge();
+
+        DoOnChargeAvailableControl = delegate () { };
+        DoOnChargeUnavailableControl = CancelCharge;
+    }
+
     void CancelCharge()
     {
         jumper.CancelCharge();
-        DoOnChargeControl = delegate () { };
+
+        DoOnChargeAvailableControl = StartCharging;
+        DoOnChargeUnavailableControl = delegate () { };
     }
 
     void ActualLeftRoll()

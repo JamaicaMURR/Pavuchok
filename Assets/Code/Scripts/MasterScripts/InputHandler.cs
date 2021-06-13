@@ -5,29 +5,19 @@ using UnityEngine;
 
 public class InputHandler : MonoBehaviour
 {
-    Action DoOnJumpRelaease;
     //==================================================================================================================================================================
     new public Camera camera;
 
     public CharController charController;
 
     //==================================================================================================================================================================
-    private void Awake()
-    {
-        DoOnJumpRelaease = delegate () { };
-
-    }
-
     void Update()
     {
         if(Input.GetButtonDown("Jump"))
-        {
             charController.ChargeJumpBegin();
-            DoOnJumpRelaease = ActualReleaseJump;
-        }
 
         if(Input.GetButtonUp("Jump"))
-            DoOnJumpRelaease();
+            charController.ReleaseJump();
 
         float horizontal = Input.GetAxis("Horizontal");
 
@@ -43,10 +33,7 @@ public class InputHandler : MonoBehaviour
 
         if(Input.GetButtonDown("Fire2"))
         {
-            if(DoOnJumpRelaease == ActualReleaseJump)
-                DoOnJumpRelaease = delegate () { }; // Jump cancelling
-            else
-                charController.UnStick();
+            charController.UnStick();
         }
 
         float vertical = Input.GetAxis("Vertical");
@@ -57,11 +44,5 @@ public class InputHandler : MonoBehaviour
             charController.ReleaseWeb();
         else
             charController.StopWeb();
-    }
-
-    //==================================================================================================================================================================
-    void ActualReleaseJump()
-    {
-        charController.ReleaseJump();
     }
 }
