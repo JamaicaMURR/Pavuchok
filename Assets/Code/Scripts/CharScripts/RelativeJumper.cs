@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RelativeJumper : MonoBehaviour // TODO: Jump charging & direction indication
+public class RelativeJumper : MonoBehaviour
 {
     float stepTime;
     float stepForce;
@@ -21,6 +21,8 @@ public class RelativeJumper : MonoBehaviour // TODO: Jump charging & direction i
 
     [HideInInspector]
     public int chargingSteps;
+
+    public event Action OnChargingComplete;
 
     //==================================================================================================================================================================
     private void Awake()
@@ -67,6 +69,9 @@ public class RelativeJumper : MonoBehaviour // TODO: Jump charging & direction i
     {
         if(stepsDone < chargingSteps)
             StartCoroutine(ChargeStep());
+        else if(OnChargingComplete != null)
+            OnChargingComplete();
+
     }
 
     //==================================================================================================================================================================

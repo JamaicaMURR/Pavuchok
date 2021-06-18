@@ -138,6 +138,7 @@ public class CharController : MonoBehaviour // TODO: Web strikes limit
 
     private void Update()
     {
+        // Controlling of jump charging availability
         if(IsTouchingSurface && collider.attachedRigidbody.velocity.magnitude <= jumpChargeModeVelocityThreshold)
         {
             if(!isChargeAvailable)
