@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class JumpArrow : MonoBehaviour
+public class JumpArrowController : MonoBehaviour
 {
     Action EnableDisableArrow;
     Collision2DHandler DoOnCollisionStay;

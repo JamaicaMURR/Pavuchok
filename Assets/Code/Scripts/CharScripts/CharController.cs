@@ -3,6 +3,9 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+// TODO: Ability to death
+// TODO: Deadly surfaces
+
 public class CharController : MonoBehaviour // TODO: Web strikes limit
 {
     new Collider2D collider;
