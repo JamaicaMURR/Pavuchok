@@ -90,11 +90,6 @@ public class Chute : MonoBehaviour
     void OrientateAcrossVelocity()
     {
         if(rootKnot != null)
-        {
-            if(transform.position.x >= rootKnot.transform.position.x)
-                transform.rotation = Quaternion.Euler(0, 0, -Vector2.Angle((Vector2)transform.position - (Vector2)rootKnot.transform.position, Vector2.up));
-            else
-                transform.rotation = Quaternion.Euler(0, 0, Vector2.Angle((Vector2)transform.position - (Vector2)rootKnot.transform.position, Vector2.up));
-        }
+            transform.rotation = Quaternion.Euler(0, 0, -Vector2.SignedAngle((Vector2)transform.position - (Vector2)rootKnot.transform.position, Vector2.up));
     }
 }
