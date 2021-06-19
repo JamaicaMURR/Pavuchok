@@ -73,7 +73,10 @@ public class CharController : MonoBehaviour // TODO: Web strikes limit
     [Header("Web Settings")]
     public float webPullSpeed = 1;
     public float webReleaseSpeed = 1;
+
     public int maximumKnots = 40;
+    public int strikesLimit = 3; // For web strikes limiter
+
     public float maximalShootDistance = 10;
     public float minimalWebLength = 1;
     public float reactionImpulsePerShotedKnot = 0.1f;
@@ -233,7 +236,7 @@ public class CharController : MonoBehaviour // TODO: Web strikes limit
 
     public void ProduceWeb(Vector2 targetPoint)
     {
-        DoOnProduceWeb(targetPoint);        
+        DoOnProduceWeb(targetPoint);
     }
 
     public void PullWeb()
