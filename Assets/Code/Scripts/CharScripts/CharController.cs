@@ -35,11 +35,14 @@ public class CharController : MonoBehaviour // TODO: Web strikes limit
     Action DoOnRelease;
     Action DoOnStopWeb;
 
+    Vector2Handler DoOnProduceWeb;
+
     Coroutine pullCoroutine;
     Coroutine releaseCoroutine;
 
     bool isChargeAvailable;
 
+    //==================================================================================================================================================================
     bool IsTouchingSurface
     {
         get { return collider.IsTouching(new ContactFilter2D() { layerMask = LayerMask.GetMask("Default") }); }
@@ -81,6 +84,7 @@ public class CharController : MonoBehaviour // TODO: Web strikes limit
     public event Action ChargeBecomeAvailable;
     public event Action ChargeBecomeUnavailable;
 
+    //ABILITIES PROPERTIES==============================================================================================================================================
     public bool jumpChargingAvailable
     {
         set
@@ -103,6 +107,17 @@ public class CharController : MonoBehaviour // TODO: Web strikes limit
                 DoOnUpdate = delegate () { };
                 DoOnChargeJumpBegin = delegate () { };
             }
+        }
+    }
+
+    public bool webProducingAvailable
+    {
+        set
+        {
+            if(value)
+                DoOnProduceWeb = ActualProduceWeb;
+            else
+                DoOnProduceWeb = delegate (Vector2 v) { };
         }
     }
 
@@ -130,6 +145,8 @@ public class CharController : MonoBehaviour // TODO: Web strikes limit
         DoOnPull = delegate () { };
         DoOnRelease = delegate () { };
         DoOnStopWeb = delegate () { };
+
+        DoOnProduceWeb = delegate (Vector2 v) { };
 
         webProducer.OnWebDone += delegate ()
         {
@@ -216,10 +233,7 @@ public class CharController : MonoBehaviour // TODO: Web strikes limit
 
     public void ProduceWeb(Vector2 targetPoint)
     {
-        CutWeb();
-
-        if(!collider.IsTouching(new ContactFilter2D() { layerMask = LayerMask.GetMask("Default") })) //Collider must not touch any surface from map
-            webProducer.ProduceWeb(targetPoint);
+        DoOnProduceWeb(targetPoint);        
     }
 
     public void PullWeb()
@@ -331,6 +345,14 @@ public class CharController : MonoBehaviour // TODO: Web strikes limit
         DoOnPull = ActualPull;
         DoOnRelease = ActualRelease;
         DoOnStopWeb = delegate () { };
+    }
+
+    void ActualProduceWeb(Vector2 targetPoint)
+    {
+        CutWeb();
+
+        if(!IsTouchingSurface) //Collider must not touch any surface from map
+            webProducer.ProduceWeb(targetPoint);
     }
 
     void MonitorJumpChargingAvailability()
