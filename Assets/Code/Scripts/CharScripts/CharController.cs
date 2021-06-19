@@ -18,8 +18,13 @@ public class CharController : MonoBehaviour // TODO: Web strikes limit
     float startRollingSpeed;
     float targetRollingSpeed;
 
+    Action DoOnUpdate;
+
     Action DoOnChargeAvailableControl;
     Action DoOnChargeUnavailableControl;
+
+    Action DoOnChargeJumpBegin;
+
     Action DoOnLeftRoll;
     Action DoOnRightRoll;
     Action DoOnStop;
@@ -76,6 +81,31 @@ public class CharController : MonoBehaviour // TODO: Web strikes limit
     public event Action ChargeBecomeAvailable;
     public event Action ChargeBecomeUnavailable;
 
+    public bool jumpChargingAvailable
+    {
+        set
+        {
+            if(value)
+            {
+                DoOnUpdate = MonitorJumpChargingAvailability;
+                DoOnChargeJumpBegin = delegate () { DoOnChargeAvailableControl = StartCharging; };
+            }
+            else
+            {
+                if(isChargeAvailable)
+                {
+                    isChargeAvailable = false;
+
+                    if(ChargeBecomeUnavailable != null)
+                        ChargeBecomeUnavailable();
+                }
+
+                DoOnUpdate = delegate () { };
+                DoOnChargeJumpBegin = delegate () { };
+            }
+        }
+    }
+
     //==================================================================================================================================================================
     private void Awake()
     {
@@ -86,8 +116,12 @@ public class CharController : MonoBehaviour // TODO: Web strikes limit
         wheelDrive = GetComponent<WheelDrive>();
         webProducer = GetComponent<WebProducer>();
 
+        DoOnUpdate = delegate () { };
+
         DoOnChargeAvailableControl = delegate () { };
         DoOnChargeUnavailableControl = delegate () { };
+
+        DoOnChargeJumpBegin = delegate () { };
 
         DoOnLeftRoll = ActualLeftRoll;
         DoOnRightRoll = ActualRightRoll;
@@ -141,37 +175,13 @@ public class CharController : MonoBehaviour // TODO: Web strikes limit
 
     private void Update()
     {
-        // Controlling of jump charging availability
-        if(IsTouchingSurface && collider.attachedRigidbody.velocity.magnitude <= jumpChargeModeVelocityThreshold)
-        {
-            if(!isChargeAvailable)
-            {
-                isChargeAvailable = true;
-
-                if(ChargeBecomeAvailable != null)
-                    ChargeBecomeAvailable();
-            }
-
-            DoOnChargeAvailableControl();
-        }
-        else
-        {
-            if(isChargeAvailable)
-            {
-                isChargeAvailable = false;
-
-                if(ChargeBecomeUnavailable != null)
-                    ChargeBecomeUnavailable();
-            }
-
-            DoOnChargeUnavailableControl(); // If charging become unavailable in process of charging, it will be cancelled
-        }
+        DoOnUpdate();
     }
 
     //==================================================================================================================================================================
     public void ChargeJumpBegin()
     {
-        DoOnChargeAvailableControl = StartCharging;
+        DoOnChargeJumpBegin();
     }
 
     public void ReleaseJump()
@@ -321,6 +331,34 @@ public class CharController : MonoBehaviour // TODO: Web strikes limit
         DoOnPull = ActualPull;
         DoOnRelease = ActualRelease;
         DoOnStopWeb = delegate () { };
+    }
+
+    void MonitorJumpChargingAvailability()
+    {
+        if(IsTouchingSurface && collider.attachedRigidbody.velocity.magnitude <= jumpChargeModeVelocityThreshold)
+        {
+            if(!isChargeAvailable)
+            {
+                isChargeAvailable = true;
+
+                if(ChargeBecomeAvailable != null)
+                    ChargeBecomeAvailable();
+            }
+
+            DoOnChargeAvailableControl();
+        }
+        else
+        {
+            if(isChargeAvailable)
+            {
+                isChargeAvailable = false;
+
+                if(ChargeBecomeUnavailable != null)
+                    ChargeBecomeUnavailable();
+            }
+
+            DoOnChargeUnavailableControl(); // If charging become unavailable in process of charging, it will be cancelled
+        }
     }
 
     //Coroutines========================================================================================================================================================
