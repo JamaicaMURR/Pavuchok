@@ -1,51 +1,60 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class WebStrikesLimiter : MonoBehaviour
 {
-    int _strikesLeft;
+    int strikesLeft;
 
     CharController charController;
 
     //==================================================================================================================================================================
-    int StrikesLeft
-    {
-        get { return _strikesLeft; }
-        set
-        {
-            if(value > 0)
-            {
-                if(_strikesLeft == 0)
-                    charController.webProducingAvailable = true;
+    [HideInInspector]
+    public int strikesLimit;
 
-                _strikesLeft = value;
-            }
-            else if(value == 0)
-            {
-                _strikesLeft = 0;
-                charController.webProducingAvailable = false;
-            }
-            else
-                throw new System.Exception("StrikesLeft < 0");
-        }
-    }
-
-    //==================================================================================================================================================================
-    public int strikesLimit = 3;
+    public event Action OnFullCharge;
+    public event Action OnNotFullCharge;
+    public event Action OnFullDischarge;
+    public event Action OnAtLeastOneRestored;
 
     //==================================================================================================================================================================
     private void Awake()
     {
         charController = GetComponent<CharController>();
 
-        GetComponent<WebProducer>().OnWebDone += delegate () { StrikesLeft--; };
+        OnFullDischarge += delegate () { charController.webProducingAvailable = false; };
+        OnAtLeastOneRestored += delegate () { charController.webProducingAvailable = true; };
     }
 
     //==================================================================================================================================================================
     public void RestoreStrike()
     {
-        if(StrikesLeft < strikesLimit)
-            StrikesLeft++;
+        if(strikesLeft < strikesLimit)
+        {
+            if(strikesLeft == 0)
+                OnAtLeastOneRestored();
+
+            strikesLeft++;
+
+            if(strikesLeft == strikesLimit && OnFullCharge != null)
+                OnFullCharge();
+        }
+    }
+
+    public void UseStrike()
+    {
+        if(strikesLeft > 0)
+        {
+            if(strikesLeft == strikesLimit && OnNotFullCharge != null)
+                OnNotFullCharge();
+
+            strikesLeft--;
+
+            if(strikesLeft == 0)
+                OnFullDischarge();
+        }
+        else
+            throw new Exception("Trying strike web on 0 strikes left");
     }
 }

@@ -14,12 +14,16 @@ public class CharController : MonoBehaviour // TODO: Web strikes limit
     RelativeJumper jumper;
     WheelDrive wheelDrive;
     WebProducer webProducer;
+    WebStrikesLimiter strikesLimiter;
 
     float startRollingSpeed;
     float targetRollingSpeed;
 
-    Action DoOnChargeAvailableControl;
-    Action DoOnChargeUnavailableControl;
+    Action DoOnChargeAvilable;
+    Action DoOnChargeUnavailable;
+
+    Action DoOnWebRestoringAvailable;
+    Action DoOnWebRestoringUnavailable;
 
     Action DoOnChargeJumpBegin;
 
@@ -37,6 +41,8 @@ public class CharController : MonoBehaviour // TODO: Web strikes limit
 
     Coroutine pullCoroutine;
     Coroutine releaseCoroutine;
+
+    Coroutine webRestoring;
 
     bool isStandStill;
 
@@ -73,11 +79,12 @@ public class CharController : MonoBehaviour // TODO: Web strikes limit
     public float webReleaseSpeed = 1;
 
     public int maximumKnots = 40;
-    public int strikesLimit = 3; // For web strikes limiter
+    public int strikesLimit = 3;
 
     public float maximalShootDistance = 10;
     public float minimalWebLength = 1;
     public float reactionImpulsePerShotedKnot = 0.1f;
+    public float webRestoringDelay = 0.5f;
 
     [HideInInspector]
     public RollingState rollingState;
@@ -91,7 +98,7 @@ public class CharController : MonoBehaviour // TODO: Web strikes limit
         set
         {
             if(value)
-                DoOnChargeJumpBegin = delegate () { DoOnChargeAvailableControl = StartCharging; };
+                DoOnChargeJumpBegin = delegate () { DoOnChargeAvilable = StartCharging; };
             else
                 DoOnChargeJumpBegin = delegate () { };
         }
@@ -117,9 +124,10 @@ public class CharController : MonoBehaviour // TODO: Web strikes limit
         jumper = GetComponent<RelativeJumper>();
         wheelDrive = GetComponent<WheelDrive>();
         webProducer = GetComponent<WebProducer>();
+        strikesLimiter = GetComponent<WebStrikesLimiter>();
 
-        DoOnChargeAvailableControl = delegate () { };
-        DoOnChargeUnavailableControl = delegate () { };
+        DoOnChargeAvilable = delegate () { };
+        DoOnChargeUnavailable = delegate () { };
 
         DoOnChargeJumpBegin = delegate () { };
 
@@ -148,6 +156,12 @@ public class CharController : MonoBehaviour // TODO: Web strikes limit
             DoOnRelease = delegate () { };
             DoOnStopWeb = delegate () { };
         };
+
+        DoOnWebRestoringAvailable = StartWebRestoring; // WebStrikesLimiter starts with 0 strikes left
+        DoOnWebRestoringUnavailable = delegate () { };
+
+        strikesLimiter.OnFullCharge += delegate () { DoOnWebRestoringAvailable = delegate () { }; };
+        strikesLimiter.OnNotFullCharge += delegate () { DoOnWebRestoringAvailable = StartWebRestoring; };
     }
 
     private void Start()
@@ -168,6 +182,8 @@ public class CharController : MonoBehaviour // TODO: Web strikes limit
         webProducer.maximalShootDistance = maximalShootDistance;
         webProducer.minimalWebLength = minimalWebLength;
         webProducer.reactionImpulsePerShotedKnot = reactionImpulsePerShotedKnot;
+
+        strikesLimiter.strikesLimit = strikesLimit;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -191,8 +207,8 @@ public class CharController : MonoBehaviour // TODO: Web strikes limit
         CutWeb();
         jumper.Jump();
 
-        DoOnChargeAvailableControl = delegate () { };
-        DoOnChargeUnavailableControl = delegate () { };
+        DoOnChargeAvilable = delegate () { };
+        DoOnChargeUnavailable = delegate () { };
     }
 
     public void UnStick()
@@ -254,7 +270,8 @@ public class CharController : MonoBehaviour // TODO: Web strikes limit
                     ChargeBecomeAvailable();
             }
 
-            DoOnChargeAvailableControl();
+            DoOnChargeAvilable();
+            DoOnWebRestoringAvailable();
         }
         else
         {
@@ -266,7 +283,8 @@ public class CharController : MonoBehaviour // TODO: Web strikes limit
                     ChargeBecomeUnavailable();
             }
 
-            DoOnChargeUnavailableControl(); // If charging become unavailable in process of charging, it will be cancelled
+            DoOnChargeUnavailable(); // If charging become unavailable in process of charging, it will be cancelled
+            DoOnWebRestoringUnavailable();
         }
     }
 
@@ -275,16 +293,16 @@ public class CharController : MonoBehaviour // TODO: Web strikes limit
     {
         jumper.BeginCharge();
 
-        DoOnChargeAvailableControl = delegate () { };
-        DoOnChargeUnavailableControl = CancelCharge;
+        DoOnChargeAvilable = delegate () { };
+        DoOnChargeUnavailable = CancelCharge;
     }
 
     void CancelCharge()
     {
         jumper.CancelCharge();
 
-        DoOnChargeAvailableControl = StartCharging;
-        DoOnChargeUnavailableControl = delegate () { };
+        DoOnChargeAvilable = StartCharging;
+        DoOnChargeUnavailable = delegate () { };
     }
 
     void ActualLeftRoll()
@@ -366,7 +384,26 @@ public class CharController : MonoBehaviour // TODO: Web strikes limit
         CutWeb();
 
         if(!IsTouchingSurface) //Collider must not touch any surface from map
+        {
+            strikesLimiter.UseStrike();
             webProducer.ProduceWeb(targetPoint);
+        }
+    }
+
+    void StartWebRestoring()
+    {
+        webRestoring = StartCoroutine(RestoreWebStrike());
+
+        DoOnWebRestoringAvailable = delegate () { };
+        DoOnWebRestoringUnavailable = CancelWebRestoring;
+    }
+
+    void CancelWebRestoring()
+    {
+        StopCoroutine(webRestoring);
+
+        DoOnWebRestoringAvailable = StartWebRestoring;
+        DoOnWebRestoringUnavailable = delegate () { };
     }
 
     //Coroutines========================================================================================================================================================
@@ -419,5 +456,15 @@ public class CharController : MonoBehaviour // TODO: Web strikes limit
             webProducer.Release();
             yield return new WaitForSeconds(releaseDelay);
         }
+    }
+
+    IEnumerator RestoreWebStrike()
+    {
+        yield return new WaitForSeconds(webRestoringDelay);
+
+        DoOnWebRestoringAvailable = StartWebRestoring; //Next restoring cycle
+        DoOnWebRestoringUnavailable = delegate () { };
+
+        strikesLimiter.RestoreStrike();
     }
 }
