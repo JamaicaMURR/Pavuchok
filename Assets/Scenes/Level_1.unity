@@ -6683,8 +6683,8 @@ GameObject:
   - component: {fileID: 2041491288}
   - component: {fileID: 2041491292}
   - component: {fileID: 2041491294}
-  - component: {fileID: 2041491291}
   - component: {fileID: 2041491287}
+  - component: {fileID: 2041491291}
   m_Layer: 6
   m_Name: Body
   m_TagString: Untagged
@@ -6912,7 +6912,7 @@ MonoBehaviour:
   maximalShootDistance: 10
   minimalWebLength: 0.5
   reactionImpulsePerShotedKnot: 0.1
-  webRestoringDelay: 0.5
+  webRestoringDelay: 0.1
   rollingState: 0
 --- !u!114 &2041491292
 MonoBehaviour:
@@ -6963,7 +6963,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e1ba2898ece2fe46b3ab2d5a6712503, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  strikesLimit: 0
 --- !u!1 &2070830899
 GameObject:
   m_ObjectHideFlags: 0

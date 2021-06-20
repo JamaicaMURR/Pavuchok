@@ -6,7 +6,7 @@ using UnityEngine;
 // TODO: Ability to death
 // TODO: Deadly surfaces
 
-public class CharController : MonoBehaviour // TODO: Web strikes limit
+public class CharController : MonoBehaviour
 {
     new Collider2D collider;
 
@@ -183,7 +183,7 @@ public class CharController : MonoBehaviour // TODO: Web strikes limit
         webProducer.minimalWebLength = minimalWebLength;
         webProducer.reactionImpulsePerShotedKnot = reactionImpulsePerShotedKnot;
 
-        strikesLimiter.strikesLimit = strikesLimit;
+        strikesLimiter.StrikesLimit = strikesLimit;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

@@ -5,13 +5,24 @@ using UnityEngine;
 
 public class WebStrikesLimiter : MonoBehaviour
 {
+    int _strikesLimit;
+
     int strikesLeft;
 
     CharController charController;
 
     //==================================================================================================================================================================
-    [HideInInspector]
-    public int strikesLimit;
+    public int StrikesLimit
+    {
+        get { return _strikesLimit; }
+        set
+        {
+            _strikesLimit = value;
+
+            if(strikesLeft > _strikesLimit)
+                strikesLeft = _strikesLimit;
+        }
+    }
 
     public event Action OnFullCharge;
     public event Action OnNotFullCharge;
@@ -30,15 +41,17 @@ public class WebStrikesLimiter : MonoBehaviour
     //==================================================================================================================================================================
     public void RestoreStrike()
     {
-        if(strikesLeft < strikesLimit)
+        if(strikesLeft < StrikesLimit)
         {
             if(strikesLeft == 0)
                 OnAtLeastOneRestored();
 
             strikesLeft++;
 
-            if(strikesLeft == strikesLimit && OnFullCharge != null)
+            if(strikesLeft == StrikesLimit && OnFullCharge != null)
                 OnFullCharge();
+
+            Debug.Log("+1 = " + strikesLeft);
         }
     }
 
@@ -46,13 +59,15 @@ public class WebStrikesLimiter : MonoBehaviour
     {
         if(strikesLeft > 0)
         {
-            if(strikesLeft == strikesLimit && OnNotFullCharge != null)
+            if(strikesLeft == StrikesLimit && OnNotFullCharge != null)
                 OnNotFullCharge();
 
             strikesLeft--;
 
             if(strikesLeft == 0)
                 OnFullDischarge();
+
+            Debug.Log("-1 = " + strikesLeft);
         }
         else
             throw new Exception("Trying strike web on 0 strikes left");
