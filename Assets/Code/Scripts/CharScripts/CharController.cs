@@ -260,32 +260,37 @@ public class CharController : MonoBehaviour
     //==================================================================================================================================================================
     void MonitorStandStillState()
     {
-        if(IsTouchingSurface && collider.attachedRigidbody.velocity.magnitude <= jumpChargeModeVelocityThreshold)
+        if(IsTouchingSurface)
         {
-            if(!isStandStill)
+            if(collider.attachedRigidbody.velocity.magnitude <= jumpChargeModeVelocityThreshold)
             {
-                isStandStill = true;
+                if(!isStandStill)
+                {
+                    isStandStill = true;
 
-                if(ChargeBecomeAvailable != null)
-                    ChargeBecomeAvailable();
+                    if(ChargeBecomeAvailable != null)
+                        ChargeBecomeAvailable();
+                }
+
+                DoOnChargeAvilable();
+            }
+            else
+            {
+                if(isStandStill)
+                {
+                    isStandStill = false;
+
+                    if(ChargeBecomeUnavailable != null)
+                        ChargeBecomeUnavailable();
+                }
+
+                DoOnChargeUnavailable(); // If charging become unavailable in process of charging, it will be cancelled                
             }
 
-            DoOnChargeAvilable();
             DoOnWebRestoringAvailable();
         }
         else
-        {
-            if(isStandStill)
-            {
-                isStandStill = false;
-
-                if(ChargeBecomeUnavailable != null)
-                    ChargeBecomeUnavailable();
-            }
-
-            DoOnChargeUnavailable(); // If charging become unavailable in process of charging, it will be cancelled
             DoOnWebRestoringUnavailable();
-        }
     }
 
     //Actuals===========================================================================================================================================================

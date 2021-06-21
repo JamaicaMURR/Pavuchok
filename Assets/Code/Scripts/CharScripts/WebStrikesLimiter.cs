@@ -12,6 +12,9 @@ public class WebStrikesLimiter : MonoBehaviour
     CharController charController;
 
     //==================================================================================================================================================================
+    public Animator[] indicators;
+
+    //==================================================================================================================================================================
     public int StrikesLimit
     {
         get { return _strikesLimit; }
@@ -51,7 +54,8 @@ public class WebStrikesLimiter : MonoBehaviour
             if(strikesLeft == StrikesLimit && OnFullCharge != null)
                 OnFullCharge();
 
-            Debug.Log("+1 = " + strikesLeft);
+            foreach(Animator a in indicators)
+                a.SetInteger("WebStrikesLeft", strikesLeft);
         }
     }
 
@@ -67,7 +71,8 @@ public class WebStrikesLimiter : MonoBehaviour
             if(strikesLeft == 0)
                 OnFullDischarge();
 
-            Debug.Log("-1 = " + strikesLeft);
+            foreach(Animator a in indicators)
+                a.SetInteger("WebStrikesLeft", strikesLeft);
         }
         else
             throw new Exception("Trying strike web on 0 strikes left");
