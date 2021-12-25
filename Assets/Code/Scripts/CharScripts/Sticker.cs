@@ -15,7 +15,7 @@ public class Sticker : MonoBehaviour
     public float initialStickingForce, stickingForce;
 
     //==================================================================================================================================================================
-    public bool IsSticky
+    public bool StickAbility
     {
         get { return DoOnCollision == StickToTheSurface; }
         set
@@ -37,7 +37,7 @@ public class Sticker : MonoBehaviour
     private void Awake()
     {
         collider = GetComponent<Collider2D>();
-        IsSticky = true;
+        StickAbility = false;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

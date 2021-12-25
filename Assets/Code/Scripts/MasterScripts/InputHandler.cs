@@ -47,12 +47,15 @@ public class InputHandler : MonoBehaviour
 
         //<><><><><><><><> TESTING
         if(Input.GetKeyDown(KeyCode.Alpha1))
-            charController.jumpChargingAvailable = true;
+            charController.StickAbility = !charController.StickAbility;
 
         if(Input.GetKeyDown(KeyCode.Alpha2))
             charController.WebAbility = !charController.WebAbility;
 
         if(Input.GetKeyDown(KeyCode.Alpha3))
             charController.ChuteAbility = !charController.ChuteAbility;
+
+        if(Input.GetKeyDown(KeyCode.Alpha0))
+            charController.jumpChargingAvailable = true;
     }
 }

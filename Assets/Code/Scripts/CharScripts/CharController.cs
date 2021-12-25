@@ -8,7 +8,6 @@ using UnityEngine;
 // TODO: Strike zone indication
 // TODO: Better furr
 // TODO: Flies
-// TODO: Chute ability on/off
 
 public class CharController : MonoBehaviour
 {
@@ -95,6 +94,12 @@ public class CharController : MonoBehaviour
     public event Action ChargeBecomeUnavailable;
 
     //ABILITIES PROPERTIES==============================================================================================================================================
+    public bool StickAbility
+    {
+        get { return sticker.StickAbility; }
+        set { sticker.StickAbility = value; }
+    }
+
     public bool jumpChargingAvailable
     {
         set
@@ -411,9 +416,9 @@ public class CharController : MonoBehaviour
     //Coroutines========================================================================================================================================================
     IEnumerator WaitUnstickableDelay()
     {
-        sticker.IsSticky = false;
+        sticker.StickAbility = false;
         yield return new WaitForSeconds(unstickableDelay);
-        sticker.IsSticky = true;
+        sticker.StickAbility = true;
     }
 
     IEnumerator Roll()
