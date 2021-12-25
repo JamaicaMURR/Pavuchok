@@ -234,19 +234,26 @@ public class CharController : MonoBehaviour
 
     public void ReleaseJump()
     {
-        isChargingJump = false;
+        if(isChargingJump)
+        {
+            isChargingJump = false;
 
-        CutWeb();
-        jumper.Jump();
+            CutWeb();
+            jumper.Jump();
+        }
     }
 
     public void UnStick()
     {
-        if(sticker.StickAbility)
+        CutWeb();
+
+        if(isChargingJump)
         {
-            CutWeb();
-            StartCoroutine(WaitUnstickableDelay());
+            jumper.CancelCharge();
+            isChargingJump = false;
         }
+        else if(sticker.StickAbility)
+            StartCoroutine(WaitUnstickableDelay());
     }
 
     public void RunLeft()
