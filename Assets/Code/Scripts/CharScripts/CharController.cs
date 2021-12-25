@@ -110,6 +110,12 @@ public class CharController : MonoBehaviour
         set { webProducer.WebAbility = value; }
     }
 
+    public bool PullReleaseAbility
+    {
+        get { return webProducer.PullReleaseAbility; }
+        set { webProducer.PullReleaseAbility = value; }
+    }    
+
     public bool ChuteAbility
     {
         get { return webProducer.ChuteAbility; }

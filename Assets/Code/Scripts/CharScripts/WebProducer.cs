@@ -13,6 +13,9 @@ public class WebProducer : MonoBehaviour
     Action<Vector2, float> DoOnChuteProducing;
     Action<Vector2> DoOnWebProducing;
 
+    Action PullReleaseActivate;
+    Action PullReleaseDeactivate;
+
     WebKnot rootKnot;
 
     new Rigidbody2D rigidbody;
@@ -45,6 +48,25 @@ public class WebProducer : MonoBehaviour
         }
     }
 
+    public bool PullReleaseAbility
+    {
+        get { return PullReleaseActivate == ActualPullReleaseActivate; }
+
+        set
+        {
+            if(value)
+            {
+                PullReleaseActivate = ActualPullReleaseActivate;
+                PullReleaseDeactivate = ActualPullReleaseDeactivate;
+            }
+            else
+            {
+                PullReleaseActivate = delegate () { };
+                PullReleaseDeactivate = delegate () { };
+            }
+        }
+    }
+
     public bool ChuteAbility
     {
         get { return DoOnChuteProducing == ActualProduceChute; }
@@ -70,6 +92,7 @@ public class WebProducer : MonoBehaviour
         DoOnCut = delegate () { };
 
         WebAbility = false;
+        PullReleaseAbility = false;
         ChuteAbility = false;
 
         knots = new LinkedList<WebKnot>();
@@ -131,8 +154,8 @@ public class WebProducer : MonoBehaviour
 
         rootKnot.ChainDestroy();
 
-        DoOnPull = delegate () { };
-        DoOnRelease = delegate () { };
+        PullReleaseDeactivate();
+
         DoOnCut = delegate () { };
 
         if(OnWebCut != null)
@@ -156,6 +179,18 @@ public class WebProducer : MonoBehaviour
             MakeWeb(rayHit.point);
         else
             DoOnChuteProducing(direction, distance);
+    }
+
+    void ActualPullReleaseActivate()
+    {
+        DoOnPull = ActualPull;
+        DoOnRelease = ActualRelease;
+    }
+
+    void ActualPullReleaseDeactivate()
+    {
+        DoOnPull = delegate () { };
+        DoOnRelease = delegate () { };
     }
 
     void ActualProduceChute(Vector2 direction, float distance)
@@ -198,8 +233,8 @@ public class WebProducer : MonoBehaviour
             spawnedKnot = newbie;
         }
 
-        DoOnPull = ActualPull;
-        DoOnRelease = ActualRelease;
+        PullReleaseActivate();
+
         DoOnCut = ActualCut;
 
         if(OnWebDone != null)
