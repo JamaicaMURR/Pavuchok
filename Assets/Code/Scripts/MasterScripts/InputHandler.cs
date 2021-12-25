@@ -50,6 +50,9 @@ public class InputHandler : MonoBehaviour
             charController.jumpChargingAvailable = true;
 
         if(Input.GetKeyDown(KeyCode.Alpha2))
-            charController.jumpChargingAvailable = false;
+            charController.WebAbility = !charController.WebAbility;
+
+        if(Input.GetKeyDown(KeyCode.Alpha3))
+            charController.ChuteAbility = !charController.ChuteAbility;
     }
 }

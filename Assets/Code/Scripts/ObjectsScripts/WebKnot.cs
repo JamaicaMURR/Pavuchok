@@ -71,6 +71,7 @@ public class WebKnot : MonoBehaviour
         DestroySelf();
     }
 
+    //==================================================================================================================================================================
     public void BecomeAnchor(Collider2D collider)
     {
         if(collider.gameObject.tag != "WebUnstickable")
@@ -78,6 +79,7 @@ public class WebKnot : MonoBehaviour
             StopAllCoroutines();
             GetComponent<SpriteRenderer>().sprite = null;
 
+            // Different behavior for static and physical objects
             if(collider.attachedRigidbody == null)
                 GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
             else
@@ -101,6 +103,7 @@ public class WebKnot : MonoBehaviour
         }
     }
 
+    // DoOnCollision options
     //==================================================================================================================================================================
     void Stick(Collision2D collision)
     {

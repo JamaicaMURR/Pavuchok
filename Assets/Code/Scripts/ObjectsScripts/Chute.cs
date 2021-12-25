@@ -62,6 +62,7 @@ public class Chute : MonoBehaviour
         animator.SetTrigger("ChuteReady");
     }
 
+    //==================================================================================================================================================================
     public void StartDeploying() // Must be called from deploying animation
     {
         DoOnFixedUpdate = ChangePhysicsAcrossAnimation;
@@ -74,6 +75,7 @@ public class Chute : MonoBehaviour
         DoOnFixedUpdate = delegate () { };
     }
 
+    // DoOnUpdate options
     //==================================================================================================================================================================
     void MonitorDeploying()
     {
@@ -81,15 +83,17 @@ public class Chute : MonoBehaviour
             animator.SetTrigger("DeployChute");
     }
 
-    void ChangePhysicsAcrossAnimation()
-    {
-        collider.radius = spriteRenderer.sprite.rect.width / 2 * colliderRelativeConstant;
-        rigidbody.drag = relativeDrag * collider.radius * transform.lossyScale.x;
-    }
-
     void OrientateAcrossVelocity()
     {
         if(rootKnot != null)
             transform.rotation = Quaternion.Euler(0, 0, -Vector2.SignedAngle((Vector2)transform.position - (Vector2)rootKnot.transform.position, Vector2.up));
+    }
+
+    // DoOnFixedUpdate options
+    //==================================================================================================================================================================
+    void ChangePhysicsAcrossAnimation()
+    {
+        collider.radius = spriteRenderer.sprite.rect.width / 2 * colliderRelativeConstant;
+        rigidbody.drag = relativeDrag * collider.radius * transform.lossyScale.x;
     }
 }

@@ -5,6 +5,10 @@ using UnityEngine;
 
 // TODO: Ability to death
 // TODO: Deadly surfaces
+// TODO: Strike zone indication
+// TODO: Better furr
+// TODO: Flies
+// TODO: Chute ability on/off
 
 public class CharController : MonoBehaviour
 {
@@ -36,8 +40,6 @@ public class CharController : MonoBehaviour
     Action DoOnPull;
     Action DoOnRelease;
     Action DoOnStopWeb;
-
-    Vector2Handler DoOnProduceWeb;
 
     Coroutine pullCoroutine;
     Coroutine releaseCoroutine;
@@ -104,15 +106,16 @@ public class CharController : MonoBehaviour
         }
     }
 
-    public bool webProducingAvailable
+    public bool WebAbility
     {
-        set
-        {
-            if(value)
-                DoOnProduceWeb = ActualProduceWeb;
-            else
-                DoOnProduceWeb = delegate (Vector2 v) { };
-        }
+        get { return webProducer.WebAbility; }
+        set { webProducer.WebAbility = value; }
+    }
+
+    public bool ChuteAbility
+    {
+        get { return webProducer.ChuteAbility; }
+        set { webProducer.ChuteAbility = value; }
     }
 
     //==================================================================================================================================================================
@@ -138,8 +141,6 @@ public class CharController : MonoBehaviour
         DoOnPull = delegate () { };
         DoOnRelease = delegate () { };
         DoOnStopWeb = delegate () { };
-
-        DoOnProduceWeb = delegate (Vector2 v) { };
 
         webProducer.OnWebDone += delegate ()
         {
@@ -234,7 +235,14 @@ public class CharController : MonoBehaviour
 
     public void ProduceWeb(Vector2 targetPoint)
     {
-        DoOnProduceWeb(targetPoint);
+        CutWeb();
+
+        if(!IsTouchingSurface) //Collider must not touch any surface from map
+        {
+            //EXP: strikesLimiter
+            //strikesLimiter.UseStrike();
+            webProducer.ProduceWeb(targetPoint);
+        }
     }
 
     public void PullWeb()
@@ -382,17 +390,6 @@ public class CharController : MonoBehaviour
         DoOnPull = ActualPull;
         DoOnRelease = ActualRelease;
         DoOnStopWeb = delegate () { };
-    }
-
-    void ActualProduceWeb(Vector2 targetPoint)
-    {
-        CutWeb();
-
-        if(!IsTouchingSurface) //Collider must not touch any surface from map
-        {
-            strikesLimiter.UseStrike();
-            webProducer.ProduceWeb(targetPoint);
-        }
     }
 
     void StartWebRestoring()

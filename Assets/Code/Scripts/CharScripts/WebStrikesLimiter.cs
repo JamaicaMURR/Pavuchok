@@ -37,8 +37,9 @@ public class WebStrikesLimiter : MonoBehaviour
     {
         charController = GetComponent<CharController>();
 
-        OnFullDischarge += delegate () { charController.webProducingAvailable = false; };
-        OnAtLeastOneRestored += delegate () { charController.webProducingAvailable = true; };
+        //EXP: strikeslimiter
+        OnFullDischarge += delegate () { /*charController.WebAbility = false;*/ };
+        OnAtLeastOneRestored += delegate () { /*charController.WebAbility = true;*/ };
     }
 
     //==================================================================================================================================================================

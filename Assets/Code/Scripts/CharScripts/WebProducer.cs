@@ -10,6 +10,8 @@ public class WebProducer : MonoBehaviour
     Action DoOnPull;
     Action DoOnRelease;
     Action DoOnCut;
+    Action<Vector2, float> DoOnChuteProducing;
+    Action<Vector2> DoOnWebProducing;
 
     WebKnot rootKnot;
 
@@ -30,6 +32,33 @@ public class WebProducer : MonoBehaviour
     public event Action OnWebCut;
 
     //==================================================================================================================================================================
+    public bool WebAbility
+    {
+        get { return DoOnWebProducing == ActualProduceWeb; }
+
+        set
+        {
+            if(value)
+                DoOnWebProducing = ActualProduceWeb;
+            else
+                DoOnWebProducing = delegate (Vector2 v2) { };
+        }
+    }
+
+    public bool ChuteAbility
+    {
+        get{ return DoOnChuteProducing == ActualProduceChute; }
+
+        set
+        {
+            if(value)
+                DoOnChuteProducing = ActualProduceChute;
+            else
+                DoOnChuteProducing = delegate (Vector2 v2, float f) { };
+        }
+    }
+
+    //==================================================================================================================================================================
     private void Awake()
     {
         rigidbody = GetComponent<Rigidbody2D>();
@@ -40,36 +69,16 @@ public class WebProducer : MonoBehaviour
         DoOnRelease = delegate () { };
         DoOnCut = delegate () { };
 
+        WebAbility = false;
+        ChuteAbility = false;
+
         knots = new LinkedList<WebKnot>();
     }
 
     //==================================================================================================================================================================
     public void ProduceWeb(Vector2 targetPoint)
     {
-        Vector2 direction = targetPoint - (Vector2)transform.position;
-        float distance = Vector2.Distance(transform.position, targetPoint);
-
-        if(distance > maximalShootDistance)
-            distance = maximalShootDistance;
-        else if(distance < minimalWebLength)
-            distance = minimalWebLength;
-
-        RaycastHit2D rayHit = Physics2D.Raycast(transform.position, direction, distance, layerMask: LayerMask.GetMask("Default"));
-
-        WebKnot lastKnot;
-
-        if(rayHit.transform != null)
-        {
-            lastKnot = MakeWeb(rayHit.point);
-            lastKnot.BecomeAnchor(rayHit.collider);
-        }
-        else
-        {
-            Vector2 chutePoint = direction.normalized * distance + (Vector2)transform.position;
-
-            lastKnot = MakeWeb(chutePoint);
-            lastKnot.TransformAtChute();
-        }
+        DoOnWebProducing(targetPoint);
     }
 
     public void Pull()
@@ -130,6 +139,32 @@ public class WebProducer : MonoBehaviour
             OnWebCut();
     }
 
+    void ActualProduceWeb(Vector2 targetPoint)
+    {
+        Vector2 direction = targetPoint - (Vector2)transform.position;
+        float distance = Vector2.Distance(transform.position, targetPoint);
+
+        if(distance > maximalShootDistance)
+            distance = maximalShootDistance;
+        else if(distance < minimalWebLength)
+            distance = minimalWebLength;
+
+        RaycastHit2D rayHit = Physics2D.Raycast(transform.position, direction, distance, layerMask: LayerMask.GetMask("Default"));
+
+        //EXP: pay attention (Make Web Become Anchor)
+        if(rayHit.transform != null)
+            MakeWeb(rayHit.point);
+        else
+            DoOnChuteProducing(direction, distance);
+    }
+
+    void ActualProduceChute(Vector2 direction, float distance)
+    {
+        Vector2 chutePoint = direction.normalized * distance + (Vector2)transform.position;
+
+        MakeWeb(chutePoint).TransformAtChute(); //MakeWeb returns last knot, last knot transforms at chute 
+    }
+
     //==================================================================================================================================================================
     WebKnot MakeWeb(Vector2 calculatedPoint)
     {
@@ -140,7 +175,7 @@ public class WebProducer : MonoBehaviour
         float firstGap = distance - (knotsToSpawn - 1) * knotDistance;
 
         float firstStep = firstGap / distance;
-        float step = knotDistance/distance;
+        float step = knotDistance / distance;
 
 
         rootKnot = GetNewKnot(addToKnotsListAsFirst: true);
