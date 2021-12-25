@@ -47,7 +47,7 @@ public class WebProducer : MonoBehaviour
 
     public bool ChuteAbility
     {
-        get{ return DoOnChuteProducing == ActualProduceChute; }
+        get { return DoOnChuteProducing == ActualProduceChute; }
 
         set
         {

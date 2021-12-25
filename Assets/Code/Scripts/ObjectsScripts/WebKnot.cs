@@ -74,24 +74,19 @@ public class WebKnot : MonoBehaviour
     //==================================================================================================================================================================
     public void BecomeAnchor(Collider2D collider)
     {
-        if(collider.gameObject.tag != "WebUnstickable")
-        {
-            StopAllCoroutines();
-            GetComponent<SpriteRenderer>().sprite = null;
+        StopAllCoroutines();
+        GetComponent<SpriteRenderer>().sprite = null;
 
-            // Different behavior for static and physical objects
-            if(collider.attachedRigidbody == null)
-                GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
-            else
-            {
-                joint.enabled = true;
-                joint.autoConfigureConnectedAnchor = true;
-                joint.distance = 0;
-                joint.connectedBody = collider.attachedRigidbody;
-            }
-        }
+        // Different behavior for static and physical objects
+        if(collider.attachedRigidbody == null)
+            GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
         else
-            TransformAtChute();
+        {
+            joint.enabled = true;
+            joint.autoConfigureConnectedAnchor = true;
+            joint.distance = 0;
+            joint.connectedBody = collider.attachedRigidbody;
+        }
     }
 
     public void TransformAtChute(float delay = 0)
@@ -128,10 +123,11 @@ public class WebKnot : MonoBehaviour
 
         yield return new WaitForSeconds(delay);
 
-        joint.enabled = false;
+        //EXP: joint.enabled
+        //joint.enabled = false;
 
         chute.enabled = true;
-        chute.Activate(PreviousKnot);
+        chute.Activate(root: PreviousKnot);
 
         DoOnCollision = Collapse;
     }
