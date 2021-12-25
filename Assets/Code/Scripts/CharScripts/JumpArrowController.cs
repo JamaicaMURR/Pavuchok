@@ -27,7 +27,7 @@ public class JumpArrowController : MonoBehaviour
         DoOnCollisionStay = delegate (Collision2D c) { };
         EnableDisableArrow = delegate () { };
 
-        charController.ChargeBecomeAvailable += delegate ()
+        charController.OnBecomeStand += delegate ()
         {
             DoOnCollisionStay = OrientateAcrossJumpDirection;
 
@@ -38,7 +38,7 @@ public class JumpArrowController : MonoBehaviour
             };
         };
 
-        charController.ChargeBecomeUnavailable += delegate ()
+        charController.OnBecomeMove += delegate ()
         {
             DoOnCollisionStay = delegate (Collision2D c) { };
 

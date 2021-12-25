@@ -13,7 +13,21 @@ public class RelativeJumper : MonoBehaviour
 
     new Collider2D collider;
 
-    Collision2DHandler DoOnCollisionStay;
+    Action DoOnJumpCharging;
+    Action<Collision2D> DoOnCollisionStay;
+
+    //==================================================================================================================================================================
+    public bool JumpChargingAbility
+    {
+        get { return DoOnJumpCharging == ActualJumpCharge; }
+        set
+        {
+            if(value)
+                DoOnJumpCharging = ActualJumpCharge;
+            else
+                DoOnJumpCharging = delegate () { };
+        }
+    }
 
     //==================================================================================================================================================================
     [HideInInspector]
@@ -33,6 +47,8 @@ public class RelativeJumper : MonoBehaviour
         stepForce = (jumpForcePeak - jumpForceInitial) / chargingSteps;
 
         DoOnCollisionStay = delegate (Collision2D c) { };
+
+        JumpChargingAbility = false;
     }
 
     private void Start()
@@ -48,8 +64,9 @@ public class RelativeJumper : MonoBehaviour
     //==================================================================================================================================================================
     public void BeginCharge()
     {
-        stepsDone = 0;
-        StartCoroutine(ChargeStep());
+        DoOnJumpCharging();
+        //stepsDone = 0;
+        //StartCoroutine(ChargeStep());
     }
 
     public void CancelCharge()
@@ -75,6 +92,12 @@ public class RelativeJumper : MonoBehaviour
     }
 
     //==================================================================================================================================================================
+    void ActualJumpCharge()
+    {
+        stepsDone = 0;
+        StartCoroutine(ChargeStep());
+    }
+
     void ActualJump(Collision2D collision)
     {
         StopCoroutine(JumpReady());
@@ -96,6 +119,9 @@ public class RelativeJumper : MonoBehaviour
     {
         DoOnCollisionStay = ActualJump;
         yield return new WaitForSeconds(jumpTimeWindow);
+
+        jumpForce = jumpForceInitial;
+
         DoOnCollisionStay = delegate (Collision2D c) { };
     }
 

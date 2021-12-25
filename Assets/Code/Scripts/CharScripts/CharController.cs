@@ -22,13 +22,12 @@ public class CharController : MonoBehaviour
     float startRollingSpeed;
     float targetRollingSpeed;
 
-    Action DoOnChargeAvilable;
-    Action DoOnChargeUnavailable;
+    Action DoOnJumpChargeBegin;
+
+    Action<Vector2> DoOnProduceWeb;
 
     Action DoOnWebRestoringAvailable;
     Action DoOnWebRestoringUnavailable;
-
-    Action DoOnChargeJumpBegin;
 
     Action DoOnLeftRoll;
     Action DoOnRightRoll;
@@ -45,13 +44,10 @@ public class CharController : MonoBehaviour
 
     Coroutine webRestoring;
 
+    bool isTouching;
     bool isStandStill;
 
-    //==================================================================================================================================================================
-    bool IsTouchingSurface
-    {
-        get { return collider.IsTouching(new ContactFilter2D() { layerMask = LayerMask.GetMask("Default") }); }
-    }
+    bool isChargingJump;
 
     //==================================================================================================================================================================
     [Header("Sticking Settings")]
@@ -90,8 +86,10 @@ public class CharController : MonoBehaviour
     [HideInInspector]
     public RollingState rollingState;
 
-    public event Action ChargeBecomeAvailable;
-    public event Action ChargeBecomeUnavailable;
+    public event Action OnBecomeTouch;
+    public event Action OnBecomeFly;
+    public event Action OnBecomeStand;
+    public event Action OnBecomeMove;
 
     //ABILITIES PROPERTIES==============================================================================================================================================
     public bool StickAbility
@@ -100,15 +98,10 @@ public class CharController : MonoBehaviour
         set { sticker.StickAbility = value; }
     }
 
-    public bool jumpChargingAvailable
+    public bool JumpChargingAbility
     {
-        set
-        {
-            if(value)
-                DoOnChargeJumpBegin = delegate () { DoOnChargeAvilable = StartCharging; };
-            else
-                DoOnChargeJumpBegin = delegate () { };
-        }
+        get { return jumper.JumpChargingAbility; }
+        set { jumper.JumpChargingAbility = value; }
     }
 
     public bool WebAbility
@@ -134,19 +127,47 @@ public class CharController : MonoBehaviour
         webProducer = GetComponent<WebProducer>();
         strikesLimiter = GetComponent<WebStrikesLimiter>();
 
-        DoOnChargeAvilable = delegate () { };
-        DoOnChargeUnavailable = delegate () { };
+        //----------------------------------------------------------------//
+        DoOnJumpChargeBegin = delegate () { };
 
-        DoOnChargeJumpBegin = delegate () { };
+        OnBecomeMove += delegate ()
+        {
+            DoOnJumpChargeBegin = delegate () { };
+            jumper.CancelCharge();
+        };
 
+        OnBecomeStand += delegate ()
+        {
+            DoOnJumpChargeBegin = ActualJumpCharge;
+
+            if(isChargingJump)
+                DoOnJumpChargeBegin();
+        };
+
+        //----------------------------------------------------------------//
+        DoOnProduceWeb = delegate (Vector2 v2) { };
+
+        OnBecomeTouch += delegate ()
+        {
+            DoOnProduceWeb = delegate (Vector2 v2) { };
+        };
+
+        OnBecomeFly += delegate ()
+        {
+            DoOnProduceWeb = ActualProduceWeb;
+        };
+
+        //----------------------------------------------------------------//
         DoOnLeftRoll = ActualLeftRoll;
         DoOnRightRoll = ActualRightRoll;
         DoOnStop = delegate () { };
 
+        //----------------------------------------------------------------//
         DoOnPull = delegate () { };
         DoOnRelease = delegate () { };
         DoOnStopWeb = delegate () { };
 
+        //----------------------------------------------------------------//
         webProducer.OnWebDone += delegate ()
         {
             DoOnPull = ActualPull;
@@ -163,6 +184,7 @@ public class CharController : MonoBehaviour
             DoOnStopWeb = delegate () { };
         };
 
+        //----------------------------------------------------------------//
         DoOnWebRestoringAvailable = StartWebRestoring; // WebStrikesLimiter starts with 0 strikes left
         DoOnWebRestoringUnavailable = delegate () { };
 
@@ -199,28 +221,32 @@ public class CharController : MonoBehaviour
 
     private void Update()
     {
-        MonitorStandStillState();
+        MonitorSelfState();
     }
 
     //==================================================================================================================================================================
     public void ChargeJumpBegin()
     {
-        DoOnChargeJumpBegin();
+        isChargingJump = true;
+
+        DoOnJumpChargeBegin();
     }
 
     public void ReleaseJump()
     {
+        isChargingJump = false;
+
         CutWeb();
         jumper.Jump();
-
-        DoOnChargeAvilable = delegate () { };
-        DoOnChargeUnavailable = delegate () { };
     }
 
     public void UnStick()
     {
-        CutWeb();
-        StartCoroutine(WaitUnstickableDelay());
+        if(sticker.StickAbility)
+        {
+            CutWeb();
+            StartCoroutine(WaitUnstickableDelay());
+        }
     }
 
     public void RunLeft()
@@ -240,14 +266,7 @@ public class CharController : MonoBehaviour
 
     public void ProduceWeb(Vector2 targetPoint)
     {
-        CutWeb();
-
-        if(!IsTouchingSurface) //Collider must not touch any surface from map
-        {
-            //EXP: strikesLimiter
-            //strikesLimiter.UseStrike();
-            webProducer.ProduceWeb(targetPoint);
-        }
+        DoOnProduceWeb(targetPoint);
     }
 
     public void PullWeb()
@@ -271,21 +290,27 @@ public class CharController : MonoBehaviour
     }
 
     //==================================================================================================================================================================
-    void MonitorStandStillState()
+    void MonitorSelfState()
     {
-        if(IsTouchingSurface)
+        if(collider.IsTouching(new ContactFilter2D() { layerMask = LayerMask.GetMask("Default") }))
         {
+            if(!isTouching)
+            {
+                isTouching = true;
+
+                if(OnBecomeTouch != null)
+                    OnBecomeTouch();
+            }
+
             if(collider.attachedRigidbody.velocity.magnitude <= jumpChargeModeVelocityThreshold)
             {
                 if(!isStandStill)
                 {
                     isStandStill = true;
 
-                    if(ChargeBecomeAvailable != null)
-                        ChargeBecomeAvailable();
+                    if(OnBecomeStand != null)
+                        OnBecomeStand();
                 }
-
-                DoOnChargeAvilable();
             }
             else
             {
@@ -293,34 +318,33 @@ public class CharController : MonoBehaviour
                 {
                     isStandStill = false;
 
-                    if(ChargeBecomeUnavailable != null)
-                        ChargeBecomeUnavailable();
+                    if(OnBecomeMove != null)
+                        OnBecomeMove();
                 }
-
-                DoOnChargeUnavailable(); // If charging become unavailable in process of charging, it will be cancelled                
             }
-
-            DoOnWebRestoringAvailable();
         }
         else
-            DoOnWebRestoringUnavailable();
+        {
+            if(isTouching)
+            {
+                isTouching = false;
+
+                if(OnBecomeFly != null)
+                    OnBecomeFly();
+            }
+        }
     }
 
     //Actuals===========================================================================================================================================================
-    void StartCharging()
+    void ActualJumpCharge()
     {
         jumper.BeginCharge();
-
-        DoOnChargeAvilable = delegate () { };
-        DoOnChargeUnavailable = CancelCharge;
     }
 
-    void CancelCharge()
+    void ActualProduceWeb(Vector2 targetPoint)
     {
-        jumper.CancelCharge();
-
-        DoOnChargeAvilable = StartCharging;
-        DoOnChargeUnavailable = delegate () { };
+        CutWeb();
+        webProducer.ProduceWeb(targetPoint);
     }
 
     void ActualLeftRoll()
