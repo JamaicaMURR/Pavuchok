@@ -174,7 +174,6 @@ public class WebProducer : MonoBehaviour
 
         RaycastHit2D rayHit = Physics2D.Raycast(transform.position, direction, distance, layerMask: LayerMask.GetMask("Default"));
 
-        //EXP: pay attention (Make Web Become Anchor)
         if(rayHit.transform != null)
             MakeWeb(rayHit.point);
         else

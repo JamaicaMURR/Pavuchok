@@ -8,6 +8,7 @@ using UnityEngine;
 // TODO: Strike zone indication
 // TODO: Better furr
 // TODO: Flies
+// TODO: Web Strike reload animation
 
 public class CharController : MonoBehaviour
 {
@@ -17,17 +18,15 @@ public class CharController : MonoBehaviour
     RelativeJumper jumper;
     WheelDrive wheelDrive;
     WebProducer webProducer;
-    WebStrikesLimiter strikesLimiter;
+    WebStrikeCooler webStrikeCooler;
 
     float startRollingSpeed;
     float targetRollingSpeed;
 
     Action DoOnJumpChargeBegin;
 
-    Action<Vector2> DoOnProduceWeb;
-
-    Action DoOnWebRestoringAvailable;
-    Action DoOnWebRestoringUnavailable;
+    Action<Vector2> DoOnTouchFlyCheck;
+    Action<Vector2> DoOnWebStrikeCoolCheck;
 
     Action DoOnLeftRoll;
     Action DoOnRightRoll;
@@ -42,21 +41,21 @@ public class CharController : MonoBehaviour
     Coroutine pullCoroutine;
     Coroutine releaseCoroutine;
 
-    Coroutine webRestoring;
-
     bool isTouching;
     bool isStandStill;
 
     bool isChargingJump;
 
     //==================================================================================================================================================================
+    [Header("Common Settings")]
+    public float standStillVelocityThreshold = 0.01f;
+
     [Header("Sticking Settings")]
     public float initialStickingForce = 100;
     public float usualStickingForce = 17.5f;
     public float unstickableDelay = 0.05f;
 
     [Header("Jumping Settings")]
-    public float jumpChargeModeVelocityThreshold = 0.01f;
     public float jumpForceInitial = 10;
     public float jumpForcePeak = 15;
     public float jumpChargeTime = 0.25f;
@@ -114,7 +113,7 @@ public class CharController : MonoBehaviour
     {
         get { return webProducer.PullReleaseAbility; }
         set { webProducer.PullReleaseAbility = value; }
-    }    
+    }
 
     public bool ChuteAbility
     {
@@ -127,11 +126,11 @@ public class CharController : MonoBehaviour
     {
         collider = GetComponent<CircleCollider2D>();
 
+        wheelDrive = GetComponent<WheelDrive>();
         sticker = GetComponent<Sticker>();
         jumper = GetComponent<RelativeJumper>();
-        wheelDrive = GetComponent<WheelDrive>();
         webProducer = GetComponent<WebProducer>();
-        strikesLimiter = GetComponent<WebStrikesLimiter>();
+        webStrikeCooler = GetComponent<WebStrikeCooler>();
 
         //----------------------------------------------------------------//
         DoOnJumpChargeBegin = delegate () { };
@@ -151,16 +150,17 @@ public class CharController : MonoBehaviour
         };
 
         //----------------------------------------------------------------//
-        DoOnProduceWeb = delegate (Vector2 v2) { };
+        DoOnTouchFlyCheck = delegate (Vector2 v2) { };
+        DoOnWebStrikeCoolCheck = TouchFlyCheck;
 
         OnBecomeTouch += delegate ()
         {
-            DoOnProduceWeb = delegate (Vector2 v2) { };
+            DoOnTouchFlyCheck = delegate (Vector2 v2) { };
         };
 
         OnBecomeFly += delegate ()
         {
-            DoOnProduceWeb = ActualProduceWeb;
+            DoOnTouchFlyCheck = ActualProduceWeb;
         };
 
         //----------------------------------------------------------------//
@@ -179,6 +179,10 @@ public class CharController : MonoBehaviour
             DoOnPull = ActualPull;
             DoOnRelease = ActualRelease;
             DoOnStopWeb = delegate () { };
+
+            DoOnWebStrikeCoolCheck = delegate (Vector2 v2) { };
+
+            webStrikeCooler.BeginCooling();
         };
 
         webProducer.OnWebCut += delegate ()
@@ -189,13 +193,6 @@ public class CharController : MonoBehaviour
             DoOnRelease = delegate () { };
             DoOnStopWeb = delegate () { };
         };
-
-        //----------------------------------------------------------------//
-        DoOnWebRestoringAvailable = StartWebRestoring; // WebStrikesLimiter starts with 0 strikes left
-        DoOnWebRestoringUnavailable = delegate () { };
-
-        strikesLimiter.OnFullCharge += delegate () { DoOnWebRestoringAvailable = delegate () { }; };
-        strikesLimiter.OnNotFullCharge += delegate () { DoOnWebRestoringAvailable = StartWebRestoring; };
     }
 
     private void Start()
@@ -216,8 +213,6 @@ public class CharController : MonoBehaviour
         webProducer.maximalShootDistance = maximalShootDistance;
         webProducer.minimalWebLength = minimalWebLength;
         webProducer.reactionImpulsePerShotedKnot = reactionImpulsePerShotedKnot;
-
-        strikesLimiter.StrikesLimit = strikesLimit;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -228,6 +223,12 @@ public class CharController : MonoBehaviour
     private void Update()
     {
         MonitorSelfState();
+    }
+
+    //==================================================================================================================================================================
+    public void WebStrikeCooled() // Calls from WebStrikeCooler animator
+    {
+        DoOnWebStrikeCoolCheck = TouchFlyCheck;
     }
 
     //==================================================================================================================================================================
@@ -279,7 +280,7 @@ public class CharController : MonoBehaviour
 
     public void ProduceWeb(Vector2 targetPoint)
     {
-        DoOnProduceWeb(targetPoint);
+        DoOnWebStrikeCoolCheck(targetPoint);
     }
 
     public void PullWeb()
@@ -315,7 +316,7 @@ public class CharController : MonoBehaviour
                     OnBecomeTouch();
             }
 
-            if(collider.attachedRigidbody.velocity.magnitude <= jumpChargeModeVelocityThreshold)
+            if(collider.attachedRigidbody.velocity.magnitude <= standStillVelocityThreshold)
             {
                 if(!isStandStill)
                 {
@@ -352,6 +353,11 @@ public class CharController : MonoBehaviour
     void ActualJumpCharge()
     {
         jumper.BeginCharge();
+    }
+
+    void TouchFlyCheck(Vector2 targetPoint)
+    {
+        DoOnTouchFlyCheck(targetPoint);
     }
 
     void ActualProduceWeb(Vector2 targetPoint)
@@ -434,22 +440,6 @@ public class CharController : MonoBehaviour
         DoOnStopWeb = delegate () { };
     }
 
-    void StartWebRestoring()
-    {
-        webRestoring = StartCoroutine(RestoreWebStrike());
-
-        DoOnWebRestoringAvailable = delegate () { };
-        DoOnWebRestoringUnavailable = CancelWebRestoring;
-    }
-
-    void CancelWebRestoring()
-    {
-        StopCoroutine(webRestoring);
-
-        DoOnWebRestoringAvailable = StartWebRestoring;
-        DoOnWebRestoringUnavailable = delegate () { };
-    }
-
     //Coroutines========================================================================================================================================================
     IEnumerator WaitUnstickableDelay()
     {
@@ -500,15 +490,5 @@ public class CharController : MonoBehaviour
             webProducer.Release();
             yield return new WaitForSeconds(releaseDelay);
         }
-    }
-
-    IEnumerator RestoreWebStrike()
-    {
-        yield return new WaitForSeconds(webRestoringDelay);
-
-        DoOnWebRestoringAvailable = StartWebRestoring; //Next restoring cycle
-        DoOnWebRestoringUnavailable = delegate () { };
-
-        strikesLimiter.RestoreStrike();
     }
 }

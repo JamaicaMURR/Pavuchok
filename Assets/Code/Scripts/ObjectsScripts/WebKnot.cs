@@ -123,9 +123,6 @@ public class WebKnot : MonoBehaviour
 
         yield return new WaitForSeconds(delay);
 
-        //EXP: joint.enabled
-        //joint.enabled = false;
-
         chute.enabled = true;
         chute.Activate(root: PreviousKnot);
 
