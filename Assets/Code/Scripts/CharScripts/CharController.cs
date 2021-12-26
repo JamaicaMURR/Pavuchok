@@ -130,7 +130,8 @@ public class CharController : MonoBehaviour
         sticker = GetComponent<Sticker>();
         jumper = GetComponent<RelativeJumper>();
         webProducer = GetComponent<WebProducer>();
-        webStrikeCooler = GetComponent<WebStrikeCooler>();
+
+        webStrikeCooler = GameObject.Find("Master").GetComponent<WebStrikeCooler>();
 
         //----------------------------------------------------------------//
         DoOnJumpChargeBegin = delegate () { };
