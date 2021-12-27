@@ -75,7 +75,6 @@ public class WebKnot : MonoBehaviour
     public void BecomeAnchor(Collider2D collider)
     {
         StopAllCoroutines();
-        GetComponent<SpriteRenderer>().sprite = null;
 
         // Different behavior for static and physical objects
         if(collider.attachedRigidbody == null)

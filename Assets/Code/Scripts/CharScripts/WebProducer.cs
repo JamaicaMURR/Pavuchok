@@ -141,7 +141,7 @@ public class WebProducer : MonoBehaviour
         {
             WebKnot newbie = GetNewKnot();
 
-            newbie.transform.position = transform.position;
+            newbie.transform.position = new Vector3(transform.position.x, transform.position.y, newbie.transform.position.z);
             newbie.NextKnot = rootKnot;
             rootKnot = newbie;
             rootJoint.connectedBody = newbie.GetComponent<Rigidbody2D>();
@@ -214,7 +214,7 @@ public class WebProducer : MonoBehaviour
 
         rootKnot = GetNewKnot(addToKnotsListAsFirst: true);
 
-        rootKnot.transform.position = Vector2.Lerp(transform.position, calculatedPoint, firstStep);
+        rootKnot.transform.position = Vector2.Lerp(transform.position, calculatedPoint, firstStep);        
 
         rootJoint.enabled = true;
         rootJoint.distance = firstGap;
