@@ -121,11 +121,11 @@ public class WebKnot : MonoBehaviour
 
         chute.Prepare();
 
+        DoOnCollision = Collapse;
+
         yield return new WaitForSeconds(delay);
 
         chute.enabled = true;
         chute.Activate(root: PreviousKnot);
-
-        DoOnCollision = Collapse;
     }
 }
