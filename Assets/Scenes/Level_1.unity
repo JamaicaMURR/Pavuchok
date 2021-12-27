@@ -1135,8 +1135,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 399853703}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 36.53, y: 4.65, z: -0.5}
-  m_LocalScale: {x: 4.53, y: 1, z: 1}
+  m_LocalPosition: {x: 35.5906, y: 4.65, z: -0.5}
+  m_LocalScale: {x: 2.6514091, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 21
@@ -1726,7 +1726,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cursor: {fileID: 2800000, guid: d689ddb0da11719488002f4b7050dca1, type: 3}
-  hotSpot: {x: 70, y: 80}
+  hotSpot: {x: 64, y: 64}
 --- !u!95 &559153319
 Animator:
   serializedVersion: 3
@@ -4764,7 +4764,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 8331606197995402536, guid: f39343f2d4d27744087d561f9676cd77, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 74722588ddf29bd4daaee41fc747ad01, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -6979,8 +6979,8 @@ MonoBehaviour:
   arrow: {fileID: 1584810428}
   charController: {fileID: 2041491291}
   relativeJumper: {fileID: 2041491290}
-  jumpNotChargedArrow: {fileID: 8476953564430418116, guid: f39343f2d4d27744087d561f9676cd77, type: 3}
-  jumpChargedArrow: {fileID: 8331606197995402536, guid: f39343f2d4d27744087d561f9676cd77, type: 3}
+  jumpNotChargedArrow: {fileID: 21300000, guid: 74722588ddf29bd4daaee41fc747ad01, type: 3}
+  jumpChargedArrow: {fileID: 21300000, guid: c0767c668daa2f445b966457ee8c6b12, type: 3}
 --- !u!114 &2041491288
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -8,7 +8,8 @@ using UnityEngine;
 // TODO: Strike zone indication
 // TODO: Better furr
 // TODO: Flies
-// TODO: Web Strike reload animation
+// TODO: Targeting line
+// TODO: Eyes chasing cursor
 
 public class CharController : MonoBehaviour
 {
