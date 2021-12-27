@@ -14,16 +14,12 @@ public class WebDrawer : MonoBehaviour
     //==================================================================================================================================================================
     public WebProducer webProducer;
 
-    public float webWidth = 0.1f;
     public float zShift = 0.5f;
 
     //==================================================================================================================================================================
     private void Awake()
     {
         lineRenderer = GetComponent<LineRenderer>();
-
-        lineRenderer.startWidth = webWidth;
-        lineRenderer.endWidth = webWidth;
 
         shift = new Vector3(0, 0, zShift);
 

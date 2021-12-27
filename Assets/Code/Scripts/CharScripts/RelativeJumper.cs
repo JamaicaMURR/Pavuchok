@@ -37,6 +37,7 @@ public class RelativeJumper : MonoBehaviour
     public int chargingSteps;
 
     public event Action OnChargingComplete;
+    public event Action OnChargingCancelled;
 
     //==================================================================================================================================================================
     private void Awake()
@@ -65,14 +66,15 @@ public class RelativeJumper : MonoBehaviour
     public void BeginCharge()
     {
         DoOnJumpCharging();
-        //stepsDone = 0;
-        //StartCoroutine(ChargeStep());
     }
 
     public void CancelCharge()
     {
         StopAllCoroutines();
         jumpForce = jumpForceInitial;
+
+        if(OnChargingCancelled != null)
+            OnChargingCancelled();
     }
 
     public void Jump()

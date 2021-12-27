@@ -90,6 +90,7 @@ public class CharController : MonoBehaviour
     public event Action OnBecomeFly;
     public event Action OnBecomeStand;
     public event Action OnBecomeMove;
+    public event Action OnCancelledJumpRelease;
 
     //ABILITIES PROPERTIES==============================================================================================================================================
     public bool StickAbility
@@ -250,6 +251,8 @@ public class CharController : MonoBehaviour
             CutWeb();
             jumper.Jump();
         }
+        else if(OnCancelledJumpRelease != null)
+            OnCancelledJumpRelease();
     }
 
     public void UnStick()

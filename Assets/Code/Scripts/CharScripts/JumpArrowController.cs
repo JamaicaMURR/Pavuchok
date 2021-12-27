@@ -59,6 +59,16 @@ public class JumpArrowController : MonoBehaviour
         {
             arrowSpriteRenderer.sprite = jumpChargedArrow;
         };
+
+        relativeJumper.OnChargingCancelled += delegate ()
+        {
+            arrowSpriteRenderer.sprite = null;
+        };
+
+        charController.OnCancelledJumpRelease += delegate ()
+        {
+             arrowSpriteRenderer.sprite = jumpNotChargedArrow;
+        };
     }
 
     private void OnCollisionStay2D(Collision2D collision)
