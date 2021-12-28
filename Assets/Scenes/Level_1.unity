@@ -7091,6 +7091,7 @@ GameObject:
   - component: {fileID: 2041491292}
   - component: {fileID: 2041491287}
   - component: {fileID: 2041491291}
+  - component: {fileID: 2041491294}
   m_Layer: 6
   m_Name: Body
   m_TagString: Untagged
@@ -7290,18 +7291,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88bdc50359505de4a9d76b5a78151432, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initialRollingSpeed: 50
-  maximalRollingSpeed: 350
-  accelerationTime: 0.5
-  rotationTorque: 1000
-  brakesTorque: 10
-  webPullSpeed: 8
-  webReleaseSpeed: 8
-  maximumKnots: 80
-  maximalStrikeDistance: 10
-  minimalWebLength: 0.5
-  reactionImpulsePerShotedKnot: 0.1
-  webRestoringDelay: 0.25
   rollingState: 0
 --- !u!114 &2041491292
 MonoBehaviour:
@@ -7317,10 +7306,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   webKnotPrefab: {fileID: 7257277854871318116, guid: d71ad284efe44b64eb4b2fce82136f44, type: 3}
   rootJoint: {fileID: 2041491293}
-  knotsLimit: 80
-  maximalShootDistance: 10
-  minimalWebLength: 0.5
-  reactionImpulsePerShotedKnot: 0.1
 --- !u!232 &2041491293
 DistanceJoint2D:
   m_ObjectHideFlags: 0
@@ -7340,6 +7325,25 @@ DistanceJoint2D:
   m_AutoConfigureDistance: 0
   m_Distance: 0.005
   m_MaxDistanceOnly: 1
+--- !u!95 &2041491294
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2041491281}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 590600f85c44a28488c83b3f053dc9b7, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &2070830899
 GameObject:
   m_ObjectHideFlags: 0

@@ -14,12 +14,14 @@ public class CharController : MonoBehaviour
     ValStorage valStorage;
 
     new Collider2D collider;
+    new Rigidbody2D rigidbody2D;
 
     Sticker sticker;
     RelativeJumper jumper;
     WheelDrive wheelDrive;
     WebProducer webProducer;
     WebStrikeCooler webStrikeCooler;
+    Animator animator;
 
     float startRollingSpeed;
     float targetRollingSpeed;
@@ -75,7 +77,7 @@ public class CharController : MonoBehaviour
     public bool WebAbility
     {
         get { return webProducer.WebAbility; }
-        set 
+        set
         {
             if(webProducer.WebAbility != value)
             {
@@ -107,11 +109,13 @@ public class CharController : MonoBehaviour
         valStorage = GameObject.Find("Master").GetComponent<ValStorage>();
 
         collider = GetComponent<CircleCollider2D>();
+        rigidbody2D = GetComponent<Rigidbody2D>();
 
         wheelDrive = GetComponent<WheelDrive>();
         sticker = GetComponent<Sticker>();
         jumper = GetComponent<RelativeJumper>();
         webProducer = GetComponent<WebProducer>();
+        animator = GetComponent<Animator>();
 
         webStrikeCooler = GameObject.Find("Master").GetComponent<WebStrikeCooler>();
 
@@ -190,7 +194,7 @@ public class CharController : MonoBehaviour
 
     private void Update()
     {
-        MonitorSelfState();
+        MonitorMovingState();
     }
 
     //==================================================================================================================================================================
@@ -274,7 +278,7 @@ public class CharController : MonoBehaviour
     }
 
     //==================================================================================================================================================================
-    void MonitorSelfState()
+    void MonitorMovingState()
     {
         if(collider.IsTouching(new ContactFilter2D() { layerMask = LayerMask.GetMask("Default") }))
         {
@@ -342,6 +346,7 @@ public class CharController : MonoBehaviour
         targetRollingSpeed = -valStorage.maximalRollingSpeed;
 
         rollingState = RollingState.Left;
+        animator.SetTrigger("RollLeft");
 
         rollCoroutine = StartCoroutine(Roll());
 
@@ -356,6 +361,7 @@ public class CharController : MonoBehaviour
         targetRollingSpeed = valStorage.maximalRollingSpeed;
 
         rollingState = RollingState.Right;
+        animator.SetTrigger("RollRight");
 
         rollCoroutine = StartCoroutine(Roll());
 
@@ -369,6 +375,11 @@ public class CharController : MonoBehaviour
         StopCoroutine(rollCoroutine);
 
         wheelDrive.BeginRotate(0, valStorage.brakesTorque);
+
+        if(rollingState == RollingState.Right)
+            animator.SetTrigger("RightBreaking");
+        else if(rollingState == RollingState.Left)
+            animator.SetTrigger("LeftBreaking");
 
         rollingState = RollingState.Stop;
 
