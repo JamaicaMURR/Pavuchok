@@ -26,14 +26,16 @@ public class TargetingLineDrawer : MonoBehaviour
 
         charController.OnWebAbilityOn += delegate ()
         {
-            lineRenderer.enabled = true;
-            DoOnUpdate = DrawLine;
+            charController.OnBecomeFly += InFlightMode;
+            charController.OnBecomeTouch += InTouchMode;
         };
 
         charController.OnWebAbilityOff += delegate ()
         {
             DoOnUpdate = () => { };
-            lineRenderer.enabled = false;
+
+            charController.OnBecomeFly -= InFlightMode;
+            charController.OnBecomeTouch -= InTouchMode;
         };
     }
 
@@ -48,5 +50,17 @@ public class TargetingLineDrawer : MonoBehaviour
         Vector3 cursorPosition = camera.ScreenToWorldPoint(Input.mousePosition);
 
         lineRenderer.SetPosition(1, new Vector3(cursorPosition.x, cursorPosition.y, z));
+    }
+
+    void InFlightMode()
+    {
+        lineRenderer.enabled = true;
+        DoOnUpdate = DrawLine;
+    }
+
+    void InTouchMode()
+    {
+        DoOnUpdate = () => { };
+        lineRenderer.enabled = false;
     }
 }
