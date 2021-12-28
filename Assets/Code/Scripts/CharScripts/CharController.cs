@@ -76,9 +76,8 @@ public class CharController : MonoBehaviour
     public float webReleaseSpeed = 1;
 
     public int maximumKnots = 40;
-    public int strikesLimit = 3;
 
-    public float maximalShootDistance = 10;
+    public float maximalStrikeDistance = 10;
     public float minimalWebLength = 1;
     public float reactionImpulsePerShotedKnot = 0.1f;
     public float webRestoringDelay = 0.5f;
@@ -226,7 +225,7 @@ public class CharController : MonoBehaviour
         wheelDrive.BeginRotate(0, brakesTorque);
 
         webProducer.knotsLimit = maximumKnots;
-        webProducer.maximalShootDistance = maximalShootDistance;
+        webProducer.maximalShootDistance = maximalStrikeDistance;
         webProducer.minimalWebLength = minimalWebLength;
         webProducer.reactionImpulsePerShotedKnot = reactionImpulsePerShotedKnot;
     }

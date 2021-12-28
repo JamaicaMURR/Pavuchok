@@ -13,6 +13,7 @@ public class TargetingLineDrawer : MonoBehaviour
 
     new public Camera camera;
 
+    public float appearanceDelay = 0.15f;
     public float z;
 
     private void Awake()
@@ -26,16 +27,16 @@ public class TargetingLineDrawer : MonoBehaviour
 
         charController.OnWebAbilityOn += delegate ()
         {
-            charController.OnBecomeFly += InFlightMode;
-            charController.OnBecomeTouch += InTouchMode;
+            charController.OnBecomeFly += SwitchToFlightMode;
+            charController.OnBecomeTouch += SwitchToTouchMode;
         };
 
         charController.OnWebAbilityOff += delegate ()
         {
             DoOnUpdate = () => { };
 
-            charController.OnBecomeFly -= InFlightMode;
-            charController.OnBecomeTouch -= InTouchMode;
+            charController.OnBecomeFly -= SwitchToFlightMode;
+            charController.OnBecomeTouch -= SwitchToTouchMode;
         };
     }
 
@@ -52,15 +53,24 @@ public class TargetingLineDrawer : MonoBehaviour
         lineRenderer.SetPosition(1, new Vector3(cursorPosition.x, cursorPosition.y, z));
     }
 
-    void InFlightMode()
+    void SwitchToFlightMode()
     {
-        lineRenderer.enabled = true;
-        DoOnUpdate = DrawLine;
+        StartCoroutine("EnableLineDrawingAfterDelay");
     }
 
-    void InTouchMode()
+    void SwitchToTouchMode()
     {
+        StopAllCoroutines();
+
         DoOnUpdate = () => { };
         lineRenderer.enabled = false;
+    }
+
+    IEnumerator EnableLineDrawingAfterDelay()
+    {
+        yield return new WaitForSeconds(appearanceDelay);
+
+        lineRenderer.enabled = true;
+        DoOnUpdate = DrawLine;
     }
 }
