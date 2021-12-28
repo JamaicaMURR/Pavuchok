@@ -91,6 +91,8 @@ public class CharController : MonoBehaviour
     public event Action OnBecomeStand;
     public event Action OnBecomeMove;
     public event Action OnCancelledJumpRelease;
+    public event Action OnWebAbilityOn;
+    public event Action OnWebAbilityOff;
 
     //ABILITIES PROPERTIES==============================================================================================================================================
     public bool StickAbility
@@ -108,7 +110,18 @@ public class CharController : MonoBehaviour
     public bool WebAbility
     {
         get { return webProducer.WebAbility; }
-        set { webProducer.WebAbility = value; }
+        set 
+        {
+            if(webProducer.WebAbility != value)
+            {
+                webProducer.WebAbility = value;
+
+                if(value)
+                    OnWebAbilityOn?.Invoke();
+                else
+                    OnWebAbilityOff?.Invoke();
+            }
+        }
     }
 
     public bool PullReleaseAbility
@@ -251,8 +264,8 @@ public class CharController : MonoBehaviour
             CutWeb();
             jumper.Jump();
         }
-        else if(OnCancelledJumpRelease != null)
-            OnCancelledJumpRelease();
+        else
+            OnCancelledJumpRelease?.Invoke();
     }
 
     public void UnStick()
