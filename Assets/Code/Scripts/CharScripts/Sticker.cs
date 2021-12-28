@@ -1,15 +1,18 @@
+using System;
+using System.Collections;
 using UnityEngine;
 
 public class Sticker : MonoBehaviour
 {
+    ValStorage valStorage;
+
     new Collider2D collider;
 
     Collision2DHandler DoOnCoollisionEnter;
     Collision2DHandler DoOnCollision;
 
-    //==================================================================================================================================================================
-    [HideInInspector]
-    public float initialStickingForce, stickingForce;
+    public event Action OnStickabilityEnabled;
+    public event Action OnStickabilityDisabled;
 
     //==================================================================================================================================================================
     public bool StickAbility
@@ -17,15 +20,22 @@ public class Sticker : MonoBehaviour
         get { return DoOnCollision == StickToTheSurface; }
         set
         {
-            if(value)
+            if(value != StickAbility)
             {
-                DoOnCoollisionEnter = InitialStickToTheSurface;
-                DoOnCollision = StickToTheSurface;
-            }
-            else
-            {
-                DoOnCoollisionEnter = delegate (Collision2D c) { };
-                DoOnCollision = delegate (Collision2D c) { };
+                if(value)
+                {
+                    DoOnCoollisionEnter = InitialStickToTheSurface;
+                    DoOnCollision = StickToTheSurface;
+
+                    OnStickabilityEnabled?.Invoke();
+                }
+                else
+                {
+                    DoOnCoollisionEnter = delegate (Collision2D c) { };
+                    DoOnCollision = delegate (Collision2D c) { };
+
+                    OnStickabilityDisabled?.Invoke();
+                }
             }
         }
     }
@@ -33,8 +43,11 @@ public class Sticker : MonoBehaviour
     //==================================================================================================================================================================
     private void Awake()
     {
+        valStorage = GameObject.Find("Master").GetComponent<ValStorage>();
         collider = GetComponent<Collider2D>();
-        StickAbility = false;
+
+        DoOnCoollisionEnter = delegate (Collision2D c) { };
+        DoOnCollision = delegate (Collision2D c) { };
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -52,7 +65,7 @@ public class Sticker : MonoBehaviour
     {
         if(collision.gameObject.tag != "Unstickable")
         {
-            Vector2 force = (collision.contacts[0].point - (Vector2)transform.position).normalized * initialStickingForce;
+            Vector2 force = (collision.contacts[0].point - (Vector2)transform.position).normalized * valStorage.initialStickingForce;
 
             collider.attachedRigidbody.AddForce(force);
 
@@ -65,7 +78,7 @@ public class Sticker : MonoBehaviour
     {
         if(collision.gameObject.tag != "Unstickable")
         {
-            Vector2 force = (collision.contacts[0].point - (Vector2)transform.position).normalized * stickingForce;
+            Vector2 force = (collision.contacts[0].point - (Vector2)transform.position).normalized * valStorage.usualStickingForce;
 
             collider.attachedRigidbody.AddForce(force);
 

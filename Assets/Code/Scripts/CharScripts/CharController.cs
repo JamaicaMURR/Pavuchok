@@ -5,14 +5,14 @@ using UnityEngine;
 
 // TODO: Ability to death
 // TODO: Deadly surfaces
-// TODO: Strike zone indication
 // TODO: Better furr
 // TODO: Flies
-// TODO: Targeting line
 // TODO: Eyes chasing cursor
 
 public class CharController : MonoBehaviour
 {
+    ValStorage valStorage;
+
     new Collider2D collider;
 
     Sticker sticker;
@@ -48,40 +48,6 @@ public class CharController : MonoBehaviour
     bool isChargingJump;
 
     //==================================================================================================================================================================
-    [Header("Common Settings")]
-    public float standStillVelocityThreshold = 0.01f;
-
-    [Header("Sticking Settings")]
-    public float initialStickingForce = 100;
-    public float usualStickingForce = 17.5f;
-    public float unstickableDelay = 0.05f;
-
-    [Header("Jumping Settings")]
-    public float jumpForceInitial = 10;
-    public float jumpForcePeak = 15;
-    public float jumpChargeTime = 0.25f;
-    public float jumpTimeWindow = 0.1f;
-
-    public int chargingSteps = 1;
-
-    [Header("Rolling Settings")]
-    public float initialRollingSpeed = 50;
-    public float maximalRollingSpeed = 350;
-    public float accelerationTime = 1;
-    public float rotationTorque = 1000;
-    public float brakesTorque = 5;
-
-    [Header("Web Settings")]
-    public float webPullSpeed = 1;
-    public float webReleaseSpeed = 1;
-
-    public int maximumKnots = 40;
-
-    public float maximalStrikeDistance = 10;
-    public float minimalWebLength = 1;
-    public float reactionImpulsePerShotedKnot = 0.1f;
-    public float webRestoringDelay = 0.5f;
-
     [HideInInspector]
     public RollingState rollingState;
 
@@ -138,6 +104,8 @@ public class CharController : MonoBehaviour
     //==================================================================================================================================================================
     private void Awake()
     {
+        valStorage = GameObject.Find("Master").GetComponent<ValStorage>();
+
         collider = GetComponent<CircleCollider2D>();
 
         wheelDrive = GetComponent<WheelDrive>();
@@ -212,22 +180,7 @@ public class CharController : MonoBehaviour
 
     private void Start()
     {
-        sticker.initialStickingForce = initialStickingForce;
-        sticker.stickingForce = usualStickingForce;
-
-        jumper.jumpForceInitial = jumpForceInitial;
-        jumper.jumpForcePeak = jumpForcePeak;
-        jumper.jumpChargeTime = jumpChargeTime;
-        jumper.jumpTimeWindow = jumpTimeWindow;
-
-        jumper.chargingSteps = chargingSteps;
-
-        wheelDrive.BeginRotate(0, brakesTorque);
-
-        webProducer.knotsLimit = maximumKnots;
-        webProducer.maximalShootDistance = maximalStrikeDistance;
-        webProducer.minimalWebLength = minimalWebLength;
-        webProducer.reactionImpulsePerShotedKnot = reactionImpulsePerShotedKnot;
+        wheelDrive.BeginRotate(0, valStorage.brakesTorque);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -333,7 +286,7 @@ public class CharController : MonoBehaviour
                     OnBecomeTouch();
             }
 
-            if(collider.attachedRigidbody.velocity.magnitude <= standStillVelocityThreshold)
+            if(collider.attachedRigidbody.velocity.magnitude <= valStorage.standStillVelocityThreshold)
             {
                 if(!isStandStill)
                 {
@@ -385,8 +338,8 @@ public class CharController : MonoBehaviour
 
     void ActualLeftRoll()
     {
-        startRollingSpeed = -initialRollingSpeed;
-        targetRollingSpeed = -maximalRollingSpeed;
+        startRollingSpeed = -valStorage.initialRollingSpeed;
+        targetRollingSpeed = -valStorage.maximalRollingSpeed;
 
         rollingState = RollingState.Left;
 
@@ -399,8 +352,8 @@ public class CharController : MonoBehaviour
 
     void ActualRightRoll()
     {
-        startRollingSpeed = initialRollingSpeed;
-        targetRollingSpeed = maximalRollingSpeed;
+        startRollingSpeed = valStorage.initialRollingSpeed;
+        targetRollingSpeed = valStorage.maximalRollingSpeed;
 
         rollingState = RollingState.Right;
 
@@ -415,7 +368,7 @@ public class CharController : MonoBehaviour
     {
         StopCoroutine(rollCoroutine);
 
-        wheelDrive.BeginRotate(0, brakesTorque);
+        wheelDrive.BeginRotate(0, valStorage.brakesTorque);
 
         rollingState = RollingState.Stop;
 
@@ -461,7 +414,7 @@ public class CharController : MonoBehaviour
     IEnumerator WaitUnstickableDelay()
     {
         sticker.StickAbility = false;
-        yield return new WaitForSeconds(unstickableDelay);
+        yield return new WaitForSeconds(valStorage.unstickableDelay);
         sticker.StickAbility = true;
     }
 
@@ -471,25 +424,25 @@ public class CharController : MonoBehaviour
 
         float speed = startRollingSpeed;
         float neededDelta = targetRollingSpeed - startRollingSpeed;
-        float deltaPerFixedUpdate = neededDelta / accelerationTime * Time.fixedDeltaTime;
+        float deltaPerFixedUpdate = neededDelta / valStorage.accelerationTime * Time.fixedDeltaTime;
 
         float timeSpended = 0;
 
-        while(timeSpended < accelerationTime)
+        while(timeSpended < valStorage.accelerationTime)
         {
-            wheelDrive.BeginRotate(speed, rotationTorque);
+            wheelDrive.BeginRotate(speed, valStorage.rotationTorque);
             speed += deltaPerFixedUpdate;
             timeSpended += Time.fixedDeltaTime;
 
             yield return new WaitForFixedUpdate();
         }
 
-        wheelDrive.BeginRotate(targetRollingSpeed, rotationTorque);
+        wheelDrive.BeginRotate(targetRollingSpeed, valStorage.rotationTorque);
     }
 
     IEnumerator Pull()
     {
-        float pullDelay = 1 / webPullSpeed;
+        float pullDelay = 1 / valStorage.webPullSpeed;
 
         while(true)
         {
@@ -500,7 +453,7 @@ public class CharController : MonoBehaviour
 
     IEnumerator Release()
     {
-        float releaseDelay = 1 / webReleaseSpeed;
+        float releaseDelay = 1 / valStorage.webReleaseSpeed;
 
         while(true)
         {

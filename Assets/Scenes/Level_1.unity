@@ -1827,6 +1827,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 559153316}
+  - component: {fileID: 559153321}
   - component: {fileID: 559153317}
   - component: {fileID: 559153318}
   - component: {fileID: 559153320}
@@ -1913,6 +1914,39 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   charController: {fileID: 2041491291}
   coolingIndicator: {fileID: 559153319}
+--- !u!114 &559153321
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 559153315}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe08c94e17e57e342979b0a60b1e9011, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  initialStickingForce: 100
+  usualStickingForce: 17.5
+  unstickableDelay: 0.1
+  jumpForceInitial: 10
+  jumpForcePeak: 15
+  jumpChargeTime: 0.25
+  jumpTimeWindow: 0.1
+  chargingSteps: 1
+  standStillVelocityThreshold: 0.01
+  initialRollingSpeed: 50
+  maximalRollingSpeed: 350
+  accelerationTime: 0.5
+  rotationTorque: 1000
+  brakesTorque: 10
+  webPullSpeed: 8
+  webReleaseSpeed: 8
+  maximumKnots: 80
+  maximalStrikeDistance: 10
+  minimalWebLength: 0.5
+  reactionImpulsePerShotedKnot: 0.1
+  webRestoringDelay: 0.25
 --- !u!1 &579724646
 GameObject:
   m_ObjectHideFlags: 0
@@ -7232,8 +7266,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69fa46fa07acaad42ac9326de3647f3b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initialStickingForce: 100
-  stickingForce: 17.5
 --- !u!114 &2041491290
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7246,11 +7278,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4758d8601a065d648aa146e482a53308, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jumpForceInitial: 10
-  jumpForcePeak: 15
-  jumpChargeTime: 0.25
-  jumpTimeWindow: 0.1
-  chargingSteps: 1
 --- !u!114 &2041491291
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7263,15 +7290,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88bdc50359505de4a9d76b5a78151432, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  standStillVelocityThreshold: 0.01
-  initialStickingForce: 100
-  usualStickingForce: 17.5
-  unstickableDelay: 0.1
-  jumpForceInitial: 10
-  jumpForcePeak: 15
-  jumpChargeTime: 0.25
-  jumpTimeWindow: 0.1
-  chargingSteps: 1
   initialRollingSpeed: 50
   maximalRollingSpeed: 350
   accelerationTime: 0.5

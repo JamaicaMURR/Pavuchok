@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class StrikeDistanceLineDrawer : MonoBehaviour
 {
-    LineRenderer lineRenderer;
+    ValStorage valStorage;
 
-    Action DoOnUpdate;
+    LineRenderer lineRenderer;
 
     float step;
 
@@ -19,6 +19,8 @@ public class StrikeDistanceLineDrawer : MonoBehaviour
 
     private void Awake()
     {
+        valStorage = GameObject.Find("Master").GetComponent<ValStorage>();
+
         lineRenderer = GetComponent<LineRenderer>();
 
         step = 360f / corners;
@@ -29,26 +31,24 @@ public class StrikeDistanceLineDrawer : MonoBehaviour
 
         charController.OnWebAbilityOn += delegate ()
         {
-            charController.OnBecomeFly += InFlightMode;
-            charController.OnBecomeTouch += InTouchMode;
+            charController.OnBecomeFly += SwitchToFlightMode;
+            charController.OnBecomeTouch += SwitchToTouchMode;
         };
 
         charController.OnWebAbilityOff += delegate ()
         {
-            DoOnUpdate = () => { };
+            SwitchToTouchMode();
 
-            charController.OnBecomeFly -= InFlightMode;
-            charController.OnBecomeTouch -= InTouchMode;
+            charController.OnBecomeFly -= SwitchToFlightMode;
+            charController.OnBecomeTouch -= SwitchToTouchMode;
         };
     }
-
-    private void Update() => DoOnUpdate();
 
     void DrawLine()
     {
         lineRenderer.positionCount = corners;
 
-        Vector3 radius = new Vector3(charController.maximalStrikeDistance, 0, 0);
+        Vector3 radius = new Vector3(valStorage.maximalStrikeDistance, 0, 0);
 
         Vector3[] dots = new Vector3[corners];
 
@@ -62,12 +62,9 @@ public class StrikeDistanceLineDrawer : MonoBehaviour
         lineRenderer.SetPositions(dots);
     }
 
-    void InFlightMode()
-    {
-        StartCoroutine("EnableLineRendererAfterDelay");
-    }
+    void SwitchToFlightMode() => StartCoroutine("EnableLineRendererAfterDelay");
 
-    void InTouchMode()
+    void SwitchToTouchMode()
     {
         StopAllCoroutines();
         lineRenderer.enabled = false;

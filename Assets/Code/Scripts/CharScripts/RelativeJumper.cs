@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class RelativeJumper : MonoBehaviour
 {
+    ValStorage valStorage;
+
     float stepTime;
     float stepForce;
     float jumpForce;
@@ -30,31 +32,27 @@ public class RelativeJumper : MonoBehaviour
     }
 
     //==================================================================================================================================================================
-    [HideInInspector]
-    public float jumpForceInitial, jumpForcePeak, jumpChargeTime, jumpTimeWindow;
-
-    [HideInInspector]
-    public int chargingSteps;
-
     public event Action OnChargingComplete;
     public event Action OnChargingCancelled;
 
     //==================================================================================================================================================================
     private void Awake()
     {
+        valStorage = GameObject.Find("Master").GetComponent<ValStorage>();
+
         collider = GetComponent<Collider2D>();
 
-        stepTime = jumpChargeTime / chargingSteps;
-        stepForce = (jumpForcePeak - jumpForceInitial) / chargingSteps;
+        stepTime = valStorage.jumpChargeTime / valStorage.chargingSteps;
+        stepForce = (valStorage.jumpForcePeak - valStorage.jumpForceInitial) / valStorage.chargingSteps;
 
-        DoOnCollisionStay = delegate (Collision2D c) { };
+        DoOnCollisionStay = (Collision2D c) => { };
 
         JumpChargingAbility = false;
     }
 
     private void Start()
     {
-        jumpForce = jumpForceInitial;
+        jumpForce = valStorage.jumpForceInitial;
     }
 
     private void OnCollisionStay2D(Collision2D collision)
@@ -71,7 +69,7 @@ public class RelativeJumper : MonoBehaviour
     public void CancelCharge()
     {
         StopAllCoroutines();
-        jumpForce = jumpForceInitial;
+        jumpForce = valStorage.jumpForceInitial;
 
         if(OnChargingCancelled != null)
             OnChargingCancelled();
@@ -86,7 +84,7 @@ public class RelativeJumper : MonoBehaviour
     //==================================================================================================================================================================
     void ChargeNextStep()
     {
-        if(stepsDone < chargingSteps)
+        if(stepsDone < valStorage.chargingSteps)
             StartCoroutine(ChargeStep());
         else if(OnChargingComplete != null)
             OnChargingComplete();
@@ -111,18 +109,18 @@ public class RelativeJumper : MonoBehaviour
         if(collision.collider.attachedRigidbody != null)
             collision.collider.attachedRigidbody.AddForce(-force, ForceMode2D.Impulse); // second Newton's law
 
-        jumpForce = jumpForceInitial;
+        jumpForce = valStorage.jumpForceInitial;
 
         DoOnCollisionStay = delegate (Collision2D c) { };
     }
 
-    //==================================================================================================================================================================
+    //==================================================================================================================================================================    
     IEnumerator JumpReady()
     {
         DoOnCollisionStay = ActualJump;
-        yield return new WaitForSeconds(jumpTimeWindow);
+        yield return new WaitForSeconds(valStorage.jumpTimeWindow);
 
-        jumpForce = jumpForceInitial;
+        jumpForce = valStorage.jumpForceInitial;
 
         DoOnCollisionStay = delegate (Collision2D c) { };
     }

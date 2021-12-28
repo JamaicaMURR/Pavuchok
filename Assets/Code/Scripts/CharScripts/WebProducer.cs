@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class WebProducer : MonoBehaviour
 {
+    ValStorage valStorage;
+
     float knotDistance;
 
     Action DoOnPull;
@@ -25,11 +27,11 @@ public class WebProducer : MonoBehaviour
     public LinkedList<WebKnot> knots;
     public DistanceJoint2D rootJoint;
 
-    [HideInInspector]
-    public int knotsLimit;
+    //[HideInInspector]
+    //public int knotsLimit;
 
-    [HideInInspector]
-    public float maximalShootDistance, minimalWebLength, reactionImpulsePerShotedKnot;
+    //[HideInInspector]
+    //public float maximalShootDistance, minimalWebLength, reactionImpulsePerShotedKnot;
 
     public event Action OnWebDone;
     public event Action OnWebCut;
@@ -83,6 +85,8 @@ public class WebProducer : MonoBehaviour
     //==================================================================================================================================================================
     private void Awake()
     {
+        valStorage = GameObject.Find("Master").GetComponent<ValStorage>();
+
         rigidbody = GetComponent<Rigidbody2D>();
 
         knotDistance = webKnotPrefab.GetComponent<DistanceJoint2D>().distance;
@@ -122,7 +126,7 @@ public class WebProducer : MonoBehaviour
     //==================================================================================================================================================================
     void ActualPull()
     {
-        if(knots.Count * knotDistance > minimalWebLength)
+        if(knots.Count * knotDistance > valStorage.minimalWebLength)
         {
             if(rootKnot.NextKnot != null)
             {
@@ -137,7 +141,7 @@ public class WebProducer : MonoBehaviour
 
     void ActualRelease()
     {
-        if(knots.Count < knotsLimit)
+        if(knots.Count < valStorage.maximumKnots)
         {
             WebKnot newbie = GetNewKnot();
 
@@ -167,10 +171,10 @@ public class WebProducer : MonoBehaviour
         Vector2 direction = targetPoint - (Vector2)transform.position;
         float distance = Vector2.Distance(transform.position, targetPoint);
 
-        if(distance > maximalShootDistance)
-            distance = maximalShootDistance;
-        else if(distance < minimalWebLength)
-            distance = minimalWebLength;
+        if(distance > valStorage.maximalStrikeDistance)
+            distance = valStorage.maximalStrikeDistance;
+        else if(distance < valStorage.minimalWebLength)
+            distance = valStorage.minimalWebLength;
 
         RaycastHit2D rayHit = Physics2D.Raycast(transform.position, direction, distance, layerMask: LayerMask.GetMask("Default"));
 
@@ -239,7 +243,7 @@ public class WebProducer : MonoBehaviour
         if(OnWebDone != null)
             OnWebDone();
 
-        rigidbody.AddForce(-(calculatedPoint - (Vector2)transform.position).normalized * reactionImpulsePerShotedKnot * knots.Count, ForceMode2D.Impulse);
+        rigidbody.AddForce(-(calculatedPoint - (Vector2)transform.position).normalized * valStorage.reactionImpulsePerShotedKnot * knots.Count, ForceMode2D.Impulse);
 
         return spawnedKnot; //Last knot returns
     }

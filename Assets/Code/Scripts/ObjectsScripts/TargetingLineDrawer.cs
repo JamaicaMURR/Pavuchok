@@ -33,7 +33,7 @@ public class TargetingLineDrawer : MonoBehaviour
 
         charController.OnWebAbilityOff += delegate ()
         {
-            DoOnUpdate = () => { };
+            SwitchToTouchMode();
 
             charController.OnBecomeFly -= SwitchToFlightMode;
             charController.OnBecomeTouch -= SwitchToTouchMode;
@@ -53,10 +53,7 @@ public class TargetingLineDrawer : MonoBehaviour
         lineRenderer.SetPosition(1, new Vector3(cursorPosition.x, cursorPosition.y, z));
     }
 
-    void SwitchToFlightMode()
-    {
-        StartCoroutine("EnableLineDrawingAfterDelay");
-    }
+    void SwitchToFlightMode() => StartCoroutine("EnableLineDrawingAfterDelay");
 
     void SwitchToTouchMode()
     {
