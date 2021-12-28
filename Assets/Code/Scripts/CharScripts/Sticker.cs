@@ -8,8 +8,8 @@ public class Sticker : MonoBehaviour
 
     new Collider2D collider;
 
-    Collision2DHandler DoOnCoollisionEnter;
-    Collision2DHandler DoOnCollision;
+    Action<Collision2D> DoOnCoollisionEnter;
+    Action<Collision2D> DoOnCollision;
 
     public event Action OnStickabilityEnabled;
     public event Action OnStickabilityDisabled;
@@ -70,7 +70,7 @@ public class Sticker : MonoBehaviour
             collider.attachedRigidbody.AddForce(force);
 
             if(collision.collider.attachedRigidbody != null)
-                collision.collider.attachedRigidbody.AddForce(-force); // second Newton's law
+                collision.collider.attachedRigidbody.AddForceAtPosition(-force, collision.contacts[0].point); // second Newton's law
         }
     }
 
@@ -83,7 +83,7 @@ public class Sticker : MonoBehaviour
             collider.attachedRigidbody.AddForce(force);
 
             if(collision.collider.attachedRigidbody != null)
-                collision.collider.attachedRigidbody.AddForce(-force); // second Newton's law
+                collision.collider.attachedRigidbody.AddForceAtPosition(-force, collision.contacts[0].point); // second Newton's law
         }
     }
 }

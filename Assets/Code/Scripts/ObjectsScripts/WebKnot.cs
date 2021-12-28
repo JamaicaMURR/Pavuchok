@@ -8,7 +8,7 @@ public class WebKnot : MonoBehaviour
     WebKnot _nextKnot;
     WebKnot _previousKnot;
 
-    Collision2DHandler DoOnCollision;
+    Action<Collision2D> DoOnCollision;
 
     //==================================================================================================================================================================
     public DistanceJoint2D joint;

@@ -6,7 +6,7 @@ using UnityEngine;
 public class JumpArrowController : MonoBehaviour
 {
     Action EnableDisableArrow;
-    Collision2DHandler DoOnCollisionStay;
+    Action<Collision2D> DoOnCollisionStay;
 
     SpriteRenderer arrowSpriteRenderer;
 

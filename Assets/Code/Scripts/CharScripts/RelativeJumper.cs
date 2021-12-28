@@ -107,7 +107,7 @@ public class RelativeJumper : MonoBehaviour
         collider.attachedRigidbody.AddForce(force, ForceMode2D.Impulse);
 
         if(collision.collider.attachedRigidbody != null)
-            collision.collider.attachedRigidbody.AddForce(-force, ForceMode2D.Impulse); // second Newton's law
+            collision.collider.attachedRigidbody.AddForceAtPosition(-force, collision.contacts[0].point, ForceMode2D.Impulse); // second Newton's law
 
         jumpForce = valStorage.jumpForceInitial;
 
