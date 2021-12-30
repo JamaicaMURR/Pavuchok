@@ -86,4 +86,6 @@ public class Sticker : MonoBehaviour
                 collision.collider.attachedRigidbody.AddForceAtPosition(-force, collision.contacts[0].point); // second Newton's law
         }
     }
+
+    
 }
