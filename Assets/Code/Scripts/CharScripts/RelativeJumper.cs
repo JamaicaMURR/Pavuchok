@@ -15,6 +15,8 @@ public class RelativeJumper : MonoBehaviour
 
     new Collider2D collider;
 
+    Sticker sticker;
+
     Action DoOnJumpCharging;
     Action<Collision2D> DoOnCollisionStay;
 
@@ -41,6 +43,8 @@ public class RelativeJumper : MonoBehaviour
         valStorage = GameObject.Find("Master").GetComponent<ValStorage>();
 
         collider = GetComponent<Collider2D>();
+
+        sticker = GetComponent<Sticker>();
 
         stepTime = valStorage.jumpChargeTime / valStorage.chargingSteps;
         stepForce = (valStorage.jumpForcePeak - valStorage.jumpForceInitial) / valStorage.chargingSteps;
@@ -102,7 +106,7 @@ public class RelativeJumper : MonoBehaviour
     {
         StopCoroutine(JumpReady());
 
-        Vector2 force = -(collision.contacts[0].point - (Vector2)transform.position).normalized * jumpForce;
+        Vector2 force = -sticker.SurfaceDirection * jumpForce; // Vector to surface calculation does only in Sticker
 
         collider.attachedRigidbody.AddForce(force, ForceMode2D.Impulse);
 

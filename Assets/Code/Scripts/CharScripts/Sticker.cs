@@ -11,10 +11,14 @@ public class Sticker : MonoBehaviour
     Action<Collision2D> DoOnCoollisionEnter;
     Action<Collision2D, float> DoOnCollision;
 
+    Vector2 surfDirection;
+
     public event Action OnStickabilityEnabled;
     public event Action OnStickabilityDisabled;
 
     //==================================================================================================================================================================
+    public Vector2 SurfaceDirection => surfDirection;
+
     public bool StickAbility
     {
         get { return DoOnCollision == StickToTheSurface; }
@@ -46,19 +50,25 @@ public class Sticker : MonoBehaviour
         valStorage = GameObject.Find("Master").GetComponent<ValStorage>();
         collider = GetComponent<Collider2D>();
 
+        surfDirection = new Vector2();
+
         DoOnCoollisionEnter = (c) => { };
         DoOnCollision = (c, f) => { };
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        surfDirection = CalcSurfDirection(collision);
         DoOnCoollisionEnter(collision);
     }
 
     private void OnCollisionStay2D(Collision2D collision)
     {
+        surfDirection = CalcSurfDirection(collision);
         DoOnCollision(collision, valStorage.usualStickingForce);
     }
+
+    private void OnCollisionExit2D(Collision2D collision) => surfDirection = new Vector2();
 
     //==================================================================================================================================================================
     void InitialStickToTheSurface(Collision2D collision) => StickToTheSurface(collision, valStorage.initialStickingForce);
@@ -67,7 +77,7 @@ public class Sticker : MonoBehaviour
     {
         if(collision.gameObject.tag != "Unstickable")
         {
-            Vector2 force = CalcNormal(collision) * stickingForce;
+            Vector2 force = surfDirection * stickingForce;
 
             if(Math.Abs(Vector2.Angle(Vector2.down, force)) > valStorage.stickingAngleThreshold)
             {
@@ -79,7 +89,7 @@ public class Sticker : MonoBehaviour
         }
     }
 
-    Vector2 CalcNormal(Collision2D collision)
+    Vector2 CalcSurfDirection(Collision2D collision)
     {
         Vector2 result = new Vector2();
 

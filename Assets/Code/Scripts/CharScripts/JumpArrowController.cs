@@ -6,9 +6,10 @@ using UnityEngine;
 public class JumpArrowController : MonoBehaviour
 {
     Action EnableDisableArrow;
-    Action<Collision2D> DoOnCollisionStay;
+    Action DoOnCollisionStay;
 
     SpriteRenderer arrowSpriteRenderer;
+    Sticker sticker;
 
     //==================================================================================================================================================================
     public GameObject arrow;
@@ -23,35 +24,36 @@ public class JumpArrowController : MonoBehaviour
     private void Awake()
     {
         arrowSpriteRenderer = arrow.GetComponent<SpriteRenderer>();
+        sticker = GetComponent<Sticker>();
 
-        DoOnCollisionStay = delegate (Collision2D c) { };
-        EnableDisableArrow = delegate () { };
+        DoOnCollisionStay = () => { };
+        EnableDisableArrow = () => { };
 
         charController.OnBecomeStand += delegate ()
         {
-            DoOnCollisionStay = delegate (Collision2D collision)
+            DoOnCollisionStay = delegate ()
             {
-                OrientateAcrossJumpDirection(collision);
-                DoOnCollisionStay = delegate (Collision2D c) { };
+                OrientateAcrossJumpDirection();
+                DoOnCollisionStay = () => { };
             };
 
             EnableDisableArrow = delegate ()
             {
                 arrow.SetActive(true);
-                EnableDisableArrow = delegate () { };
+                EnableDisableArrow = () => { };
             };
         };
 
         charController.OnBecomeMove += delegate ()
         {
-            DoOnCollisionStay = delegate (Collision2D c) { };
+            DoOnCollisionStay = () => { };
 
             EnableDisableArrow = delegate ()
             {
                 arrowSpriteRenderer.sprite = jumpNotChargedArrow;
                 arrow.SetActive(false);
 
-                EnableDisableArrow = delegate () { };
+                EnableDisableArrow = () => { };
             };
         };
 
@@ -74,12 +76,12 @@ public class JumpArrowController : MonoBehaviour
     private void OnCollisionStay2D(Collision2D collision)
     {
         EnableDisableArrow();
-        DoOnCollisionStay(collision);
+        DoOnCollisionStay();
     }
 
     //==================================================================================================================================================================
-    void OrientateAcrossJumpDirection(Collision2D collision)
+    void OrientateAcrossJumpDirection()
     {
-        arrow.transform.rotation = Quaternion.Euler(0, 0, -Vector2.SignedAngle((Vector2)transform.position - collision.contacts[0].point, Vector2.up));
+        arrow.transform.rotation = Quaternion.Euler(0, 0, -Vector2.SignedAngle(sticker.SurfaceDirection, Vector2.down)); // Vector to surface calculation does only in Sticker
     }
 }
