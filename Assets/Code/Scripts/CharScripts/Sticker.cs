@@ -9,7 +9,7 @@ public class Sticker : MonoBehaviour
     new Collider2D collider;
 
     Action<Collision2D> DoOnCoollisionEnter;
-    Action<Collision2D> DoOnCollision;
+    Action<Collision2D, float> DoOnCollision;
 
     public event Action OnStickabilityEnabled;
     public event Action OnStickabilityDisabled;
@@ -31,8 +31,8 @@ public class Sticker : MonoBehaviour
                 }
                 else
                 {
-                    DoOnCoollisionEnter = delegate (Collision2D c) { };
-                    DoOnCollision = delegate (Collision2D c) { };
+                    DoOnCoollisionEnter = (c) => { };
+                    DoOnCollision = (c, f) => { };
 
                     OnStickabilityDisabled?.Invoke();
                 }
@@ -46,8 +46,8 @@ public class Sticker : MonoBehaviour
         valStorage = GameObject.Find("Master").GetComponent<ValStorage>();
         collider = GetComponent<Collider2D>();
 
-        DoOnCoollisionEnter = delegate (Collision2D c) { };
-        DoOnCollision = delegate (Collision2D c) { };
+        DoOnCoollisionEnter = (c) => { };
+        DoOnCollision = (c, f) => { };
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -57,35 +57,40 @@ public class Sticker : MonoBehaviour
 
     private void OnCollisionStay2D(Collision2D collision)
     {
-        DoOnCollision(collision);
+        DoOnCollision(collision, valStorage.usualStickingForce);
     }
 
     //==================================================================================================================================================================
-    void InitialStickToTheSurface(Collision2D collision)
+    void InitialStickToTheSurface(Collision2D collision) => StickToTheSurface(collision, valStorage.initialStickingForce);
+
+    void StickToTheSurface(Collision2D collision, float stickingForce)
     {
         if(collision.gameObject.tag != "Unstickable")
         {
-            Vector2 force = (collision.contacts[0].point - (Vector2)transform.position).normalized * valStorage.initialStickingForce;
+            Vector2 force = CalcNormal(collision) * stickingForce;
 
-            collider.attachedRigidbody.AddForce(force);
+            if(Math.Abs(Vector2.Angle(Vector2.down, force)) > valStorage.stickingAngleThreshold)
+            {
+                collider.attachedRigidbody.AddForce(force);
 
-            if(collision.collider.attachedRigidbody != null)
-                collision.collider.attachedRigidbody.AddForceAtPosition(-force, collision.contacts[0].point); // second Newton's law
+                if(collision.collider.attachedRigidbody != null)
+                    collision.collider.attachedRigidbody.AddForceAtPosition(-force, collision.contacts[0].point); // second Newton's law
+            }
         }
     }
 
-    void StickToTheSurface(Collision2D collision)
+    Vector2 CalcNormal(Collision2D collision)
     {
-        if(collision.gameObject.tag != "Unstickable")
+        Vector2 result = new Vector2();
+
+        Vector2[] normals = new Vector2[collision.contacts.Length];
+
+        for(int i = 0; i < collision.contacts.Length; i++)
         {
-            Vector2 force = (collision.contacts[0].point - (Vector2)transform.position).normalized * valStorage.usualStickingForce;
-
-            collider.attachedRigidbody.AddForce(force);
-
-            if(collision.collider.attachedRigidbody != null)
-                collision.collider.attachedRigidbody.AddForceAtPosition(-force, collision.contacts[0].point); // second Newton's law
+            normals[i] = collision.contacts[i].point - (Vector2)transform.position;
+            result += normals[i];
         }
-    }
 
-    
+        return result.normalized;
+    }
 }

@@ -7,6 +7,7 @@ public class ValStorage : MonoBehaviour
     [Header("Sticking Settings")]
     public float initialStickingForce = 100;
     public float usualStickingForce = 17.5f;
+    public float stickingAngleThreshold = 45;
     public float unstickableDelay = 0.05f;
 
     [Header("Jumping Settings")]
