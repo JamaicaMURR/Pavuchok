@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // TODO: Ability to death
-// TODO: Deadly surfaces
-// TODO: Better furr
 // TODO: Flies
 // TODO: Eyes chasing cursor
 
@@ -14,7 +12,6 @@ public class CharController : MonoBehaviour
     ValStorage valStorage;
 
     new Collider2D collider;
-    new Rigidbody2D rigidbody2D;
 
     Sticker sticker;
     RelativeJumper jumper;
@@ -109,13 +106,15 @@ public class CharController : MonoBehaviour
         valStorage = GameObject.Find("Master").GetComponent<ValStorage>();
 
         collider = GetComponent<CircleCollider2D>();
-        rigidbody2D = GetComponent<Rigidbody2D>();
 
         wheelDrive = GetComponent<WheelDrive>();
         sticker = GetComponent<Sticker>();
         jumper = GetComponent<RelativeJumper>();
         webProducer = GetComponent<WebProducer>();
         animator = GetComponent<Animator>();
+
+        //EXP: deadly surface contact debug
+        sticker.OnDeadlySurfaceContact += () => Debug.LogError("Deadly contact!");
 
         webStrikeCooler = GameObject.Find("Master").GetComponent<WebStrikeCooler>();
 
