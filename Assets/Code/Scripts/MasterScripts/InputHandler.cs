@@ -59,6 +59,7 @@ public class InputHandler : MonoBehaviour
             charController.WebAbility = true;
             charController.PullReleaseAbility = true;
             charController.ChuteAbility = true;
+            charController.Immortality = true;
 
             TestControl = delegate ()
             {
@@ -110,6 +111,16 @@ public class InputHandler : MonoBehaviour
                         Debug.Log("ChuteAbility On");
                     else
                         Debug.Log("ChuteAbility Off");
+                }
+
+                if(Input.GetKeyDown(KeyCode.Alpha6))
+                {
+                    charController.Immortality = !charController.Immortality;
+
+                    if(charController.Immortality)
+                        Debug.Log("Immortality On");
+                    else
+                        Debug.Log("Immortality Off");
                 }
             };
         }

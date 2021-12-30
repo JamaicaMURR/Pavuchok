@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-// TODO: Ability to death
+// TODO: 
 // TODO: Flies
 // TODO: Eyes chasing cursor
 
@@ -19,6 +19,7 @@ public class CharController : MonoBehaviour
     WebProducer webProducer;
     WebStrikeCooler webStrikeCooler;
     Animator animator;
+    DeathGrain deathGrain;
 
     float startRollingSpeed;
     float targetRollingSpeed;
@@ -61,19 +62,19 @@ public class CharController : MonoBehaviour
     //ABILITIES PROPERTIES==============================================================================================================================================
     public bool StickAbility
     {
-        get { return sticker.StickAbility; }
-        set { sticker.StickAbility = value; }
+        get => sticker.StickAbility;
+        set => sticker.StickAbility = value;
     }
 
     public bool JumpChargingAbility
     {
-        get { return jumper.JumpChargingAbility; }
-        set { jumper.JumpChargingAbility = value; }
+        get => jumper.JumpChargingAbility;
+        set => jumper.JumpChargingAbility = value;
     }
 
     public bool WebAbility
     {
-        get { return webProducer.WebAbility; }
+        get => webProducer.WebAbility;
         set
         {
             if(webProducer.WebAbility != value)
@@ -90,14 +91,20 @@ public class CharController : MonoBehaviour
 
     public bool PullReleaseAbility
     {
-        get { return webProducer.PullReleaseAbility; }
-        set { webProducer.PullReleaseAbility = value; }
+        get => webProducer.PullReleaseAbility;
+        set => webProducer.PullReleaseAbility = value;
     }
 
     public bool ChuteAbility
     {
-        get { return webProducer.ChuteAbility; }
-        set { webProducer.ChuteAbility = value; }
+        get => webProducer.ChuteAbility;
+        set => webProducer.ChuteAbility = value;
+    }
+
+    public bool Immortality
+    {
+        get => deathGrain.Immortality;
+        set => deathGrain.Immortality = value;
     }
 
     //==================================================================================================================================================================
@@ -112,9 +119,7 @@ public class CharController : MonoBehaviour
         jumper = GetComponent<RelativeJumper>();
         webProducer = GetComponent<WebProducer>();
         animator = GetComponent<Animator>();
-
-        //EXP: deadly surface contact debug
-        sticker.OnDeadlySurfaceContact += () => Debug.LogError("Deadly contact!");
+        deathGrain = GetComponent<DeathGrain>();
 
         webStrikeCooler = GameObject.Find("Master").GetComponent<WebStrikeCooler>();
 

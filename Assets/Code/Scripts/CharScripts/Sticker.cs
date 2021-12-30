@@ -16,8 +16,6 @@ public class Sticker : MonoBehaviour
     public event Action OnStickabilityEnabled;
     public event Action OnStickabilityDisabled;
 
-    public event Action OnDeadlySurfaceContact;
-
     //==================================================================================================================================================================
     public Vector2 SurfaceDirection => surfDirection;
 
@@ -60,9 +58,6 @@ public class Sticker : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if(collision.gameObject.tag == "Deadly")
-            OnDeadlySurfaceContact?.Invoke();
-
         surfDirection = CalcSurfDirection(collision);
         DoOnCoollisionEnter(collision);
     }
