@@ -3,7 +3,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-// TODO: 
+// TODO: Death screen
+// TODO: Spawners
 // TODO: Flies
 // TODO: Eyes chasing cursor
 
