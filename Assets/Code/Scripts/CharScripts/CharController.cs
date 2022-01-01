@@ -60,6 +60,9 @@ public class CharController : MonoBehaviour
     public event Action OnWebAbilityOn;
     public event Action OnWebAbilityOff;
 
+    //==================================================================================================================================================================
+    public bool IsTouching => isTouching;
+
     //ABILITIES PROPERTIES==============================================================================================================================================
     public bool StickAbility
     {
