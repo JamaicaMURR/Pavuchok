@@ -36,4 +36,7 @@ public class ValStorage : MonoBehaviour
     public float minimalWebLength = 1;
     public float reactionImpulsePerShotedKnot = 0.1f;
     public float webRestoringDelay = 0.5f;
+
+    [Header("Respawn settings")]
+    public float respawnStunTime = 0.1f;
 }

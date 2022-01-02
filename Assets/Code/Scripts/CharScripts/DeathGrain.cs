@@ -7,6 +7,8 @@ public class DeathGrain : MonoBehaviour
 {
     Action DoOnDeath;
 
+    Resurrecter resurrecter;
+
     public event Action OnDeadlySurfaceContact;
 
     //==================================================================================================================================================================
@@ -26,6 +28,8 @@ public class DeathGrain : MonoBehaviour
     //==================================================================================================================================================================
     private void Awake()
     {
+        resurrecter = GetComponent<Resurrecter>();
+
         DoOnDeath = ActualDeath;
 
         OnDeadlySurfaceContact += () => DoOnDeath();
@@ -39,8 +43,7 @@ public class DeathGrain : MonoBehaviour
 
     //==================================================================================================================================================================
     void ActualDeath()
-    {
-        // FIX:
-        Debug.Log("Death");
+    {        
+        resurrecter.Respawn();
     }
 }

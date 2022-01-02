@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Unstickable
   - Deadly
+  - Spawner
   layers:
   - Default
   - TransparentFX
