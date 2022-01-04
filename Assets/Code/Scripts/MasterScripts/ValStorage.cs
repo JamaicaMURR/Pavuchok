@@ -26,6 +26,7 @@ public class ValStorage : MonoBehaviour
     public float accelerationTime = 1;
     public float rotationTorque = 1000;
     public float brakesTorque = 5;
+    public float magnusEffectMultiplier = 0.001f;
 
     [Header("Web Settings")]
     public float webPullSpeed = 1;
