@@ -15,6 +15,7 @@ public class ValStorage : MonoBehaviour
     public float jumpForcePeak = 15;
     public float jumpChargeTime = 0.25f;
     public float jumpTimeWindow = 0.1f;
+    public float velocityArrowDelay = 0.1f;
 
     public int chargingSteps = 1;
 

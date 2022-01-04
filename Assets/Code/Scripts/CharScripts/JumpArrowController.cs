@@ -5,11 +5,16 @@ using UnityEngine;
 
 public class JumpArrowController : MonoBehaviour
 {
-    Action EnableDisableArrow;
-    Action DoOnCollisionStay;
+    Action DoOnUpdate;
+    Action DoOnWebDone;
+    Action DoOnWebCut;
 
     SpriteRenderer arrowSpriteRenderer;
     Sticker sticker;
+    WebProducer webProducer;
+    ValStorage valStorage;
+
+    new Rigidbody2D rigidbody;
 
     //==================================================================================================================================================================
     public GameObject arrow;
@@ -19,69 +24,97 @@ public class JumpArrowController : MonoBehaviour
 
     public Sprite jumpNotChargedArrow;
     public Sprite jumpChargedArrow;
+    public Sprite inJumpVelocityArrow;
 
     //==================================================================================================================================================================
     private void Awake()
     {
+        valStorage = GameObject.Find("Master").GetComponent<ValStorage>();
+
         arrowSpriteRenderer = arrow.GetComponent<SpriteRenderer>();
         sticker = GetComponent<Sticker>();
+        webProducer = GetComponent<WebProducer>();
+        rigidbody = GetComponent<Rigidbody2D>();
 
-        DoOnCollisionStay = () => { };
-        EnableDisableArrow = () => { };
+        DoOnUpdate = () => { };
+
+        DoOnWebDone = () => { };
+        DoOnWebCut = () => { };
+
+        webProducer.OnWebDone += () => DoOnWebDone();
+        webProducer.OnWebCut += () => DoOnWebCut();
 
         charController.OnBecomeStand += delegate ()
         {
-            DoOnCollisionStay = delegate ()
-            {
-                OrientateAcrossJumpDirection();
-                DoOnCollisionStay = () => { };
-            };
-
-            EnableDisableArrow = delegate ()
-            {
-                arrow.SetActive(true);
-                EnableDisableArrow = () => { };
-            };
+            arrowSpriteRenderer.sprite = jumpNotChargedArrow;
+            StartCoroutine(EnableArrowAfterDelay());
+            OrientateAcrossJumpDirection();
         };
 
         charController.OnBecomeMove += delegate ()
         {
-            DoOnCollisionStay = () => { };
+            StopAllCoroutines();
+            arrow.SetActive(false);
+        };
 
-            EnableDisableArrow = delegate ()
+        charController.OnBecomeFly += delegate ()
+        {
+            DoOnWebDone = delegate ()
             {
-                arrowSpriteRenderer.sprite = jumpNotChargedArrow;
+                arrowSpriteRenderer.sprite = null;
+
+                StopAllCoroutines();
                 arrow.SetActive(false);
 
-                EnableDisableArrow = () => { };
+                DoOnUpdate = () => { };
             };
+
+            DoOnWebCut = delegate ()
+            {
+                arrowSpriteRenderer.sprite = inJumpVelocityArrow;
+                StartCoroutine(EnableArrowAfterDelay());
+                DoOnUpdate = OrientateAcrossVelocity;
+            };
+
+            DoOnWebCut(); // Velocity arrow appears
         };
 
-        relativeJumper.OnChargingComplete += delegate ()
+        charController.OnBecomeTouch += delegate ()
         {
-            arrowSpriteRenderer.sprite = jumpChargedArrow;
+            DoOnWebDone(); // Velocity arrow disappears
+
+            DoOnWebDone = () => { };
+            DoOnWebCut = () => { };
         };
 
-        relativeJumper.OnChargingCancelled += delegate ()
-        {
-            arrowSpriteRenderer.sprite = null;
-        };
+        relativeJumper.OnChargingComplete += () => arrowSpriteRenderer.sprite = jumpChargedArrow;
 
-        charController.OnCancelledJumpRelease += delegate ()
-        {
-             arrowSpriteRenderer.sprite = jumpNotChargedArrow;
-        };
+        relativeJumper.OnChargingCancelled += () => arrowSpriteRenderer.sprite = null;
+
+        charController.OnCancelledJumpRelease += () => arrowSpriteRenderer.sprite = jumpNotChargedArrow;
     }
 
-    private void OnCollisionStay2D(Collision2D collision)
+
+    private void Update()
     {
-        EnableDisableArrow();
-        DoOnCollisionStay();
+        DoOnUpdate();
     }
 
     //==================================================================================================================================================================
     void OrientateAcrossJumpDirection()
     {
         arrow.transform.rotation = Quaternion.Euler(0, 0, -Vector2.SignedAngle(sticker.SurfaceDirection, Vector2.down)); // Vector to surface calculation does only in Sticker
+    }
+
+    void OrientateAcrossVelocity()
+    {
+        arrow.transform.rotation = Quaternion.Euler(0, 0, -Vector2.SignedAngle(rigidbody.velocity, Vector2.up));
+    }
+
+    //==================================================================================================================================================================
+    IEnumerator EnableArrowAfterDelay()
+    {
+        yield return new WaitForSeconds(valStorage.velocityArrowDelay);
+        arrow.SetActive(true);
     }
 }
