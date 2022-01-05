@@ -10,6 +10,7 @@ public class Resurrecter : MonoBehaviour
 
     GameObject lastSpawner;
 
+    //==================================================================================================================================================================
     private void Awake()
     {
         valStorage = GameObject.Find("Master").GetComponent<ValStorage>();
@@ -23,6 +24,7 @@ public class Resurrecter : MonoBehaviour
             lastSpawner = collision.gameObject;
     }
 
+    //==================================================================================================================================================================
     public void Respawn()
     {
         StartCoroutine(RespawnStun());
@@ -30,6 +32,7 @@ public class Resurrecter : MonoBehaviour
         transform.position = new Vector3(lastSpawner.transform.position.x, lastSpawner.transform.position.y, transform.position.z);
     }
 
+    //==================================================================================================================================================================
     IEnumerator RespawnStun()
     {
         rigidbody.bodyType = RigidbodyType2D.Static;

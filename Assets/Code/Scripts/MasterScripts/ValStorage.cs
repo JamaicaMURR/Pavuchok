@@ -7,6 +7,7 @@ public class ValStorage : MonoBehaviour
     [Header("Sticking Settings")]
     public float initialStickingForce = 100;
     public float usualStickingForce = 17.5f;
+    public float returnStickingForce = 50;
     public float stickingAngleThreshold = 45;
     public float unstickableDelay = 0.05f;
 
@@ -38,6 +39,9 @@ public class ValStorage : MonoBehaviour
     public float minimalWebLength = 1;
     public float reactionImpulsePerShotedKnot = 0.1f;
     public float webRestoringDelay = 0.5f;
+
+    public float strikeDistanceAppearingDelay = 0.25f;
+    public float targetLineAppearingDelay = 0.25f;
 
     [Header("Respawn settings")]
     public float respawnStunTime = 0.1f;

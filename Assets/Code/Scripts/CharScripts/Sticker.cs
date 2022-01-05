@@ -8,8 +8,9 @@ public class Sticker : MonoBehaviour
 
     new Collider2D collider;
 
-    Action<Collision2D> DoOnCoollisionEnter;
+    Action<Collision2D> DoOnCollisionEnter;
     Action<Collision2D, float> DoOnCollision;
+    Action<Collision2D> DoOnCollisionExit;
 
     Vector2 surfDirection;
 
@@ -28,15 +29,17 @@ public class Sticker : MonoBehaviour
             {
                 if(value)
                 {
-                    DoOnCoollisionEnter = InitialStickToTheSurface;
+                    DoOnCollisionEnter = InitialStickToTheSurface;
                     DoOnCollision = StickToTheSurface;
+                    DoOnCollisionExit = ReturningStickToTheSurface;
 
                     OnStickabilityEnabled?.Invoke();
                 }
                 else
                 {
-                    DoOnCoollisionEnter = (c) => { };
+                    DoOnCollisionEnter = (c) => { };
                     DoOnCollision = (c, f) => { };
+                    DoOnCollisionExit = (c) => { };
 
                     OnStickabilityDisabled?.Invoke();
                 }
@@ -52,14 +55,15 @@ public class Sticker : MonoBehaviour
 
         surfDirection = new Vector2();
 
-        DoOnCoollisionEnter = (c) => { };
+        DoOnCollisionEnter = (c) => { };
         DoOnCollision = (c, f) => { };
+        DoOnCollisionExit = (c) => { };
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
         surfDirection = CalcSurfDirection(collision);
-        DoOnCoollisionEnter(collision);
+        DoOnCollisionEnter(collision);
     }
 
     private void OnCollisionStay2D(Collision2D collision)
@@ -68,7 +72,7 @@ public class Sticker : MonoBehaviour
         DoOnCollision(collision, valStorage.usualStickingForce);
     }
 
-    private void OnCollisionExit2D(Collision2D collision) => surfDirection = new Vector2();
+    private void OnCollisionExit2D(Collision2D collision) => DoOnCollisionExit(collision);
 
     //==================================================================================================================================================================
     void InitialStickToTheSurface(Collision2D collision) => StickToTheSurface(collision, valStorage.initialStickingForce);
@@ -83,11 +87,13 @@ public class Sticker : MonoBehaviour
             {
                 collider.attachedRigidbody.AddForce(force);
 
-                if(collision.collider.attachedRigidbody != null)
+                if(collision.collider.attachedRigidbody != null && collision.contacts.Length > 0)
                     collision.collider.attachedRigidbody.AddForceAtPosition(-force, collision.contacts[0].point); // second Newton's law
             }
         }
     }
+
+    void ReturningStickToTheSurface(Collision2D collision) => StickToTheSurface(collision, valStorage.returnStickingForce);
 
     //==================================================================================================================================================================
     Vector2 CalcSurfDirection(Collision2D collision)

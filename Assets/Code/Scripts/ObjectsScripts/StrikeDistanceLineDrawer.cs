@@ -15,8 +15,6 @@ public class StrikeDistanceLineDrawer : MonoBehaviour
 
     public int corners = 35;
 
-    public float appearanceDelay = 0.15f;
-
     private void Awake()
     {
         valStorage = GameObject.Find("Master").GetComponent<ValStorage>();
@@ -72,7 +70,7 @@ public class StrikeDistanceLineDrawer : MonoBehaviour
 
     IEnumerator EnableLineRendererAfterDelay()
     {
-        yield return new WaitForSeconds(appearanceDelay);
+        yield return new WaitForSeconds(valStorage.strikeDistanceAppearingDelay);
         lineRenderer.enabled = true;
     }
 }

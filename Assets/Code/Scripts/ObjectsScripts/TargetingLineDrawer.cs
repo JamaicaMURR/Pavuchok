@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class TargetingLineDrawer : MonoBehaviour
 {
+    ValStorage valStorage;
+
     LineRenderer lineRenderer;
 
     Action DoOnUpdate;
@@ -13,11 +15,12 @@ public class TargetingLineDrawer : MonoBehaviour
 
     new public Camera camera;
 
-    public float appearanceDelay = 0.15f;
     public float z;
 
     private void Awake()
     {
+        valStorage = GameObject.Find("Master").GetComponent<ValStorage>();
+
         lineRenderer = GetComponent<LineRenderer>();
 
         DoOnUpdate = () => { };
@@ -65,7 +68,7 @@ public class TargetingLineDrawer : MonoBehaviour
 
     IEnumerator EnableLineDrawingAfterDelay()
     {
-        yield return new WaitForSeconds(appearanceDelay);
+        yield return new WaitForSeconds(valStorage.targetLineAppearingDelay);
 
         lineRenderer.enabled = true;
         DoOnUpdate = DrawLine;
