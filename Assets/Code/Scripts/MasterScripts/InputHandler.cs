@@ -61,6 +61,8 @@ public class InputHandler : MonoBehaviour
             charController.ChuteAbility = true;
             charController.Immortality = true;
 
+            Debug.Log("TestMode On");
+
             TestControl = delegate ()
             {
                 if(Input.GetKeyDown(KeyCode.Alpha1))
