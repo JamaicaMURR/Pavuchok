@@ -5,7 +5,6 @@ using UnityEngine;
 
 // TODO: Death screen
 // TODO: Flies
-// TODO: Eyes chasing cursor
 
 public class CharController : MonoBehaviour
 {
