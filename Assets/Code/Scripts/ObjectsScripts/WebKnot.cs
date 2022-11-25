@@ -79,7 +79,7 @@ public class WebKnot : MonoBehaviour
         // Different behavior for static and physical objects
         if(collider.attachedRigidbody == null)
             GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
-        else
+        else // Stick to movable objects 
         {
             joint.enabled = true;
             joint.autoConfigureConnectedAnchor = true;
