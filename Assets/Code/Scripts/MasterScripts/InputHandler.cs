@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InputHandler : MonoBehaviour
+public class InputHandler : CharConnected
 {
     Action TestControl;
 
@@ -11,11 +11,15 @@ public class InputHandler : MonoBehaviour
     new public Camera camera;
 
     public CharController charController;
+    public Character Character;
 
     //==================================================================================================================================================================
     private void Awake()
     {
-        TestControl = delegate () { };
+        TestControl = delegate ()
+        { };
+
+        //ConnectToCharacter();
     }
 
     void Update()
@@ -29,11 +33,20 @@ public class InputHandler : MonoBehaviour
         float horizontal = Input.GetAxis("Horizontal");
 
         if(horizontal < 0)
-            charController.RunLeft();
+        {
+            //charController.RunLeft();
+            Character.RollLeftCommand();
+        }
         else if(horizontal > 0)
-            charController.RunRight();
+        {
+            //charController.RunRight();
+            Character.RollRightCommand();
+        }
         else
-            charController.StopRun();
+        {
+            //charController.StopRun();
+            Character.StopCommand();
+        }
 
         if(Input.GetButtonDown("Fire1"))
             charController.ProduceWeb(camera.ScreenToWorldPoint(Input.mousePosition));
