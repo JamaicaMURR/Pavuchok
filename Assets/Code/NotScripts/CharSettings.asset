@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95ed1b798ee69a54d85ce1d2ff8384e0, type: 3}
+  m_Name: CharSettings
+  m_EditorClassIdentifier: 
+  standStillVelocityThreshold: 0.01
+  initialRollingSpeed: 50
+  maximalRollingSpeed: 400
+  accelerationTime: 0.5
+  rotationTorque: 1000
+  brakesTorque: 10
+  jumpForce: 10
+  airJumpForce: 8
+  initialStickingForce: 100
+  usualStickingForce: 17.5
+  returnStickingForce: 100
+  stickingAngleThreshold: 45
+  maximalStrikeDistance: 10
+  minimalWebLength: 0.5
+  maximalWebLength: 50
+  lengthChangingSpeed: 5
+  respawnStunTime: 0.1
+  jumpDirectionArrowDelay: 0.25
+  velocityArrowDelay: 0.25
+  strikeDistanceAppearingDelay: 0.25
+  targetLineAppearingDelay: 0.25
+  flightControlForce: 2
+  pendulumForce: 2
+  unstickableTag: Unstickable

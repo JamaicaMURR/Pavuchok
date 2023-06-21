@@ -6,14 +6,12 @@ public class Resurrecter : MonoBehaviour
 {
     new Rigidbody2D rigidbody;
 
-    ValStorage valStorage;
-
     GameObject lastSpawner;
 
     //==================================================================================================================================================================
     private void Awake()
     {
-        valStorage = GameObject.Find("Master").GetComponent<ValStorage>();
+        //valStorage = GameObject.Find("Master").GetComponent<ValStorage>();
 
         rigidbody = GetComponent<Rigidbody2D>();
     }
@@ -37,7 +35,7 @@ public class Resurrecter : MonoBehaviour
     {
         rigidbody.bodyType = RigidbodyType2D.Static;
 
-        yield return new WaitForSeconds(valStorage.respawnStunTime);
+        yield return new WaitForSeconds(/*valStorage.respawnStunTime*/1);
 
         rigidbody.bodyType = RigidbodyType2D.Dynamic;
     }
